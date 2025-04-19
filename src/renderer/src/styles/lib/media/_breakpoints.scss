@@ -1,0 +1,13 @@
+@use 'sass:map';
+@use '../../theme/breakpoints' as *;
+
+@mixin media($breakpoint) {
+    $value: map.get($breakpoints, $breakpoint);
+    @if $value {
+        @media screen and (min-width: #{$value}px) {
+            @content;
+        }
+    } @else {
+        @error "🚫 media '#{$breakpoint}' not found in breakpoints map. | Available breakpoint => #{map-keys($breakpoints)}";
+    }
+}

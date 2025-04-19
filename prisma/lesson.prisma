@@ -1,0 +1,26 @@
+enum LessonType {
+  TEXT
+  VIDEO
+  TEXT_AND_VIDEO
+}
+
+model Lesson {
+  id       String @id @default(uuid())
+  position Int
+  name     String
+
+  type      LessonType
+  htmlPath  String?    @map("html_path")
+  videoPath String?    @map("video_path")
+
+  chapterId String  @map("chapter_id")
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  codeSnippets CodeSnippet[]
+  resources    Resource[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("lessons")
+}

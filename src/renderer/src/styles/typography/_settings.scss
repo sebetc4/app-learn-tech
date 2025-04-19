@@ -1,0 +1,36 @@
+@use '../lib/media/breakpoints' as *;
+@use '../lib/font/font-family' as *;
+body {
+    @include font-family('jetbrains');
+}
+
+h1,
+h2 {
+    @include font-family('conquera');
+}
+
+h1 {
+    font-size: clamp(1.4rem, 3.5vw, 3.5rem);
+}
+
+h2 {
+    font: clamp(1.3rem, 50%, 3rem) / 1.3rem;
+}
+
+button,
+a {
+    @include font-family('enfonix');
+    text-transform: uppercase;
+    letter-spacing: -0.1em;
+    word-spacing: -0.2em;
+}
+
+p {
+    word-spacing: -0.2em;
+}
+
+@include media(xs) {
+    h1 {
+        line-height: 1.2;
+    }
+}

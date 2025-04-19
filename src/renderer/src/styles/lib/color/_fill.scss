@@ -1,0 +1,24 @@
+@use 'sass:map';
+@use '../../theme/colors' as *;
+@use '../../theme/svg' as *;
+
+@mixin fill($color, $alpha: 1) {
+    @if (map.has-key($colors, $color)) {
+        @if ($alpha == 1) {
+            fill: rgb(var(--compress-color-#{$color}));
+        } @else {
+            fill: rgba(var(--compress-color-#{$color}), $alpha);
+        }
+    } @else {
+        @error "🚫 fill '#{$color}' not found in colors map. | Available colors => #{map.keys($colors)}";
+    }
+}
+
+@mixin gradient-fill($gradient-name) {
+    @if (map.has-key($svg-gradients, $gradient-name)) {
+      $gradient-id: map.get($svg-gradients, $gradient-name);
+      fill: url('##{$gradient-id}');
+    } @else {
+      @error "🚫 gradient '#{$gradient-name}' not found in gradients map. | Available gradients => #{map.keys($svg-gradients)}";
+    }
+  }

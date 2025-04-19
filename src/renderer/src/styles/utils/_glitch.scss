@@ -1,0 +1,51 @@
+@use '../lib/color/color' as *;
+
+@mixin glitch-text {
+    @extend %glitch-text;
+}
+
+%glitch-text {
+    display: inline-block;
+    --clip-path: none;
+    --opacity: 0;
+    --b-top: 10px;
+    --b-left: 15px;
+    --b-color: #e0287d;
+    --b-blur: 0px;
+
+    --a-top: 5px;
+    --a-left: -10px;
+    --a-color: #1bc7fb;
+    --a-blur: 0px;
+
+    span {
+        position: relative;
+        z-index: 2;
+        clip-path: var(--clip-path);
+        @include color('text-light');
+    }
+
+    &::before,
+    &::after {
+        position: absolute;
+        content: attr(data-text);
+        width: 110%;
+        z-index: 1;
+        clip-path: var(--clip-path);
+        opacity: var(--opacity);
+    }
+
+    &::before {
+        top: var(--b-top);
+        left: var(--b-left);
+        color: var(--b-color);
+        filter: blur(var(--b-blur));
+    }
+
+    &::after {
+        top: var(--a-top);
+        left: var(--a-left);
+        color: var(--a-color);
+        filter: blur(var(--a-blur));
+    }
+}

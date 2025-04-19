@@ -1,0 +1,14 @@
+model CodeSnippet {
+  id        String @id @default(uuid())
+  position  Int
+  language  String
+  extension String
+
+  lessonId String @map("lesson_id")
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("code_snippets")
+}

@@ -1,0 +1,53 @@
+@use './z-index' as *;
+
+@mixin fixed-type($type: null, $z-index: null) {
+    // Type
+    @if $type == 'full' {
+        @extend %fixed-full;
+    } @else if $type == 'top-full-width' {
+        @extend %fixed-top-full-width;
+    } @else {
+        @error 'Invalid type for fixed-type: #{$type}';
+    }
+
+    // Z-index
+    @if $z-index != null {
+        @include z-index($z-index);
+    }
+}
+
+%fixed-full {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    inset: 0;
+}
+
+%fixed-top-full-width {
+    position: fixed;
+    width: 100vw;
+    left: 0;
+    top: 0;
+}
+
+@mixin fixed-pos($top: null, $right: null, $bottom: null, $left: null, $z-index: null) {
+    position: fixed;
+    // Pos
+    @if $top != null {
+        top: $top;
+    }
+    @if $right != null {
+        right: $right;
+    }
+    @if $bottom != null {
+        bottom: $bottom;
+    }
+    @if $left != null {
+        left: $left;
+    }
+
+    // Z-index
+    @if $z-index != null {
+        @include z-index($z-index);
+    }
+}

@@ -1,0 +1,14 @@
+@use 'sass:map';
+@use '../../theme/colors' as *;
+
+@mixin stroke($color, $alpha: 1) {
+    @if (map.has-key($colors, $color)) {
+        @if ($alpha == 1) {
+            stroke: rgb(var(--compress-color-#{$color}));
+        } @else {
+            stroke: rgba(var(--compress-color-#{$color}), $alpha);
+        }
+    } @else {
+        @error "🚫 stroke '#{$color}' not found in colors map. | Available colors => #{map.keys($colors)}";
+    }
+}

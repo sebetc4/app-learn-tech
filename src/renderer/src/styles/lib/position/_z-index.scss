@@ -1,0 +1,26 @@
+@use 'sass:map';
+@use 'sass:meta';
+$z-indexes: (
+    'auto': auto,
+    'hidden': -1,
+    'base': 1,
+    'content': 10,
+    'header': 20,
+    'dropdown': 30,
+    'modal': 40,
+    'tooltip': 50,
+);
+
+@mixin z-index($z-index, $add: 0) {
+    $value: map.get($z-indexes, $z-index);
+
+    @if $value == auto {
+        z-index: auto;
+    } @else if meta.type-of($value) == 'number' {
+        z-index: $value + $add;
+    } @else if meta.type-of($z-index) == 'number' {
+        z-index: $z-index + $add;
+    } @else {
+        @error "Z-index `#{$z-index}` not found in z-indexes map or is not a number.";
+    }
+}

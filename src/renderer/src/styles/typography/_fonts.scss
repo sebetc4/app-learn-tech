@@ -1,0 +1,32 @@
+// Enfonix Mono Pro
+@font-face {
+    font-family: 'en-mo-pro';
+    src:
+        url('/fonts/en-mo-pro.woff2') format('woff2'),
+        url('/fonts/en-mo-pro.woff') format('woff');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+// Jetbrains Mono Regular
+@font-face {
+    font-family: 'je-re';
+    src:
+        url('/fonts/je-re.woff2') format('woff2'),
+        url('/fonts/je-re.woff') format('woff');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+// Conquera Bold
+@font-face {
+    font-family: 'co-bo';
+    src:
+        url('/fonts/co-bo.woff2') format('woff2'),
+        url('/fonts/co-bo.woff') format('woff');
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+}

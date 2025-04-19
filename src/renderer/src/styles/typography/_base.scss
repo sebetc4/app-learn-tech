@@ -1,0 +1,29 @@
+:root {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    line-height: 1.5;
+    font-feature-settings:
+        'kern' 1,
+        'liga' 1,
+        'calt' 1;
+    @supports (text-wrap: pretty) {
+        text-wrap: pretty;
+    }
+    @supports (text-wrap: stable) {
+        text-wrap: stable;
+    }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-wrap: balance;
+}

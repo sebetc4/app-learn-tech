@@ -1,0 +1,63 @@
+@use './z-index' as *;
+
+@mixin absolute-type($type: null, $z-index: null) {
+    // Type
+    @if $type == 'full' {
+        @extend %absolute-full;
+    } @else if $type == 'center' {
+        @extend %absolute-center;
+    } @else {
+        @error 'Invalid type for absolute-type: #{$type}';
+    }
+
+    // Z-index
+    @if $z-index != null {
+        @include z-index($z-index);
+    }
+}
+
+%absolute-full {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    inset: 0;
+}
+
+%absolute-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@mixin absolute-pos($top: null, $right: null, $bottom: null, $left: null, $z-index: null) {
+    position: absolute;
+    // Pos
+    @if $top != null {
+        top: $top;
+    }
+    @if $right != null {
+        right: $right;
+    }
+    @if $bottom != null {
+        bottom: $bottom;
+    }
+    @if $left != null {
+        left: $left;
+    }
+
+    // Z-index
+    @if $z-index != null {
+        @include z-index($z-index);
+    }
+}
+
+@mixin absolute-inset($inset: 0, $z-index: null) {
+    position: absolute;
+    inset: $inset;
+
+    // Z-index
+    @if $z-index != null {
+        @include z-index($z-index);
+    }
+}

@@ -1,0 +1,5 @@
+@mixin on-loaded {
+    body[data-loaded='true'] {
+        @content;
+    }
+}

@@ -1,0 +1,29 @@
+/**
+ * --------------------------------
+ * Lib
+ * --------------------------------
+ */
+@use './variables' as *;
+@use './base' as *;
+@use './typography' as *;
+
+/**
+ * --------------------------------
+ * App Globals
+ * --------------------------------
+ */
+@use './lib/color/color' as *;
+@use './lib/color/background-color' as *;
+@use './lib/display/flex' as *;
+
+body {
+    @include background-color('bg-dark');
+    @include color('text-light');
+}
+
+main {
+    position: relative;
+    min-height: 100vh;
+    z-index: 1;
+    @include flex-col(null, center);
+}

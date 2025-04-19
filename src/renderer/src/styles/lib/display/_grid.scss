@@ -1,0 +1,38 @@
+@mixin grid($columns: null, $rows: null, $column-gap: null, $row-gap: null) {
+    display: grid;
+    @if $columns != null {
+        grid-template-columns: repeat($columns, minmax(0, 1fr));
+    }
+    @if $rows != null {
+        grid-template-rows: repeat($rows, minmax(0, 1fr));
+    }
+    @if $column-gap != null {
+        column-gap: $column-gap;
+    }
+    @if $row-gap != null {
+        row-gap: $row-gap;
+    }
+}
+
+@mixin grid-pos($column-start: null, $column-end: null, $row-start: null, $row-end: null) {
+    @if $column-start != null and $column-end != null {
+        grid-column: #{$column-start} / #{$column-end};
+    }
+    @if $row-start != null and $row-end != null {
+        grid-row: #{$row-start} / #{$row-end};
+    }
+}
+
+@mixin grid-rows($rows, $gap: null) {
+    grid-template-rows: repeat($rows, minmax(0, 1fr));
+    @if $gap != null {
+        row-gap: $gap;
+    }
+}
+
+@mixin grid-cols($columns, $gap: null) {
+    grid-template-columns: repeat($columns, minmax(0, 1fr));
+    @if $gap != null {
+        column-gap: $gap;
+    }
+}

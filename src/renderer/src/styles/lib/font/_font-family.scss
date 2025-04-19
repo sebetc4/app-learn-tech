@@ -1,0 +1,10 @@
+@use 'sass:map';
+@use '../../theme/fonts' as *;
+
+@mixin font-family($font) {
+    @if (map.has-key($fonts, $font)) {
+        font-family: var(--compress-font-#{$font});
+    } @else {
+        @error "🚫 fonts '#{$font}' not found in fonts map. | Available fonts => #{map.keys($fonts)}";
+    }
+}

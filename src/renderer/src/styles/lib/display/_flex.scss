@@ -1,0 +1,37 @@
+@mixin flex($justify: null, $align: null, $gap: null) {
+    @if $justify == center and $align == center {
+        @extend %flex-center;
+    } @else {
+        display: flex;
+        @if $justify != null {
+            justify-content: $justify;
+        }
+        @if $align != null {
+            align-items: $align;
+        }
+    }
+
+    @if $gap != null {
+        gap: $gap;
+    }
+}
+
+@mixin flex-col($justify: null, $align: null, $gap: null) {
+    display: flex;
+    flex-direction: column;
+    @if $justify != null {
+        justify-content: $justify;
+    }
+    @if $align != null {
+        align-items: $align;
+    }
+    @if $gap != null {
+        gap: $gap;
+    }
+}
+
+%flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,7 @@
+@use '../theme/fonts' as *;
+
+:root {
+    @each $name, $value in $fonts {
+        --compress-font-#{$name}: #{$value}, Arial, sans-serif;
+    }
+}

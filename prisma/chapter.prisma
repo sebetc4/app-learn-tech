@@ -1,0 +1,15 @@
+model Chapter {
+  id       String @id @default(uuid())
+  position Int
+  name     String
+
+  courseId String @map("course_id")
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  lessons Lesson[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("chapters")
+}

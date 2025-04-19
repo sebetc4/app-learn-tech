@@ -1,0 +1,38 @@
+// Layout
+@mixin container {
+    @extend %container;
+}
+
+%container {
+    width: min(100%, 1584px);
+    padding: 0 2rem;
+}
+
+// Header
+@mixin header-background {
+    @extend %header-background;
+}
+
+%header-background {
+    @supports (backdrop-filter: blur(8px)) {
+        backdrop-filter: blur(8px);
+        background-color: rgba(var(--c-bg-dark), 0.6);
+    }
+    @supports not (backdrop-filter: blur(8px)) {
+        background-color: rgba(var(--c-bg-dark), 0.9);
+    }
+}
+
+@mixin overlay {
+    @extend %overlay;
+}
+
+%overlay {
+    @supports (backdrop-filter: blur(8px)) {
+        background-color: rgba(var(--c-bg-dark), 0.4);
+        backdrop-filter: blur(8px);
+    }
+    @supports not (backdrop-filter: blur(8px)) {
+        background-color: rgba(var(--c-bg-dark), 0.5);
+    }
+}

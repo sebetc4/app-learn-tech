@@ -1,0 +1,13 @@
+model Course {
+  id          String @id @default(uuid())
+  name        String @unique
+  description String
+  icon        String
+
+  chapters Chapter[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("courses")
+}
