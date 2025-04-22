@@ -1,6 +1,6 @@
 export const IPC_MEDIA = {
-    VIDEO_PATH: 'media:video_path',
-    CODE_SNIPPET: 'media:code-snippet',
+    GET_VIDEO_PATH: 'media:get-video-path',
+    GET_CODE_SNIPPET: 'media:get-code-snippet',
     CHECK_DISK_SPACE: 'media:check-disk-space',
-    COURSE_SIZE: 'media:course-size',
+    GET_COURSE_SIZE: 'media:get-course-size',
 } as const

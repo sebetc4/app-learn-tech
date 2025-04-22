@@ -1,32 +1,39 @@
-// Enfonix Mono Pro
+/* Open Sans Variable */
 @font-face {
-    font-family: 'en-mo-pro';
-    src:
-        url('/fonts/en-mo-pro.woff2') format('woff2'),
-        url('/fonts/en-mo-pro.woff') format('woff');
+    font-family: 'open-sans';
+    src: url('../../assets/fonts/Open_Sans/OpenSans.ttf') format('truetype-variations');
     font-style: normal;
-    font-weight: 400;
+    font-weight: 300 800;
     font-display: swap;
+    font-variation-settings: 'wght' 300 800;
 }
 
-// Jetbrains Mono Regular
+/* Open Sans Italic Variable */
 @font-face {
-    font-family: 'je-re';
-    src:
-        url('/fonts/je-re.woff2') format('woff2'),
-        url('/fonts/je-re.woff') format('woff');
-    font-style: normal;
-    font-weight: 400;
+    font-family: 'open-sans';
+    src: url('../../assets/fonts/Open_Sans/OpenSans-Italic.ttf') format('truetype-variations');
+    font-style: italic;
+    font-weight: 300 800;
     font-display: swap;
+    font-variation-settings: 'wght' 300 800;
 }
 
-// Conquera Bold
+/* JetBrains Mono Variable */
 @font-face {
-    font-family: 'co-bo';
-    src:
-        url('/fonts/co-bo.woff2') format('woff2'),
-        url('/fonts/co-bo.woff') format('woff');
+    font-family: 'jetbrains';
+    src: url('../../assets/fonts/JetBrains_Mono/JetBrainsMono.ttf') format('truetype-variations');
     font-style: normal;
-    font-weight: 700;
+    font-weight: 300 800;
     font-display: swap;
+    font-variation-settings: 'wght' 300 800;
+}
+
+/* JetBrains Mono Italic Variable */
+@font-face {
+    font-family: 'jetbrains';
+    src: url('../../assets/fonts/JetBrains_Mono/JetBrainsMono-Italic.ttf') format('truetype-variations');
+    font-style: italic;
+    font-weight: 300 800;
+    font-display: swap;
+    font-variation-settings: 'wght' 300 800;
 }

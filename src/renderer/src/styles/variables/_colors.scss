@@ -1,7 +1,20 @@
 @use '../theme/colors' as *;
 
-:root {
-    @each $name, $value in $colors {
-        --compress-color-#{$name}: #{$value};
+@media (prefers-color-scheme: light) {
+    :root {
+        @each $name, $value in $light-colors {
+            --compress-color-#{$name}: #{$value};
+        }
     }
 }
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        @each $name, $value in $dark-colors {
+            --compress-color-#{$name}: #{$value};
+        }
+    }
+}
+
+
+

@@ -1,4 +1,4 @@
-import './assets/main.css'
+import './styles/globals.scss'
 import { router } from './router'
 import React from 'react'
 import ReactDOM from 'react-dom/client'

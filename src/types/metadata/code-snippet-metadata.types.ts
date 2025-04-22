@@ -1,4 +1,4 @@
-export type CodeSnippetArchive = {
+export type CodeSnippetMetadata = {
     id: string
     position: number
     language: string

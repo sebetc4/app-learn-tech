@@ -35,6 +35,12 @@ export class CourseDatabaseManager {
         })
     }
 
+    async getByName(name: string): Promise<Course | null> {
+        return await this.#prisma.course.findUnique({
+            where: { name }
+        })
+    }
+
     async deleteById(id: string): Promise<Course | null> {
         return await this.#prisma.course.delete({
             where: { id }

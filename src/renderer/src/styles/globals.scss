@@ -17,8 +17,8 @@
 @use './lib/display/flex' as *;
 
 body {
-    @include background-color('bg-dark');
-    @include color('text-light');
+    @include background-color('bg-1');
+    @include color('text-2');
 }
 
 main {

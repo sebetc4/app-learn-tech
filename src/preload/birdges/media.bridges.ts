@@ -1,15 +1,18 @@
 import { IPC } from '@/constants'
 import { ipcRenderer } from 'electron'
 
+import {
+    GetCodeSnippetContentParams,
+    GetCourseSizeIPCHandlerParams,
+    GetVideoPathIPCHandlerParams
+} from '@/types'
+
 export const mediaContextBridge = {
-    getVideoPath: (courseId: string, lessonId: string) =>
-        ipcRenderer.invoke(IPC.MEDIA.VIDEO_PATH, courseId, lessonId),
-    getCodeSnippetContent: (
-        courseId: string,
-        lessonId: string,
-        snippetId: string,
-        extension: string
-    ) => ipcRenderer.invoke(IPC.MEDIA.CODE_SNIPPET, courseId, lessonId, snippetId, extension),
+    getVideoPath: (params: GetVideoPathIPCHandlerParams) =>
+        ipcRenderer.invoke(IPC.MEDIA.GET_VIDEO_PATH, params),
+    getCodeSnippetContent: (params: GetCodeSnippetContentParams) =>
+        ipcRenderer.invoke(IPC.MEDIA.GET_CODE_SNIPPET, params),
     checkDiskSpace: () => ipcRenderer.invoke(IPC.MEDIA.CHECK_DISK_SPACE),
-    getCourseSize: (courseId: string) => ipcRenderer.invoke(IPC.MEDIA.COURSE_SIZE, courseId)
+    getCourseSize: (params: GetCourseSizeIPCHandlerParams) =>
+        ipcRenderer.invoke(IPC.MEDIA.GET_COURSE_SIZE, params)
 }

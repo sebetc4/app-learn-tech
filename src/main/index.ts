@@ -6,14 +6,6 @@ import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { BrowserWindow, app, ipcMain, shell } from 'electron'
 import { join } from 'path'
 
-const database = new DatabaseService()
-
-const registerIpcHandlers = () => {
-    registerCourseIpcHandlers(database)
-    registerMediaIpcHandlers()
-    registerThemeIpcHandlers(database)
-}
-
 const createWindow = (): void => {
     const mainWindow = new BrowserWindow({
         width: 1200,
@@ -43,13 +35,22 @@ const createWindow = (): void => {
     }
 }
 
-app.whenReady().then(() => {
+const registerIpcHandlers = async (database: DatabaseService) => {
+    registerCourseIpcHandlers(database)
+    registerMediaIpcHandlers()
+    await registerThemeIpcHandlers(database)
+}
+
+app.whenReady().then(async () => {
     electronApp.setAppUserModelId('com.electron')
     app.on('browser-window-created', (_, window) => {
         optimizer.watchWindowShortcuts(window)
     })
 
-    registerIpcHandlers()
+    const database = new DatabaseService()
+
+    await database.initialize()
+    registerIpcHandlers(database)
 
     ipcMain.on('ping', () => console.log('pong'))
 

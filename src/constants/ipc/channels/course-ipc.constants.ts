@@ -1,5 +1,8 @@
 export const IPC_COURSE = {
-    GET_ALL: 'courses:get-all',
-    IMPORT: 'courses:import',
-    REMOVE: 'courses:remove'
+    ADD_COURSES_ROOT_FOLDER: 'course:add-root-folder',
+    REMOVE_COURSES_ROOT_FOLDER: 'course:remove-root-folder',
+    SCAN_COURSES: 'course:scan-folder',
+    GET_ALL: 'course:get-all',
+    IMPORT: 'course:import',
+    REMOVE: 'course:remove'
 } as const

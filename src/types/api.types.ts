@@ -1,32 +1,44 @@
-import { CoursePreviewData } from './dto'
-import { IPCHandlerReturn } from './ipc.types'
+import type {
+    CheckDiskSpaceIPCHandlerReturn,
+    GetAllCourseIPCHandlerReturn,
+    GetCodeSnippetContentIPCHandlerReturn,
+    GetCodeSnippetContentParams,
+    GetCourseSizeIPCHandlerParams,
+    GetCourseSizeIPCHandlerReturn,
+    GetThemeIPCHandlerReturn,
+    GetVideoPathIPCHandlerParams,
+    GetVideoPathIPCHandlerReturn,
+    ImportCourseIPCHandlerReturn,
+    RemoveCourseIPCHandlerParams,
+    RemoveCourseIPCHandlerReturn,
+    SetThemeIPCHandlerParams,
+    SetThemeIPCHandlerReturn,
+    ToggleThemeIPCHandlerReturn
+} from './ipc'
 
 export interface CourseAPI {
-    getAll: () => Promise<IPCHandlerReturn<{ coursePreviewData: CoursePreviewData }>>
-    import: () => Promise<IPCHandlerReturn<void>>
-    remove: (courseId: string) => Promise<IPCHandlerReturn<void>>
+    getAll: () => GetAllCourseIPCHandlerReturn
+    import: () => ImportCourseIPCHandlerReturn
+    remove: (params: RemoveCourseIPCHandlerParams) => RemoveCourseIPCHandlerReturn
 }
 
-export interface mediaAPI {
-    getVideoPath: (courseId: string, lessonId: string) => IPCHandlerReturn<{ path: string }>
+export interface MediaAPI {
+    getVideoPath: (params: GetVideoPathIPCHandlerParams) => GetVideoPathIPCHandlerReturn
     getCodeSnippetContent: (
-        courseId: string,
-        lessonId: string,
-        snippetId: string,
-        extension: string
-    ) => Promise<IPCHandlerReturn<{ codeSnippetContent: string }>>
-    checkDiskSpace: () => Promise<IPCHandlerReturn<{ availableSpace: number }>>
-    getCourseSize: (courseId: string) => Promise<IPCHandlerReturn<{ size: number }>>
+        params: GetCodeSnippetContentParams
+    ) => GetCodeSnippetContentIPCHandlerReturn
+    checkDiskSpace: () => CheckDiskSpaceIPCHandlerReturn
+    getCourseSize: (params: GetCourseSizeIPCHandlerParams) => GetCourseSizeIPCHandlerReturn
 }
 
 export interface ThemeAPI {
-    get: () => IPCHandlerReturn<{ theme: ThemeValue }>
-    set: (value: ThemeValue) => IPCHandlerReturn<void>
-    toggle: () => IPCHandlerReturn<void>
+    get: () => GetThemeIPCHandlerReturn
+    set: (params: SetThemeIPCHandlerParams) => SetThemeIPCHandlerReturn
+    toggle: () => ToggleThemeIPCHandlerReturn
 }
 
 export interface AppAPI {
     course: CourseAPI
-    media: mediaAPI
+    media: MediaAPI
     theme: ThemeAPI
 }

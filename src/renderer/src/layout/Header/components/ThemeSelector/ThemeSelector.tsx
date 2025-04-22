@@ -4,7 +4,7 @@ export const ThemeSelector = () => {
     const [theme, setTheme] = useState('system')
 
     const getTheme = useCallback(async () => {
-        const response = window.api.theme.get()
+        const response = await window.api.theme.get()
         if (response.success) {
             setTheme(response.data.theme)
         } else {
@@ -15,16 +15,16 @@ export const ThemeSelector = () => {
     const applyTheme = (theme: string) => {
         switch (theme) {
             case 'light':
-                window.api.theme.set('light')
+                window.api.theme.set({ theme: 'light' })
                 break
             case 'dark':
-                window.api.theme.set('dark')
+                window.api.theme.set({ theme: 'dark' })
                 break
             case 'system':
-                window.api.theme.set('system')
+                window.api.theme.set({ theme: 'system' })
                 break
             default:
-                window.api.theme.set('system')
+                window.api.theme.set({ theme: 'system' })
                 break
         }
     }

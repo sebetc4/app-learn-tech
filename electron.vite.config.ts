@@ -27,7 +27,17 @@ export default defineConfig({
         resolve: {
             alias: {
                 '@': resolve('src'),
-                '@renderer': resolve('src/renderer/src'),
+                '@renderer': resolve('src/renderer/src')
+            }
+        },
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    additionalData: `
+                        @use '@renderer/styles/lib' as *;
+                        @use '@renderer/styles/utils' as *;
+                    `
+                }
             }
         },
         plugins: [react()]

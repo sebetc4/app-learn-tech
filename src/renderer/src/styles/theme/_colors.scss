@@ -1,32 +1,80 @@
 $colors: (
     // Primary
+    'primary': '',
+
+    // Background
+    'bg-1': '',
+    'bg-2': '',
+
+    // Interactive
+    'interactive-1': '',
+    'interactive-2': '',
+    'interactive-3': '',
+
+    // Border
+    'border-1': '',
+    'border-2': '',
+    'border-3': '',
+
+    // Solid
+    'solid-1': '',
+    'solid-2': '',
+
+    // Text
+    'text-1': '',
+    'text-2': ''
+);
+
+$light-colors: (
+    // Primary
     'primary': '79, 152, 114',
 
     // Background
-    'bg-dark': '17, 18, 16',
-    'bg-light': '24, 25, 23',
-
-    // Text
-    'text-dark': '175, 181, 173',
-    'text-light': '236, 238, 236',
+    'bg-1': '252, 253, 252',
+    'bg-2': '248, 250, 248',
 
     // Interactive
-    'interactive-dark': ' 38, 34, 32',
-    'interactive': '40, 42, 39',
-    'interactive-light': '47, 49, 46',
+    'interactive-1': '239, 241, 239',
+    'interactive-2': '231, 233, 231',
+    'interactive-3': '223, 226, 223',
 
     // Border
-    'border-light': '56, 58, 54',
-    'border': '69, 72, 67',
-    'border-dark': '92, 98, 91',
+    'border-1': '215, 218, 215',
+    'border-2': '204, 207, 204',
+    'border-3': '185, 188, 184',
 
     // Solid
-    'solid-light': '104, 112, 102',
-    'solid-dark': '118, 125, 116',
+    'solid-1': '137, 142, 135',
+    'solid-2': '127,132,125',
 
-    // Effects
-    'effect-1': '4, 84, 104',
-    'effect-2': '45, 87, 54',
-    'effect-3': '42, 126, 104',
-    'effect-4': '0, 69, 88'
+    // Text
+    'text-1': '96, 101, 95',
+    'text-2': '29, 33, 28'
+);
+
+$dark-colors: (
+    // Primary
+    'primary': '79, 152, 114',
+
+    // Background
+    'bg-1': '17, 18, 16',
+    'bg-2': '24, 25, 23',
+
+    // Interactive
+    'interactive-1': ' 33, 34, 32',
+    'interactive-2': '40, 42, 39',
+    'interactive-3': '47, 49, 46',
+
+    // Border
+    'border-1': '56,58,54',
+    'border-2': '69,72,67',
+    'border-3': '92, 98, 91',
+
+    // Solid
+    'solid-1': '104, 112, 102',
+    'solid-2': '118, 125, 116',
+
+    // Text
+    'text-1': '175, 181, 173',
+    'text-2': '236, 238, 236'
 );

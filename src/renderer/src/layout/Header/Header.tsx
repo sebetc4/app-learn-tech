@@ -1,8 +1,10 @@
+import styles from './Header.module.scss'
+
 import { ThemeSelector, NavigationMenu } from './components'
 
 export const Header = () => {
     return (
-        <header>
+        <header className={styles.header}>
             <NavigationMenu />
             <ThemeSelector />
         </header>

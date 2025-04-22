@@ -1,2 +1,2 @@
 export { NavigationMenu } from './NavigationMenu/NavigationMenu'
-export { ThemeSelector } from './ThemeSelector'
+export { ThemeSelector } from './ThemeSelector/ThemeSelector'

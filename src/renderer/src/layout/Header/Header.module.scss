@@ -1,0 +1,7 @@
+.header {
+    display: flex;
+    justify-content: center;
+    @include background-color('interactive-1');
+    align-items: center;
+    gap: 2rem;
+}

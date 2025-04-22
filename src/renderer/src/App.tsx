@@ -1,3 +1,4 @@
+import { JSX } from 'react'
 import { Header } from './layout'
 import { Outlet } from 'react-router-dom'
 

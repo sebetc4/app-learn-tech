@@ -35,9 +35,9 @@ export const CourseImporterPage: FC = () => {
         try {
             const response = await window.api.course.getAll()
             if (response.success) {
-                setCourses(response.data.coursePreviewData)
+                setCourses(response.data.courses)
 
-                for (const course of response.data.coursePreviewData) {
+                for (const course of response.data.courses) {
                     loadCourseSize(course.id)
                 }
             } else {

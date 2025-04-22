@@ -1,6 +1,11 @@
+enum SettingKey {
+  THEME
+  COURSES_ROOT_FOLDER
+}
+
 model Setting {
-  key     String @id
-  value   String
-  
+  key   SettingKey @id
+  value String
+
   @@map("settings")
 }

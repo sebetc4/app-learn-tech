@@ -1,8 +1,10 @@
 import styles from './NavigationMenu.module.scss'
+import { PAGE_PATH } from '@/renderer/src/constants'
 import clsx from 'clsx'
 import { ChevronDown } from 'lucide-react'
 import { NavigationMenu as RadixNavigationMenu } from 'radix-ui'
 import { AnchorHTMLAttributes, forwardRef, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 import type { CoursePreviewData } from '@/types'
 
@@ -12,8 +14,9 @@ export const NavigationMenu = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             const response = await window.api.course.getAll()
+            console.log('response', response)
             if (response.success) {
-                setCourses(response.data.coursePreviewData)
+                setCourses(response.data.courses)
             } else {
                 console.error('Failed to fetch courses:', response.message)
             }
@@ -23,7 +26,17 @@ export const NavigationMenu = () => {
 
     return (
         <RadixNavigationMenu.Root className={styles.root}>
-            <RadixNavigationMenu.List className={styles.list}>
+            <RadixNavigationMenu.List className={styles.menu}>
+                <RadixNavigationMenu.Item>
+                    <RadixNavigationMenu.Link asChild>
+                        <Link
+                            to={PAGE_PATH.HOME}
+                            className="NavigationMenuLink"
+                        >
+                            Accueil
+                        </Link>
+                    </RadixNavigationMenu.Link>
+                </RadixNavigationMenu.Item>
                 <RadixNavigationMenu.Item>
                     <RadixNavigationMenu.Trigger className={styles.trigger}>
                         Cours
@@ -43,6 +56,16 @@ export const NavigationMenu = () => {
                             ))}
                         </ul>
                     </RadixNavigationMenu.Content>
+                </RadixNavigationMenu.Item>
+                <RadixNavigationMenu.Item>
+                    <RadixNavigationMenu.Link asChild>
+                        <Link
+                            to={PAGE_PATH.COURSE_IMPORTER}
+                            className="NavigationMenuLink"
+                        >
+                            Ajouter un cours
+                        </Link>
+                    </RadixNavigationMenu.Link>
                 </RadixNavigationMenu.Item>
             </RadixNavigationMenu.List>
             <div className={styles['viewport-container']}>

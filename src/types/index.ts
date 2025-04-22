@@ -1,4 +1,5 @@
-export * from './archive'
+export * from './metadata'
 export * from './dto'
+export * from './ipc'
 export * from './api.types'
 export * from './theme.types'
