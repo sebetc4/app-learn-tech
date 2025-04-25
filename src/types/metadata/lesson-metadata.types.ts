@@ -1,6 +1,6 @@
-import { LessonType } from '@prisma/client'
 import { CodeSnippetMetadata } from './code-snippet-metadata.types'
 import { ResourceMetadata } from './resources-metadata.types'
+import { LessonType } from '@prisma/client'
 
 export interface LessonMetadata {
     id: string

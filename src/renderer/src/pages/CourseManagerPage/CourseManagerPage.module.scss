@@ -1,0 +1,24 @@
+.folder {
+    margin-top: 2rem;
+    @include flex-col(null, null, 1rem);
+
+    &__content {
+        padding: 2rem 1rem;
+        @include background-color('interactive-2');
+        @include flex(space-between, center, 2rem);
+    }
+}
+
+.import {
+    margin-top: 2rem;
+    @include flex-col(null, null, 1rem);
+
+    &__header {
+        @include flex(null, center, 1rem);
+    }
+
+    &__content {
+        padding: 2rem 1rem;
+        @include background-color('interactive-2');
+    }
+}

@@ -22,8 +22,10 @@ body {
 }
 
 main {
-    position: relative;
+    padding: calc(var(--size-header-height) + 2rem) 0 2rem;
+    margin-inline: auto;
+    width: var(--size-container-width);
+    @include background-color('bg-2');
     min-height: 100vh;
-    z-index: 1;
-    @include flex-col(null, center);
+    @include flex-col();
 }

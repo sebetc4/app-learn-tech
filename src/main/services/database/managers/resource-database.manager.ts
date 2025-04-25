@@ -1,4 +1,4 @@
-import { Resource, ResourceType, PrismaClient } from '@prisma/client'
+import { PrismaClient, Resource, ResourceType } from '@prisma/client'
 
 interface CreatResourceParams {
     id: string

@@ -1,25 +1,42 @@
 import type {
+    AddOneCourseIPCHandlerParams,
+    AddOneCourseIPCHandlerReturn,
     CheckDiskSpaceIPCHandlerReturn,
-    GetAllCourseIPCHandlerReturn,
+    GetAllAlreadyImportedCourseIPCHandlerReturn,
     GetCodeSnippetContentIPCHandlerReturn,
     GetCodeSnippetContentParams,
     GetCourseSizeIPCHandlerParams,
     GetCourseSizeIPCHandlerReturn,
+    GetCoursesRootFolderIPCHandlerReturn,
     GetThemeIPCHandlerReturn,
     GetVideoPathIPCHandlerParams,
     GetVideoPathIPCHandlerReturn,
-    ImportCourseIPCHandlerReturn,
+    ImportCourseArchiveIPCHandlerReturn,
     RemoveCourseIPCHandlerParams,
     RemoveCourseIPCHandlerReturn,
+    RemoveRootFolderIPCHandlerReturn,
+    ScanRootFolderIPCHandlerReturn,
+    SetCoursesRootFolderIPCHandlerReturn,
     SetThemeIPCHandlerParams,
     SetThemeIPCHandlerReturn,
     ToggleThemeIPCHandlerReturn
 } from './ipc'
 
+export interface FolderAPI {
+    // Root
+    getRoot: () => GetCoursesRootFolderIPCHandlerReturn
+    setRoot: () => SetCoursesRootFolderIPCHandlerReturn
+    removeRoot: () => RemoveRootFolderIPCHandlerReturn
+    // Archive
+    importArchive: () => ImportCourseArchiveIPCHandlerReturn
+    // Scan
+    scan: () => ScanRootFolderIPCHandlerReturn
+}
+
 export interface CourseAPI {
-    getAll: () => GetAllCourseIPCHandlerReturn
-    import: () => ImportCourseIPCHandlerReturn
-    remove: (params: RemoveCourseIPCHandlerParams) => RemoveCourseIPCHandlerReturn
+    getAll: () => GetAllAlreadyImportedCourseIPCHandlerReturn
+    addOne: (params: AddOneCourseIPCHandlerParams) => AddOneCourseIPCHandlerReturn
+    removeOne: (params: RemoveCourseIPCHandlerParams) => RemoveCourseIPCHandlerReturn
 }
 
 export interface MediaAPI {
@@ -39,6 +56,7 @@ export interface ThemeAPI {
 
 export interface AppAPI {
     course: CourseAPI
+    folder: FolderAPI
     media: MediaAPI
     theme: ThemeAPI
 }

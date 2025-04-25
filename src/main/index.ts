@@ -1,6 +1,8 @@
 import icon from '../../resources/icon.png?asset'
 import { registerCourseIpcHandlers, registerThemeIpcHandlers } from './ipc'
-import { registerMediaIpcHandlers } from './ipc/media.ipc'
+import { registerFolderIpcHandlers } from './ipc/folder.ipc'
+import { registerMediaProtocol } from './protocol'
+import { CoursesFolderService } from './services'
 import { DatabaseService } from './services/database'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { BrowserWindow, app, ipcMain, shell } from 'electron'
@@ -8,8 +10,8 @@ import { join } from 'path'
 
 const createWindow = (): void => {
     const mainWindow = new BrowserWindow({
-        width: 1200,
-        height: 680,
+        width: 1280,
+        height: 800,
         show: false,
         autoHideMenuBar: true,
         ...(process.platform === 'linux' ? { icon } : {}),
@@ -35,9 +37,16 @@ const createWindow = (): void => {
     }
 }
 
-const registerIpcHandlers = async (database: DatabaseService) => {
-    registerCourseIpcHandlers(database)
-    registerMediaIpcHandlers()
+const registerProtocols = async (courseFolderService: CoursesFolderService) => {
+    registerMediaProtocol(courseFolderService)
+}
+
+const registerIpcHandlers = async (
+    database: DatabaseService,
+    courseFolderService: CoursesFolderService
+) => {
+    registerCourseIpcHandlers(database, courseFolderService)
+    registerFolderIpcHandlers(courseFolderService)
     await registerThemeIpcHandlers(database)
 }
 
@@ -48,9 +57,13 @@ app.whenReady().then(async () => {
     })
 
     const database = new DatabaseService()
-
     await database.initialize()
-    registerIpcHandlers(database)
+
+    const courseFolderService = new CoursesFolderService(database)
+    await courseFolderService.initialize()
+
+    registerProtocols(courseFolderService)
+    registerIpcHandlers(database, courseFolderService)
 
     ipcMain.on('ping', () => console.log('pong'))
 

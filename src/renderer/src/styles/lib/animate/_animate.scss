@@ -1,33 +1,49 @@
 @use '../../animations' as *;
 
 $animation-properties: (
-  'duration': 'time',
-  'timing': 'string',
-  'delay': 'time',
-  'iteration': ('number', 'infinite'),
-  'direction': ('normal', 'reverse', 'alternate', 'alternate-reverse'),
-  'fill-mode': ('none', 'forwards', 'backwards', 'both'),
-  'play-state': ('running', 'paused')
+    'duration': 'time',
+    'timing': 'string',
+    'delay': 'time',
+    'iteration': (
+        'number',
+        'infinite'
+    ),
+    'direction': (
+        'normal',
+        'reverse',
+        'alternate',
+        'alternate-reverse'
+    ),
+    'fill-mode': (
+        'none',
+        'forwards',
+        'backwards',
+        'both'
+    ),
+    'play-state': (
+        'running',
+        'paused'
+    )
 );
 
 @mixin animate($name, $options: ()) {
-  @if not map-has-key($animations, $name) {
-    @error "🚫 Animation '#{$name}' not found in animations map. | Available animations => #{map.keys($animations)}";
-  }
-
-  $animation-value: $name;
-
-  @each $property, $type in $animation-properties {
-    @if map-has-key($options, $property) {
-      $value: map-get($options, $property);
-      
-      @if type-of($type) == 'list' and not index($type, $value) {
-        @error "🚫 Invalid value '#{$value}' for #{$property}. | Allowed values => #{$type}";
-      }
-      
-      $animation-value: $animation-value + ' ' + $value;
+    @if not map-has-key($animations, $name) {
+        @error "🚫 Animation '#{$name}' not found in animations map. | Available animations => #{map.keys($animations)}";
     }
-  }
 
-  animation: $animation-value;
+    $animation-value: $name;
+
+    @each $property, $type in $animation-properties {
+        @if map-has-key($options, $property) {
+            $value: map-get($options, $property);
+
+            @if type-of($type) == 'list' and not index($type, $value) {
+                @error "🚫 Invalid value '#{$value}' for #{$property}. | Allowed values => #{$type}";
+            }
+
+            $animation-value: $animation-value + ' ' + $value;
+        }
+    }
+
+    animation: $animation-value;
 }

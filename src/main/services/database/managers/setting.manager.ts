@@ -18,7 +18,7 @@ export class CoursesFolderDatabaseManager {
 
     async get<T extends string>(key: SettingKey): Promise<T | null> {
         const result = await this.#prisma.setting.findFirst({ where: { key } })
-        return result ? result.value as T : null
+        return result ? (result.value as T) : null
     }
 
     async update({ key, value }: CreateOrUpdateSettingParams): Promise<Setting> {
@@ -26,6 +26,15 @@ export class CoursesFolderDatabaseManager {
             where: { key },
             data: { value }
         })
+    }
+
+    async upsert(key: SettingKey, value: string) {
+        const existing = await this.get(key)
+        if (existing === null || existing === undefined) {
+            return this.create({ key, value })
+        } else {
+            return this.update({ key, value })
+        }
     }
 
     async delete(key: SettingKey): Promise<void> {

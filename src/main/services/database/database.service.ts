@@ -58,7 +58,7 @@ export class DatabaseService {
     }
 
     async initialize() {
-        for (const [keyString, value] of  Object.entries(this.#DEFAULT_SETTINGS)) {
+        for (const [keyString, value] of Object.entries(this.#DEFAULT_SETTINGS)) {
             const key = keyString as SettingKey
             const existing = await this.#settingManager.get(key)
 

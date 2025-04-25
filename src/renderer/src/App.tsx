@@ -1,12 +1,16 @@
-import { JSX } from 'react'
 import { Header } from './layout'
+import { JSX } from 'react'
 import { Outlet } from 'react-router-dom'
+import { Toaster } from 'sonner'
 
 function App(): JSX.Element {
     return (
         <>
             <Header />
-            <Outlet />
+            <main>
+                <Outlet />
+            </main>
+            <Toaster />
         </>
     )
 }

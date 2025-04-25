@@ -1,0 +1,7 @@
+@use '../theme/sizes' as *;
+
+:root {
+    @each $name, $value in $sizes {
+        --size-#{$name}: #{$value};
+    }
+}

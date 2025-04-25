@@ -8,7 +8,7 @@ $z-indexes: (
     'header': 20,
     'dropdown': 30,
     'modal': 40,
-    'tooltip': 50,
+    'tooltip': 50
 );
 
 @mixin z-index($z-index, $add: 0) {

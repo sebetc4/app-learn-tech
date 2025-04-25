@@ -12,7 +12,6 @@ import type {
 export class CourseImportManager {
     #database: DatabaseService
 
-
     constructor(database: DatabaseService) {
         this.#database = database
     }

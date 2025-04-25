@@ -1,6 +1,5 @@
 import styles from './Header.module.scss'
-
-import { ThemeSelector, NavigationMenu } from './components'
+import { NavigationMenu, ThemeSelector } from './components'
 
 export const Header = () => {
     return (
