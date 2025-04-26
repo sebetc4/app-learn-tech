@@ -1,2 +1,4 @@
+export { CourseService } from './course'
 export { DatabaseService } from './database'
-export { CoursesFolderService } from './courses-folder'
+export { FolderService } from './folder'
+export { ThemeService } from './theme'

@@ -1,40 +1,21 @@
+import { ThemeService } from '../services'
 import { IPC } from '@/constants'
-import { DatabaseService } from '@main/services/database'
-import { SettingKey } from '@prisma/client'
 import { ipcMain, nativeTheme } from 'electron'
 
-import { SetThemeIPCHandlerParams, ThemeValue } from '@/types'
+import { SetThemeIPCHandlerParams } from '@/types'
 
-export const registerThemeIpcHandlers = async (database: DatabaseService) => {
-    nativeTheme.themeSource = (await database.setting.get<ThemeValue>(SettingKey.THEME)) || 'system'
-
+export const registerThemeIpcHandlers = (themeService: ThemeService) => {
     ipcMain.handle(IPC.THEME.GET, async () => {
-        try {
-            const theme = await database.setting.get<ThemeValue>(SettingKey.THEME)
-            if (!theme) throw new Error('Theme not found in database')
-            return {
-                success: true,
-                data: { theme },
-                message: 'Theme retrieved successfully'
-            }
-        } catch {
-            return {
-                success: false,
-                message: 'Failed to retrieve theme'
-            }
+        return {
+            success: true,
+            data: { theme: themeService.currentTheme },
+            message: 'Theme retrieved successfully'
         }
     })
 
     ipcMain.handle(IPC.THEME.SET, async (_event, { theme }: SetThemeIPCHandlerParams) => {
         try {
-            if (theme !== 'dark' && theme !== 'light' && theme !== 'system') {
-                throw new Error('Invalid theme value')
-            }
-            await database.setting.update({
-                key: SettingKey.THEME,
-                value: theme
-            })
-            nativeTheme.themeSource = theme
+            await themeService.setCurrentTheme(theme)
             return {
                 success: true,
                 message: 'Theme set successfully'
@@ -47,14 +28,10 @@ export const registerThemeIpcHandlers = async (database: DatabaseService) => {
         }
     })
 
-    ipcMain.handle(IPC.THEME.TOGGLE, () => {
+    ipcMain.handle(IPC.THEME.TOGGLE, async () => {
         try {
             const theme = nativeTheme.shouldUseDarkColors ? 'light' : 'dark'
-            nativeTheme.themeSource = theme
-            database.setting.update({
-                key: SettingKey.THEME,
-                value: theme
-            })
+            await themeService.setCurrentTheme(theme)
             return {
                 success: true,
                 message: 'Theme toggled successfully'

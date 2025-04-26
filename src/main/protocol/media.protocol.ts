@@ -1,13 +1,13 @@
-import { CoursesFolderService } from '../services'
+import { FolderService } from '../services'
 import { net, protocol } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
 
-export const registerMediaProtocol = (courseFolderService: CoursesFolderService) => {
+export const registerMediaProtocol = (folderService: FolderService) => {
     protocol.handle('media', async (request) => {
         try {
-            const coursesRootPath = courseFolderService.rootFolderPath
+            const coursesRootPath = folderService.rootPath
             if (!coursesRootPath) {
                 return new Response('Courses root path is not set', {
                     status: 500,

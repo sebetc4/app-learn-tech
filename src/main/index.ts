@@ -2,7 +2,7 @@ import icon from '../../resources/icon.png?asset'
 import { registerCourseIpcHandlers, registerThemeIpcHandlers } from './ipc'
 import { registerFolderIpcHandlers } from './ipc/folder.ipc'
 import { registerMediaProtocol } from './protocol'
-import { CoursesFolderService } from './services'
+import { CourseService, FolderService } from './services'
 import { DatabaseService } from './services/database'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { BrowserWindow, app, ipcMain, shell } from 'electron'
@@ -37,16 +37,17 @@ const createWindow = (): void => {
     }
 }
 
-const registerProtocols = async (courseFolderService: CoursesFolderService) => {
-    registerMediaProtocol(courseFolderService)
+const registerProtocols = async (folderService: FolderService) => {
+    registerMediaProtocol(folderService)
 }
 
 const registerIpcHandlers = async (
-    database: DatabaseService,
-    courseFolderService: CoursesFolderService
+    folderService: FolderService,
+    courseService: CourseService,
+    database: DatabaseService
 ) => {
-    registerCourseIpcHandlers(database, courseFolderService)
-    registerFolderIpcHandlers(courseFolderService)
+    registerFolderIpcHandlers(folderService)
+    registerCourseIpcHandlers(courseService)
     await registerThemeIpcHandlers(database)
 }
 
@@ -59,11 +60,13 @@ app.whenReady().then(async () => {
     const database = new DatabaseService()
     await database.initialize()
 
-    const courseFolderService = new CoursesFolderService(database)
-    await courseFolderService.initialize()
+    const folderService = new FolderService(database)
+    await folderService.initialize()
 
-    registerProtocols(courseFolderService)
-    registerIpcHandlers(database, courseFolderService)
+    const courseService = new CourseService(database, folderService)
+
+    registerProtocols(folderService)
+    registerIpcHandlers(folderService, courseService, database)
 
     ipcMain.on('ping', () => console.log('pong'))
 

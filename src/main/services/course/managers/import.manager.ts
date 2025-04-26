@@ -9,14 +9,14 @@ import type {
     ResourceMetadata
 } from '@/types'
 
-export class CourseImportManager {
+export class ImportManager {
     #database: DatabaseService
 
     constructor(database: DatabaseService) {
         this.#database = database
     }
 
-    async import(metadata: CourseMetadata): Promise<void> {
+    async process(metadata: CourseMetadata): Promise<void> {
         try {
             const existingCourse = await this.#database.course.getById(metadata.id)
             if (existingCourse) {

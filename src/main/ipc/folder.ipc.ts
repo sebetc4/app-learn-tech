@@ -1,5 +1,5 @@
 import { IPC } from '@/constants'
-import type { CoursesFolderService } from '@main/services'
+import type { FolderService } from '@main/services'
 import { dialog, ipcMain } from 'electron'
 
 import type {
@@ -11,7 +11,7 @@ import type {
 } from '@/types'
 
 export const registerFolderIpcHandlers = (
-    courseFolderService: CoursesFolderService
+    folderService: FolderService
 ) => {
     /**
      * --------------------------------
@@ -21,7 +21,7 @@ export const registerFolderIpcHandlers = (
     ipcMain.handle(IPC.FOLDER.GET_ROOT, (): GetCoursesRootFolderIPCHandlerReturn => {
         return {
             success: true,
-            data: { path: courseFolderService.rootFolderPath },
+            data: { path: folderService.rootPath },
             message: 'Dossier racine des cours défini avec succès'
         }
     })
@@ -38,7 +38,7 @@ export const registerFolderIpcHandlers = (
             }
 
             const rootPath = filePaths[0]
-            await courseFolderService.setRootFolderPath(rootPath)
+            await folderService.setRootPath(rootPath)
 
             return {
                 success: true,
@@ -56,7 +56,7 @@ export const registerFolderIpcHandlers = (
 
     ipcMain.handle(IPC.FOLDER.REMOVE_ROOT, async (): RemoveRootFolderIPCHandlerReturn => {
         try {
-            await courseFolderService.removeRootFolderPath()
+            await folderService.removeRootPath()
             return {
                 success: true,
                 message: 'Dossier racine des cours supprimé avec succès'
@@ -72,44 +72,12 @@ export const registerFolderIpcHandlers = (
 
     /**
      * --------------------------------
-     * Archive
-     * --------------------------------
-     */
-    ipcMain.handle(IPC.FOLDER.IMPORT_ARCHIVE, async (): ImportCourseArchiveIPCHandlerReturn => {
-        try {
-            const { canceled, filePaths } = await dialog.showOpenDialog({
-                title: 'Sélectionner un fichier de cours (.zip)',
-                filters: [{ name: 'Archives ZIP', extensions: ['zip'] }],
-                properties: ['openFile']
-            })
-
-            if (canceled || filePaths.length === 0) {
-                return { success: false, message: 'Aborted operation' }
-            }
-            const courseId = await courseFolderService.importCourseArchive(filePaths[0])
-
-            return {
-                success: true,
-                data: { courseId },
-                message: 'Course imported successfully'
-            }
-        } catch (error) {
-            console.error('Error durring import course:', error)
-            return {
-                success: false,
-                message: `Error during import: ${error instanceof Error ? error.message : 'Unknown error'}`
-            }
-        }
-    })
-
-    /**
-     * --------------------------------
      * Scan
      * --------------------------------
      */
     ipcMain.handle(IPC.FOLDER.SCAN, async (): ScanRootFolderIPCHandlerReturn => {
         try {
-            const courses = await courseFolderService.scanForCourses()
+            const courses = await folderService.scanForCourses()
             return {
                 success: true,
                 data: { courses },
