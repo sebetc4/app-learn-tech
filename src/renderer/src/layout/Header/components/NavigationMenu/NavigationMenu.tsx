@@ -14,7 +14,6 @@ export const NavigationMenu = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             const response = await window.api.course.getAll()
-            console.log('response', response)
             if (response.success) {
                 setCourses(response.data.courses)
             } else {

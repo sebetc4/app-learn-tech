@@ -1,6 +1,7 @@
 .button {
     display: inline-flex;
     gap: 0.5rem;
+    color: inherit;
 
     &.variant-outlined,
     &.variant-contained {
@@ -23,22 +24,5 @@
     // Text
     &.variant-text {
         padding: 0.5rem;
-        &:after {
-            content: '';
-            position: absolute;
-            bottom: 0px;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            transform-origin: 100% 50%;
-            transform: scaleX(0);
-            transition: transform 0.3s ease-in-out;
-        }
-
-        &:hover:after {
-            transform-origin: 0% 50%;
-            transform: scaleX(1);
-            transition: transform 0.3s ease-in-out;
-        }
     }
 }

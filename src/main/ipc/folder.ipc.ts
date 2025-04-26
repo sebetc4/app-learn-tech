@@ -4,7 +4,6 @@ import { dialog, ipcMain } from 'electron'
 
 import type {
     GetCoursesRootFolderIPCHandlerReturn,
-    ImportCourseArchiveIPCHandlerReturn,
     RemoveRootFolderIPCHandlerReturn,
     ScanRootFolderIPCHandlerReturn,
     SetCoursesRootFolderIPCHandlerReturn

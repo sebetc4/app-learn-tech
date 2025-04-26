@@ -4,10 +4,12 @@ export interface CourseMetadata {
     id: string
     name: string
     description: string
+    buildAt: string
     chapters: ChapterMetadata[]
 }
 
-export interface CourseMetadataAndPath {
+export interface CourseMetadataAndDirectory {
     metadata: CourseMetadata
-    path: string
+    directory: string
 }
+

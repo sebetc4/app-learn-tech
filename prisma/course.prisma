@@ -5,5 +5,7 @@ model Course {
 
   chapters Chapter[]
 
+  buildAt String
+
   @@map("courses")
 }

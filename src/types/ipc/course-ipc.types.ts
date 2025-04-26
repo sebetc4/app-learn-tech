@@ -1,5 +1,5 @@
 import type { CoursePreviewData } from '../dto'
-import { CourseMetadata } from '../metadata'
+import { CourseMetadataAndDirectory } from '../metadata'
 import type { IPCHandlerReturnWithData, IPCHandlerReturnWithoutData } from './core-ipc.types'
 
 /**
@@ -33,10 +33,7 @@ export type ImportCourseArchiveIPCHandlerReturn = Promise<
  */
 export type ScanRootFolderIPCHandlerReturn = Promise<
     IPCHandlerReturnWithData<{
-        courses: {
-            metadata: CourseMetadata
-            path: string
-        }[]
+        courses: CourseMetadataAndDirectory[]
     }>
 >
 
@@ -61,6 +58,15 @@ export type AddAllCoursesIPCHandlerReturn = Promise<
     IPCHandlerReturnWithData<{
         courseDirNames: string[]
     }>
+>
+
+// Upload one course
+export type UploadOneCourseIPCHandlerParams = {
+    courseDirName: string
+}
+
+export type UploadOneCourseIPCHandlerReturn = Promise<
+    IPCHandlerReturnWithData<{ courseId: string }>
 >
 
 // Remove one course

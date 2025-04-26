@@ -6,6 +6,7 @@ interface CreateCourseParams {
     id: string
     name: string
     description: string
+    buildAt: string
 }
 
 export class CourseDatabaseManager {
@@ -24,7 +25,8 @@ export class CourseDatabaseManager {
             select: {
                 id: true,
                 name: true,
-                description: true
+                description: true,
+                buildAt: true,
             }
         })
     }

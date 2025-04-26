@@ -19,23 +19,23 @@ import type {
     SetCoursesRootFolderIPCHandlerReturn,
     SetThemeIPCHandlerParams,
     SetThemeIPCHandlerReturn,
-    ToggleThemeIPCHandlerReturn
+    ToggleThemeIPCHandlerReturn,
+    UploadOneCourseIPCHandlerParams,
+    UploadOneCourseIPCHandlerReturn
 } from './ipc'
 
 export interface FolderAPI {
-    // Root
     getRoot: () => GetCoursesRootFolderIPCHandlerReturn
     setRoot: () => SetCoursesRootFolderIPCHandlerReturn
     removeRoot: () => RemoveRootFolderIPCHandlerReturn
-    // Archive
-    importArchive: () => ImportCourseArchiveIPCHandlerReturn
-    // Scan
     scan: () => ScanRootFolderIPCHandlerReturn
 }
 
 export interface CourseAPI {
     getAll: () => GetAllAlreadyImportedCourseIPCHandlerReturn
+    importArchive: () => ImportCourseArchiveIPCHandlerReturn
     addOne: (params: AddOneCourseIPCHandlerParams) => AddOneCourseIPCHandlerReturn
+    uploadOne: (params: UploadOneCourseIPCHandlerParams) => UploadOneCourseIPCHandlerReturn
     removeOne: (params: RemoveCourseIPCHandlerParams) => RemoveCourseIPCHandlerReturn
 }
 

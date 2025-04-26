@@ -1,8 +1,7 @@
 import icon from '../../resources/icon.png?asset'
-import { registerCourseIpcHandlers, registerThemeIpcHandlers } from './ipc'
-import { registerFolderIpcHandlers } from './ipc/folder.ipc'
+import { registerCourseIpcHandlers, registerThemeIpcHandlers, registerFolderIpcHandlers } from './ipc'
 import { registerMediaProtocol } from './protocol'
-import { CourseService, FolderService } from './services'
+import { CourseService, FolderService, ThemeService } from './services'
 import { DatabaseService } from './services/database'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { BrowserWindow, app, ipcMain, shell } from 'electron'
@@ -37,18 +36,18 @@ const createWindow = (): void => {
     }
 }
 
-const registerProtocols = async (folderService: FolderService) => {
+const registerProtocols = (folderService: FolderService) => {
     registerMediaProtocol(folderService)
 }
 
-const registerIpcHandlers = async (
+const registerIpcHandlers = (
     folderService: FolderService,
     courseService: CourseService,
-    database: DatabaseService
+    themeService: ThemeService
 ) => {
     registerFolderIpcHandlers(folderService)
     registerCourseIpcHandlers(courseService)
-    await registerThemeIpcHandlers(database)
+    registerThemeIpcHandlers(themeService)
 }
 
 app.whenReady().then(async () => {
@@ -65,8 +64,11 @@ app.whenReady().then(async () => {
 
     const courseService = new CourseService(database, folderService)
 
+    const themeService = new ThemeService(database)
+    await themeService.initialize()
+
     registerProtocols(folderService)
-    registerIpcHandlers(folderService, courseService, database)
+    registerIpcHandlers(folderService, courseService, themeService)
 
     ipcMain.on('ping', () => console.log('pong'))
 

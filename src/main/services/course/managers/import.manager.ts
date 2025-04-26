@@ -18,9 +18,10 @@ export class ImportManager {
 
     async process(metadata: CourseMetadata): Promise<void> {
         try {
-            const existingCourse = await this.#database.course.getById(metadata.id)
+            const existingCourse =
+                (await this.#database.course.getById(metadata.id)) ||
+                (await this.#database.course.getByName(metadata.name))
             if (existingCourse) {
-                console.log(`Course ${metadata.name} already exists in the database`)
                 await this.#updateExistingCourse(metadata)
             } else {
                 await this.#createNewCourse(metadata)
@@ -36,7 +37,8 @@ export class ImportManager {
             await this.#database.course.create({
                 id: courseMetadata.id,
                 name: courseMetadata.name,
-                description: courseMetadata.description
+                description: courseMetadata.description,
+                buildAt: courseMetadata.buildAt
             })
 
             for (const chapterData of courseMetadata.chapters) {

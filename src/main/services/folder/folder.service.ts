@@ -3,7 +3,7 @@ import checkDiskSpace from 'check-disk-space'
 import * as fs from 'fs'
 import * as path from 'path'
 
-import type { CourseMetadata, CourseMetadataAndPath } from '@/types'
+import type { CourseMetadata, CourseMetadataAndDirectory } from '@/types'
 
 export class FolderService {
     #database: DatabaseService
@@ -60,14 +60,14 @@ export class FolderService {
         }
     }
 
-    async scanForCourses(): Promise<CourseMetadataAndPath[]> {
+    async scanForCourses(): Promise<CourseMetadataAndDirectory[]> {
         try {
             const rootPath = await this.#database.setting.get<string>('COURSES_ROOT_FOLDER')
             if (!rootPath) {
                 throw new Error('The root folder for courses has not been set')
             }
 
-            const courses: CourseMetadataAndPath[] = []
+            const courses: CourseMetadataAndDirectory[] = []
 
             const rootDirs = fs.readdirSync(rootPath, { withFileTypes: true })
 
@@ -80,10 +80,7 @@ export class FolderService {
                         try {
                             const metadataContent = fs.readFileSync(metadataPath, 'utf8')
                             const courseMetadata: CourseMetadata = JSON.parse(metadataContent)
-                            courses.push({
-                                metadata: courseMetadata,
-                                path: courseDirPath
-                            })
+                            courses.push({ metadata: courseMetadata, directory: dir.name })
                             console.log(
                                 `Course found: ${courseMetadata.name} (ID: ${courseMetadata.id})`
                             )

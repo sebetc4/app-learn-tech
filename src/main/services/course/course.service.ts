@@ -54,9 +54,9 @@ export class CourseService {
         }
     }
 
-    async addOne(courseId: string): Promise<string> {
+    async addOne(courseDirName: string): Promise<string> {
         try {
-            const courseDirPath = path.join(this.#getRootPath(), courseId)
+            const courseDirPath = path.join(this.#getRootPath(), courseDirName)
             if (!fs.existsSync(courseDirPath)) {
                 throw new Error(`Course directory ${courseDirPath} does not exist`)
             }

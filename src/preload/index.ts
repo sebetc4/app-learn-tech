@@ -1,10 +1,10 @@
-import { folderContextBridge, mediaContextBridge, themeContextBridge } from './birdges'
+import { courseContextBridge, folderContextBridge, themeContextBridge } from './birdges'
 import { electronAPI } from '@electron-toolkit/preload'
 import { contextBridge } from 'electron'
 
 const api = {
+    course: courseContextBridge,
     folder: folderContextBridge,
-    media: mediaContextBridge,
     theme: themeContextBridge
 }
 

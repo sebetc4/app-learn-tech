@@ -5,11 +5,11 @@ import { CircleArrowDown, RefreshCw } from 'lucide-react'
 import { FC, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
-import { CourseMetadataAndPath } from '@/types'
+import { CourseMetadataAndDirectory } from '@/types'
 
 export const CourseImporterPage: FC = () => {
     const [rootFolder, setRoot] = useState<string | null>(null)
-    const [scannedCourses, setScannedCourses] = useState<CourseMetadataAndPath[]>([])
+    const [scannedCourses, setScannedCourses] = useState<CourseMetadataAndDirectory[]>([])
     const [importedCourses, setImportedCourses] = useState<{ id: string; name: string }[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -18,6 +18,7 @@ export const CourseImporterPage: FC = () => {
         try {
             await Promise.all([fetchRootFolder(), fetchImportedCourses()])
         } catch (error) {
+            console.error(error)
             toast.error('Erreur lors du chargement des ressources')
         } finally {
             setIsLoading(false)
@@ -34,6 +35,7 @@ export const CourseImporterPage: FC = () => {
                 toast.error(response.message)
             }
         } catch (error) {
+            console.error(error)
             toast.error('Erreur lors du chargement des cours importés')
         } finally {
             setIsLoading(false)
@@ -49,6 +51,7 @@ export const CourseImporterPage: FC = () => {
                 toast.error(response.message)
             }
         } catch (error) {
+            console.error(error)
             toast.error('Erreur lors de la récupération du dossier racine')
         }
     }
@@ -73,6 +76,7 @@ export const CourseImporterPage: FC = () => {
                 toast.error(response.message)
             }
         } catch (error) {
+            console.error(error)
             toast.error(`Erreur lors de la sélection du dossier de cours`)
         } finally {
             setIsLoading(false)
@@ -90,7 +94,43 @@ export const CourseImporterPage: FC = () => {
                 toast.error(response.message)
             }
         } catch (error) {
+            console.error(error)
             toast.error("Erreur lors de l'analyse des cours")
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const addOneCourse = async (courseDirName: string) => {
+        setIsLoading(true)
+        try {
+            const response = await window.api.course.addOne({ courseDirName })
+            if (response.success) {
+                toast.success(response.message)
+                fetchImportedCourses()
+            } else {
+                toast.error(response.message)
+            }
+        } catch (error) {
+            console.error(error)
+            toast.error("Erreur lors de l'ajout du cours")
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const uploadOneCourse = async (courseDirName: string) => {
+        setIsLoading(true)
+        try {
+            const response = await window.api.course.uploadOne({ courseDirName })
+            if (response.success) {
+                toast.success(response.message)
+                fetchImportedCourses()
+            } else {
+                toast.error(response.message)
+            }
+        } catch (error) {
+            toast.error("Erreur lors de l'ajout du cours")
         } finally {
             setIsLoading(false)
         }
@@ -119,56 +159,65 @@ export const CourseImporterPage: FC = () => {
             </section>
 
             {rootFolder && (
-                <section className={styles['import']}>
-                    <div className={styles['import__header']}>
-                        <h2>Cours disponibles ({scannedCourses.length})</h2>
-                        <Button
-                            onClick={scan}
-                            disabled={isLoading}
-                            variant="text"
-                        >
-                            <RefreshCw />
-                            Rafraîchir
-                        </Button>
-                        <Button
-                            // onClick={handleImportAllCourses}
-                            disabled={isLoading || scannedCourses.length === 0}
-                            variant="text"
-                        >
-                            <CircleArrowDown />
-                            Tout importer
-                        </Button>
-                    </div>
+                <>
+                    <section className={styles['import']}>
+                        <div className={styles['import__header']}>
+                            <h2>Cours disponibles ({scannedCourses.length})</h2>
+                            <Button
+                                onClick={scan}
+                                disabled={isLoading}
+                                variant="text"
+                            >
+                                <RefreshCw />
+                                Rafraîchir
+                            </Button>
+                            <Button
+                                // onClick={handleImportAllCourses}
+                                disabled={isLoading || scannedCourses.length === 0}
+                                variant="text"
+                            >
+                                <CircleArrowDown />
+                                Tout importer
+                            </Button>
+                        </div>
 
-                    <div className={styles['import__content']}>
-                        {isLoading ? (
-                            <p>Chargement...</p>
-                        ) : scannedCourses.length === 0 ? (
-                            <p>Aucun cours trouvé dans le dossier sélectionné.</p>
-                        ) : (
-                            <ul>
-                                {scannedCourses.map(({ metadata, path }) => (
-                                    <ImportCourseCard
-                                        key={metadata.id}
-                                        metadata={metadata}
-                                        path={path}
-                                    />
-                                ))}
-                            </ul>
-                        )}
-                    </div>
-
-                    <div className="imported-courses">
-                        <h3>Cours importés dans la base de données ({importedCourses.length})</h3>
-                        {isLoading ? (
-                            <p>Chargement...</p>
-                        ) : importedCourses.length === 0 ? (
-                            <p>Aucun cours importé dans la base de données.</p>
-                        ) : (
-                            <p>{importedCourses.length} cours importés.</p>
-                        )}
-                    </div>
-                </section>
+                        <div className={styles['import__content']}>
+                            {isLoading ? (
+                                <p>Chargement...</p>
+                            ) : scannedCourses.length === 0 ? (
+                                <p>Aucun cours trouvé dans le dossier sélectionné.</p>
+                            ) : (
+                                <ul>
+                                    {scannedCourses.map(({ metadata, directory }) => (
+                                        <ImportCourseCard
+                                            key={metadata.id}
+                                            metadata={metadata}
+                                            directory={directory}
+                                            addCourse={addOneCourse}
+                                            upload={uploadOneCourse}
+                                        />
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    </section>
+                    <section className={styles['imported']}>
+                        <div className={styles['imported__header']}>
+                            <h2>
+                                Cours importés dans la base de données ({importedCourses.length})
+                            </h2>
+                        </div>
+                        <div className={styles['import__content']}>
+                            {isLoading ? (
+                                <p>Chargement...</p>
+                            ) : importedCourses.length === 0 ? (
+                                <p>Aucun cours importé dans la base de données.</p>
+                            ) : (
+                                <p>{importedCourses.length} cours importés.</p>
+                            )}
+                        </div>
+                    </section>
+                </>
             )}
         </div>
     )
