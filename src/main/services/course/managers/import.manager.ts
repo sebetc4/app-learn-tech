@@ -1,30 +1,34 @@
 import { DatabaseService } from '../../database'
+import { StorageService } from '../../storage'
 import * as path from 'path'
 
 import type {
     ChapterMetadata,
     CodeSnippetMetadata,
     CourseMetadata,
+    CoursePreview,
     LessonMetadata,
     ResourceMetadata
 } from '@/types'
 
 export class ImportManager {
     #database: DatabaseService
+    #storage: StorageService
 
-    constructor(database: DatabaseService) {
+    constructor(database: DatabaseService, storage: StorageService) {
         this.#database = database
+        this.#storage = storage
     }
 
-    async process(metadata: CourseMetadata): Promise<void> {
+    async process(metadata: CourseMetadata, courseDirPath: string): Promise<CoursePreview> {
         try {
             const existingCourse =
                 (await this.#database.course.getById(metadata.id)) ||
                 (await this.#database.course.getByName(metadata.name))
             if (existingCourse) {
-                await this.#updateExistingCourse(metadata)
+                return await this.#updateExistingCourse(metadata, courseDirPath)
             } else {
-                await this.#createNewCourse(metadata)
+                return await this.#createNewCourse(metadata, courseDirPath)
             }
         } catch (error) {
             console.error(`Error adding course to database: ${error}`)
@@ -32,20 +36,34 @@ export class ImportManager {
         }
     }
 
-    async #createNewCourse(courseMetadata: CourseMetadata): Promise<void> {
+    async #createNewCourse(
+        { id, name, description, chapters, buildAt }: CourseMetadata,
+        courseDirPath: string
+    ): Promise<CoursePreview> {
         try {
+            const courseIconPath = path.join(courseDirPath, 'icon.png')
+            const iconPath = await this.#storage.icon.save(id, courseIconPath)
+
             await this.#database.course.create({
-                id: courseMetadata.id,
-                name: courseMetadata.name,
-                description: courseMetadata.description,
-                buildAt: courseMetadata.buildAt
+                id,
+                name,
+                description,
+                iconPath,
+                buildAt
             })
 
-            for (const chapterData of courseMetadata.chapters) {
-                await this.#processChatper(courseMetadata.id, chapterData)
+            for (const chapterData of chapters) {
+                await this.#processChatper(id, chapterData)
             }
 
-            console.log(`Course "${courseMetadata.name}" created in database`)
+            console.log(`Course "${name}" created in database`)
+            return {
+                id,
+                name,
+                description,
+                iconPath,
+                buildAt
+            }
         } catch (error) {
             console.error('Error creating course in database:', error)
             throw error
@@ -150,13 +168,18 @@ export class ImportManager {
         }
     }
 
-    async #updateExistingCourse(courseMetadata: CourseMetadata): Promise<void> {
+    async #updateExistingCourse(
+        courseMetadata: CourseMetadata,
+        courseDirPath: string
+    ): Promise<CoursePreview> {
         try {
             await this.#database.course.deleteById(courseMetadata.id)
 
-            await this.#createNewCourse(courseMetadata)
+            const coursePreview = await this.#createNewCourse(courseMetadata, courseDirPath)
 
             console.log(`Course "${courseMetadata.name}" updated in database`)
+
+            return coursePreview
         } catch (error) {
             console.error('Error updating course in database:', error)
             throw error

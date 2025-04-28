@@ -1,11 +1,12 @@
 import { Course, PrismaClient } from '@prisma/client'
 
-import { CoursePreviewData } from '@/types'
+import { CoursePreview } from '@/types'
 
 interface CreateCourseParams {
     id: string
     name: string
     description: string
+    iconPath: string
     buildAt: string
 }
 
@@ -20,13 +21,14 @@ export class CourseDatabaseManager {
         return await this.#prisma.course.create({ data })
     }
 
-    async getAll(): Promise<CoursePreviewData> {
+    async getAll(): Promise<CoursePreview[]> {
         return await this.#prisma.course.findMany({
             select: {
                 id: true,
                 name: true,
                 description: true,
-                buildAt: true,
+                iconPath: true,
+                buildAt: true
             }
         })
     }

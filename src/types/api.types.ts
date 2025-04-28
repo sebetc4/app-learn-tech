@@ -1,16 +1,9 @@
 import type {
     AddOneCourseIPCHandlerParams,
     AddOneCourseIPCHandlerReturn,
-    CheckDiskSpaceIPCHandlerReturn,
     GetAllAlreadyImportedCourseIPCHandlerReturn,
-    GetCodeSnippetContentIPCHandlerReturn,
-    GetCodeSnippetContentParams,
-    GetCourseSizeIPCHandlerParams,
-    GetCourseSizeIPCHandlerReturn,
     GetCoursesRootFolderIPCHandlerReturn,
     GetThemeIPCHandlerReturn,
-    GetVideoPathIPCHandlerParams,
-    GetVideoPathIPCHandlerReturn,
     ImportCourseArchiveIPCHandlerReturn,
     RemoveCourseIPCHandlerParams,
     RemoveCourseIPCHandlerReturn,
@@ -39,15 +32,6 @@ export interface CourseAPI {
     removeOne: (params: RemoveCourseIPCHandlerParams) => RemoveCourseIPCHandlerReturn
 }
 
-export interface MediaAPI {
-    getVideoPath: (params: GetVideoPathIPCHandlerParams) => GetVideoPathIPCHandlerReturn
-    getCodeSnippetContent: (
-        params: GetCodeSnippetContentParams
-    ) => GetCodeSnippetContentIPCHandlerReturn
-    checkDiskSpace: () => CheckDiskSpaceIPCHandlerReturn
-    getCourseSize: (params: GetCourseSizeIPCHandlerParams) => GetCourseSizeIPCHandlerReturn
-}
-
 export interface ThemeAPI {
     get: () => GetThemeIPCHandlerReturn
     set: (params: SetThemeIPCHandlerParams) => SetThemeIPCHandlerReturn
@@ -57,6 +41,5 @@ export interface ThemeAPI {
 export interface AppAPI {
     course: CourseAPI
     folder: FolderAPI
-    media: MediaAPI
     theme: ThemeAPI
 }

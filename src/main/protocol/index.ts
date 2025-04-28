@@ -1,1 +1,2 @@
-export { registerMediaProtocol } from './media.protocol'
+export { registerCourseProtocol } from './course.protocol'
+export { registerIconProtocol } from './icon.protocol'

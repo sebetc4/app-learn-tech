@@ -7,5 +7,5 @@ export const folderContextBridge = {
     setRoot: () => ipcRenderer.invoke(IPC.FOLDER.SET_ROOT),
     removeRoot: () => ipcRenderer.invoke(IPC.FOLDER.REMOVE_ROOT),
     // Scan
-    scan: () => ipcRenderer.invoke(IPC.FOLDER.SCAN),
+    scan: () => ipcRenderer.invoke(IPC.FOLDER.SCAN)
 }

@@ -4,5 +4,5 @@ export const IPC_FOLDER = {
     SET_ROOT: 'folder:set-root',
     REMOVE_ROOT: 'folder:remove-root',
     // Scan
-    SCAN: 'folder:scan',
+    SCAN: 'folder:scan'
 } as const

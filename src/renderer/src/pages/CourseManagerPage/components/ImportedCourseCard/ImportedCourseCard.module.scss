@@ -1,0 +1,42 @@
+.card {
+    position: relative;
+    width: 250px;
+    padding: 1rem;
+    @include flex-col(null, null, 1rem);
+    @include background-color('interactive-1');
+    border-radius: 1rem;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+    &__icon {
+        margin-inline: auto;
+        width: 100px;
+        aspect-ratio: 1;
+    }
+
+    &__content {
+        @include flex-col(null, center, 0.5rem);
+
+        h3,
+        p {
+            text-align: center;
+        }
+    }
+    &__button-container {
+        @include flex-col(flex-end, center);
+        flex: 1;
+        margin-bottom: 1rem;
+    }
+
+    .new-icon,
+    .update-icon {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        width: 1.5rem;
+        aspect-ratio: 1;
+    }
+
+    .new-icon {
+        stroke: #FFDC00;
+    }
+}

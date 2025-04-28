@@ -9,7 +9,7 @@ import { CoursesFolderDatabaseManager } from './managers/setting.manager'
 import { PrismaClient, SettingKey } from '@prisma/client'
 
 export class DatabaseService {
-    readonly #DEFAULT_SETTINGS: Partial<Record<SettingKey, any>> = {
+    readonly #DEFAULT_SETTINGS: Partial<Record<SettingKey, string>> = {
         THEME: 'system'
     }
 

@@ -3,9 +3,10 @@ model Course {
   name        String @unique
   description String
 
-  chapters Chapter[]
-
+  iconPath String
   buildAt String
+
+  chapters Chapter[]
 
   @@map("courses")
 }

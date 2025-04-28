@@ -1,7 +1,11 @@
 import icon from '../../resources/icon.png?asset'
-import { registerCourseIpcHandlers, registerThemeIpcHandlers, registerFolderIpcHandlers } from './ipc'
-import { registerMediaProtocol } from './protocol'
-import { CourseService, FolderService, ThemeService } from './services'
+import {
+    registerCourseIpcHandlers,
+    registerFolderIpcHandlers,
+    registerThemeIpcHandlers
+} from './ipc'
+import { registerCourseProtocol, registerIconProtocol } from './protocol'
+import { CourseService, FolderService, StorageService, ThemeService } from './services'
 import { DatabaseService } from './services/database'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { BrowserWindow, app, ipcMain, shell } from 'electron'
@@ -37,15 +41,16 @@ const createWindow = (): void => {
 }
 
 const registerProtocols = (folderService: FolderService) => {
-    registerMediaProtocol(folderService)
+    registerCourseProtocol(folderService)
+    registerIconProtocol()
 }
 
 const registerIpcHandlers = (
-    folderService: FolderService,
     courseService: CourseService,
+    folderService: FolderService,
     themeService: ThemeService
 ) => {
-    registerFolderIpcHandlers(folderService)
+    registerFolderIpcHandlers(courseService, folderService)
     registerCourseIpcHandlers(courseService)
     registerThemeIpcHandlers(themeService)
 }
@@ -59,16 +64,18 @@ app.whenReady().then(async () => {
     const database = new DatabaseService()
     await database.initialize()
 
+    const storageService = new StorageService()
+
     const folderService = new FolderService(database)
     await folderService.initialize()
 
-    const courseService = new CourseService(database, folderService)
+    const courseService = new CourseService(database, storageService, folderService)
 
     const themeService = new ThemeService(database)
     await themeService.initialize()
 
     registerProtocols(folderService)
-    registerIpcHandlers(folderService, courseService, themeService)
+    registerIpcHandlers(courseService, folderService, themeService)
 
     ipcMain.on('ping', () => console.log('pong'))
 

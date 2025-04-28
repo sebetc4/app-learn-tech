@@ -1,10 +1,11 @@
 import { DatabaseService } from '../database'
 import { FolderService } from '../folder'
+import { StorageService } from '../storage'
 import { ArchiveManager, ImportManager } from './managers'
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { CourseMetadata, CoursePreviewData } from '@/types'
+import { CourseMetadata, CourseMetadataAndDirectory, CoursePreview, ScannedCourse } from '@/types'
 
 export class CourseService {
     #database: DatabaseService
@@ -13,15 +14,19 @@ export class CourseService {
     #archiveManager: ArchiveManager
     #importManager: ImportManager
 
-    constructor(database: DatabaseService, folderService: FolderService) {
+    constructor(
+        database: DatabaseService,
+        storageService: StorageService,
+        folderService: FolderService
+    ) {
         this.#database = database
         this.#folderService = folderService
 
         this.#archiveManager = new ArchiveManager()
-        this.#importManager = new ImportManager(database)
+        this.#importManager = new ImportManager(database, storageService)
     }
 
-    async getAll(): Promise<CoursePreviewData> {
+    async getAll(): Promise<CoursePreview[]> {
         try {
             return await this.#database.course.getAll()
         } catch (error) {
@@ -30,31 +35,55 @@ export class CourseService {
         }
     }
 
-    async importCourseArchive(zipFilePath: string): Promise<string> {
+    async sortScannedCourses(courses: CourseMetadataAndDirectory[]) {
+        const alreadyImportedCourses = await this.getAll()
+        const alreadyImportedCourseIds = alreadyImportedCourses.map((course) => course.id)
+        const scannedCourses: ScannedCourse[] = []
+
+        for (const course of courses) {
+            if (alreadyImportedCourseIds.includes(course.metadata.id)) {
+                const existingCourse = alreadyImportedCourses.find(
+                    (c) => c.id === course.metadata.id
+                )
+                if (existingCourse && existingCourse.buildAt && course.metadata.buildAt) {
+                    const existingBuildDate = new Date(existingCourse.buildAt)
+                    const newBuildDate = new Date(course.metadata.buildAt)
+                    if (newBuildDate > existingBuildDate)
+                        scannedCourses.push({ ...course, type: 'update' })
+                }
+            } else {
+                scannedCourses.push({ ...course, type: 'import' })
+            }
+        }
+
+        return scannedCourses
+    }
+
+    async importCourseArchive(zipFilePath: string): Promise<CoursePreview> {
         try {
             console.log(`Starting course import from ${zipFilePath}`)
 
             const rootPath = this.#getRootPath()
 
-            const courseDir = await this.#archiveManager.extractArchive(zipFilePath, rootPath)
+            const courseDirPath = await this.#archiveManager.extractArchive(zipFilePath, rootPath)
 
-            const metadataPath = path.join(courseDir, 'metadata.json')
+            const metadataPath = path.join(courseDirPath, 'metadata.json')
             const metadataContent = fs.readFileSync(metadataPath, 'utf8')
             const courseData: CourseMetadata = JSON.parse(metadataContent)
 
             console.log(`Importing course "${courseData.name}" (ID: ${courseData.id})`)
 
-            await this.#importManager.process(courseData)
+            const coursePreview = await this.#importManager.process(courseData, courseDirPath)
 
             console.log(`Course "${courseData.name}" successfully imported`)
-            return courseData.id
+            return coursePreview
         } catch (error) {
             console.error(`Error during course import: ${error}`)
             throw error
         }
     }
 
-    async addOne(courseDirName: string): Promise<string> {
+    async addOne(courseDirName: string): Promise<CoursePreview> {
         try {
             const courseDirPath = path.join(this.#getRootPath(), courseDirName)
             if (!fs.existsSync(courseDirPath)) {
@@ -63,9 +92,9 @@ export class CourseService {
 
             const courseMetadata = this.#getMetadata(courseDirPath)
 
-            await this.#importManager.process(courseMetadata)
+            const coursePreview = await this.#importManager.process(courseMetadata, courseDirPath)
 
-            return courseMetadata.id
+            return coursePreview
         } catch (error) {
             console.error(`Error adding course: ${error}`)
             throw error

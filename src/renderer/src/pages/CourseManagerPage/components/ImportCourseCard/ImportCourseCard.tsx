@@ -1,5 +1,7 @@
 import styles from './ImportCourseCard.module.scss'
 import { Button } from '@/renderer/src/components'
+import { protocolService } from '@/renderer/src/services'
+import { useCoursesStore } from '@/renderer/src/store'
 import { CircleFadingArrowUp, SquarePlus } from 'lucide-react'
 import { FC } from 'react'
 
@@ -8,22 +10,21 @@ import type { CourseMetadata } from '@/types'
 interface ImportCourseCardProps {
     metadata: CourseMetadata
     directory: string
-    addCourse: (directory: string) => void
-    upload: (directory: string) => void
     isNew?: boolean
 }
 
 export const ImportCourseCard: FC<ImportCourseCardProps> = ({
     metadata,
     directory,
-    addCourse,
-    upload,
     isNew = true
 }) => {
+    const addCourse = useCoursesStore((state) => state.addCourse)
+    const updateCourse = useCoursesStore((state) => state.updateCourse)
+
     return (
         <li className={styles.card}>
             <img
-                src={`media://${directory}/icon.png`}
+                src={protocolService.course.getIconPath(directory)}
                 alt={metadata.name}
                 className={styles['card__icon']}
             />
@@ -35,7 +36,7 @@ export const ImportCourseCard: FC<ImportCourseCardProps> = ({
                 {isNew ? (
                     <Button onClick={() => addCourse(directory)}>Ajouter</Button>
                 ) : (
-                    <Button onClick={() => upload(directory)}>Mettre à jour</Button>
+                    <Button onClick={() => updateCourse(directory)}>Mettre à jour</Button>
                 )}
             </div>
             {isNew ? (

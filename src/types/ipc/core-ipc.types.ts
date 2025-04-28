@@ -14,5 +14,5 @@ export type IPCHandlerError = {
     message: string
 }
 
-export type IPCHandlerReturnWithData<T> = IPCHandlerSuccessWithData<T> | IPCHandlerError
-export type IPCHandlerReturnWithoutData = IPCHandlerSuccessWithoutData | IPCHandlerError
+export type IPCHandlerReturnWithData<T> = Promise<IPCHandlerSuccessWithData<T> | IPCHandlerError>
+export type IPCHandlerReturnWithoutData = Promise<IPCHandlerSuccessWithoutData | IPCHandlerError>

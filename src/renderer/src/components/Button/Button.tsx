@@ -4,7 +4,7 @@ import clsx from 'clsx'
 import { ButtonHTMLAttributes, ForwardedRef, PropsWithChildren, forwardRef } from 'react'
 import { Link, LinkProps } from 'react-router-dom'
 
-export const buttonVariants = cva(styles.button, {
+const buttonVariants = cva(styles.button, {
     variants: {
         variant: {
             outlined: styles['variant-outlined'],

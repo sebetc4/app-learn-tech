@@ -1,76 +1,36 @@
-import type { CoursePreviewData } from '../dto'
-import { CourseMetadataAndDirectory } from '../metadata'
+import { CoursePreview } from '../dto'
 import type { IPCHandlerReturnWithData, IPCHandlerReturnWithoutData } from './core-ipc.types'
 
-/**
- * --------------------------------
- * Root folder
- * --------------------------------
- */
-// Get root folder
-export type GetCoursesRootFolderIPCHandlerReturn = IPCHandlerReturnWithData<{ path: string | null }>
+// Import course archive
+export type ImportCourseArchiveIPCHandlerReturn = IPCHandlerReturnWithData<{
+    course: CoursePreview
+}>
 
-// Set root folder
-export type SetCoursesRootFolderIPCHandlerReturn = Promise<
-    IPCHandlerReturnWithData<{ path: string }>
->
-// Remove root folder
-export type RemoveRootFolderIPCHandlerReturn = Promise<IPCHandlerReturnWithoutData>
-
-/**
- * --------------------------------
- * Archive
- * --------------------------------
- */
-export type ImportCourseArchiveIPCHandlerReturn = Promise<
-    IPCHandlerReturnWithData<{ courseId: string }>
->
-
-/**
- * --------------------------------
- * Scan
- * --------------------------------
- */
-export type ScanRootFolderIPCHandlerReturn = Promise<
-    IPCHandlerReturnWithData<{
-        courses: CourseMetadataAndDirectory[]
-    }>
->
-
-/**
- * --------------------------------
- * CRUD
- * --------------------------------
- */
-// Get all already imported courses
-export type GetAllAlreadyImportedCourseIPCHandlerReturn = Promise<
-    IPCHandlerReturnWithData<{ courses: CoursePreviewData }>
->
+// Get all courses
+export type GetAllAlreadyImportedCourseIPCHandlerReturn = IPCHandlerReturnWithData<{
+    courses: CoursePreview[]
+}>
 
 // Add one course
 export type AddOneCourseIPCHandlerParams = {
     courseDirName: string
 }
-export type AddOneCourseIPCHandlerReturn = Promise<IPCHandlerReturnWithData<{ courseId: string }>>
+export type AddOneCourseIPCHandlerReturn = IPCHandlerReturnWithData<{ course: CoursePreview }>
 
 // Add all courses
-export type AddAllCoursesIPCHandlerReturn = Promise<
-    IPCHandlerReturnWithData<{
-        courseDirNames: string[]
-    }>
->
+export type AddAllCoursesIPCHandlerReturn = IPCHandlerReturnWithData<{
+    courseDirNames: string[]
+}>
 
 // Upload one course
 export type UploadOneCourseIPCHandlerParams = {
     courseDirName: string
 }
 
-export type UploadOneCourseIPCHandlerReturn = Promise<
-    IPCHandlerReturnWithData<{ courseId: string }>
->
+export type UploadOneCourseIPCHandlerReturn = IPCHandlerReturnWithData<{ course: CoursePreview }>
 
 // Remove one course
 export type RemoveCourseIPCHandlerParams = {
     courseDirName: string
 }
-export type RemoveCourseIPCHandlerReturn = Promise<IPCHandlerReturnWithoutData>
+export type RemoveCourseIPCHandlerReturn = IPCHandlerReturnWithoutData

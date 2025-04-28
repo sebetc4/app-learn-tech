@@ -1,10 +1,13 @@
+import { useInitializeStore } from './hooks/useInitializeStore.hooks'
 import { Header } from './layout'
 import { JSX } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Toaster } from 'sonner'
 
 function App(): JSX.Element {
-    return (
+    const isInitialized = useInitializeStore()
+
+    return isInitialized ? (
         <>
             <Header />
             <main>
@@ -12,6 +15,10 @@ function App(): JSX.Element {
             </main>
             <Toaster />
         </>
+    ) : (
+        <main>
+            <div>Loading...</div>
+        </main>
     )
 }
 

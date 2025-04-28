@@ -21,6 +21,7 @@ export const registerThemeIpcHandlers = (themeService: ThemeService) => {
                 message: 'Theme set successfully'
             }
         } catch (error) {
+            console.error(`Error setting theme: ${error}`)
             return {
                 success: false,
                 message: 'Failed to set theme'
@@ -37,6 +38,7 @@ export const registerThemeIpcHandlers = (themeService: ThemeService) => {
                 message: 'Theme toggled successfully'
             }
         } catch (error) {
+            console.error(`Error toggling theme: ${error}`)
             return {
                 success: false,
                 message: 'Failed to toggle theme'

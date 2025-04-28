@@ -11,9 +11,7 @@ import type {
     RemoveCourseIPCHandlerReturn
 } from '@/types'
 
-export const registerCourseIpcHandlers = (
-    courseService: CourseService
-) => {
+export const registerCourseIpcHandlers = (courseService: CourseService) => {
     ipcMain.handle(IPC.COURSE.GET_ALL, async (): GetAllAlreadyImportedCourseIPCHandlerReturn => {
         const courses = await courseService.getAll()
         return {
@@ -34,11 +32,11 @@ export const registerCourseIpcHandlers = (
             if (canceled || filePaths.length === 0) {
                 return { success: false, message: 'Aborted operation' }
             }
-            const courseId = await courseService.importCourseArchive(filePaths[0])
+            const course = await courseService.importCourseArchive(filePaths[0])
 
             return {
                 success: true,
-                data: { courseId },
+                data: { course },
                 message: 'Course imported successfully'
             }
         } catch (error) {
@@ -57,14 +55,14 @@ export const registerCourseIpcHandlers = (
             { courseDirName }: AddOneCourseIPCHandlerParams
         ): AddOneCourseIPCHandlerReturn => {
             try {
-                const courseId = await courseService.addOne(courseDirName)
+                const course = await courseService.addOne(courseDirName)
                 return {
                     success: true,
-                    data: { courseId },
+                    data: { course },
                     message: 'Cours importé avec succès'
                 }
             } catch (error) {
-                console.error('Error durring import course:', error)
+                console.error('Error during import course:', error)
                 return {
                     success: false,
                     message: `Erreur: ${error instanceof Error ? error.message : 'Erreur inconnue'}`

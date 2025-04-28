@@ -13,3 +13,10 @@ export interface CourseMetadataAndDirectory {
     directory: string
 }
 
+type ScannedCourseType = 'import' | 'update'
+
+export interface ScannedCourse {
+    metadata: CourseMetadata
+    directory: string
+    type: ScannedCourseType
+}

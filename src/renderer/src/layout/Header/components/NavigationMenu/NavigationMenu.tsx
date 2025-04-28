@@ -6,20 +6,21 @@ import { NavigationMenu as RadixNavigationMenu } from 'radix-ui'
 import { AnchorHTMLAttributes, forwardRef, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import type { CoursePreviewData } from '@/types'
+import type { CoursePreview } from '@/types'
 
 export const NavigationMenu = () => {
-    const [courses, setCourses] = useState<CoursePreviewData>([])
+    const [courses, setCourses] = useState<CoursePreview[]>([])
+
+    const fetchCourses = async () => {
+        const response = await window.api.course.getAll()
+        if (response.success) {
+            setCourses(response.data.courses)
+        } else {
+            console.error('Failed to fetch courses:', response.message)
+        }
+    }
 
     useEffect(() => {
-        const fetchCourses = async () => {
-            const response = await window.api.course.getAll()
-            if (response.success) {
-                setCourses(response.data.courses)
-            } else {
-                console.error('Failed to fetch courses:', response.message)
-            }
-        }
         fetchCourses()
     }, [])
 
@@ -98,3 +99,5 @@ const ListItem = forwardRef<HTMLAnchorElement, ListItemProps>(
         </li>
     )
 )
+
+ListItem.displayName = 'ListItem'

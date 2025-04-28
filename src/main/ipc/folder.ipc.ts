@@ -1,5 +1,5 @@
 import { IPC } from '@/constants'
-import type { FolderService } from '@main/services'
+import type { CourseService, FolderService } from '@main/services'
 import { dialog, ipcMain } from 'electron'
 
 import type {
@@ -10,6 +10,7 @@ import type {
 } from '@/types'
 
 export const registerFolderIpcHandlers = (
+    courseService: CourseService,
     folderService: FolderService
 ) => {
     /**
@@ -17,7 +18,7 @@ export const registerFolderIpcHandlers = (
      * Root
      * --------------------------------
      */
-    ipcMain.handle(IPC.FOLDER.GET_ROOT, (): GetCoursesRootFolderIPCHandlerReturn => {
+    ipcMain.handle(IPC.FOLDER.GET_ROOT, async (): GetCoursesRootFolderIPCHandlerReturn => {
         return {
             success: true,
             data: { path: folderService.rootPath },
@@ -79,7 +80,7 @@ export const registerFolderIpcHandlers = (
             const courses = await folderService.scanForCourses()
             return {
                 success: true,
-                data: { courses },
+                data: { scannedCourses: await courseService.sortScannedCourses(courses) },
                 message: `${courses.length} cours trouvés`
             }
         } catch (error) {

@@ -31,7 +31,7 @@ export const ThemeSelector = () => {
 
     useEffect(() => {
         getTheme()
-    }, [])
+    }, [getTheme])
 
     return (
         <div>

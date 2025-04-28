@@ -1,15 +1,16 @@
-import { FolderService } from '../services'
-import { net, protocol } from 'electron'
+import { STORAGE_FOLDER } from '@/constants'
+import { app, net, protocol } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
 
-export const registerMediaProtocol = (folderService: FolderService) => {
-    protocol.handle('media', async (request) => {
+export const registerIconProtocol = () => {
+    protocol.handle('icon', async (request) => {
+        console.log(request)
         try {
-            const coursesRootPath = folderService.rootPath
-            if (!coursesRootPath) {
-                return new Response('Courses root path is not set', {
+            const iconRootPath = path.join(app.getPath('userData'), STORAGE_FOLDER.COURSE_ICON)
+            if (!iconRootPath) {
+                return new Response('Icons root path is not set', {
                     status: 500,
                     headers: { 'Content-Type': 'text/plain' }
                 })
@@ -28,23 +29,23 @@ export const registerMediaProtocol = (folderService: FolderService) => {
                 relativePath = path.join(relativePath, pathnamePart)
             }
 
-            const filePath = path.join(coursesRootPath, relativePath)
+            const iconPath = path.join(iconRootPath, relativePath)
 
-            if (!filePath.startsWith(coursesRootPath)) {
+            if (!iconPath.startsWith(iconRootPath)) {
                 return new Response('Access denied', {
                     status: 403,
                     headers: { 'Content-Type': 'text/plain' }
                 })
             }
 
-            if (!fs.existsSync(filePath)) {
+            if (!fs.existsSync(iconPath)) {
                 return new Response(`Media not found: ${relativePath}`, {
                     status: 404,
                     headers: { 'Content-Type': 'text/plain' }
                 })
             }
 
-            return net.fetch(pathToFileURL(filePath).toString())
+            return net.fetch(pathToFileURL(iconPath).toString())
         } catch (error) {
             return new Response(
                 `Internal Error: ${error instanceof Error ? error.message : String(error)}`,

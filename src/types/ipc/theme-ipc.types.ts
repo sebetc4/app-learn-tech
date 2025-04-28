@@ -1,10 +1,14 @@
 import type { ThemeValue } from '../theme.types'
 import type { IPCHandlerReturnWithData, IPCHandlerReturnWithoutData } from './core-ipc.types'
 
-export type GetThemeIPCHandlerReturn = IPCHandlerReturnWithData<{ theme: ThemeValue }> 
+// Get theme
+export type GetThemeIPCHandlerReturn = IPCHandlerReturnWithData<{ theme: ThemeValue }>
 
+// Set theme
 export type SetThemeIPCHandlerParams = {
     theme: ThemeValue
 }
-export type SetThemeIPCHandlerReturn = Promise<IPCHandlerReturnWithoutData>
-export type ToggleThemeIPCHandlerReturn = Promise<IPCHandlerReturnWithoutData>
+export type SetThemeIPCHandlerReturn = IPCHandlerReturnWithoutData
+
+// Toggle theme
+export type ToggleThemeIPCHandlerReturn = IPCHandlerReturnWithoutData
