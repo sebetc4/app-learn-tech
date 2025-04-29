@@ -1,11 +1,11 @@
-import { STORAGE_FOLDER } from '@/constants'
+import { PROTOCOL, STORAGE_FOLDER } from '@/constants'
 import { app, net, protocol } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
 
 export const registerIconProtocol = () => {
-    protocol.handle('icon', async (request) => {
+    protocol.handle(PROTOCOL.ICON, async (request) => {
         console.log(request)
         try {
             const iconRootPath = path.join(app.getPath('userData'), STORAGE_FOLDER.COURSE_ICON)

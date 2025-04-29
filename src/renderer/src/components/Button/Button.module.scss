@@ -14,7 +14,7 @@
     // Contained
     &.variant-contained {
         @include background-color('primary');
-        @include color('bg-1');
+        @include color('base-100');
     }
 
     // Outlined

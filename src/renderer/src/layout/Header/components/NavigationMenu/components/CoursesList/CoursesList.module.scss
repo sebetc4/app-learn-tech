@@ -1,0 +1,13 @@
+.item {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    width: 150px;
+    img {
+        width: 2rem;
+        height: 2rem;
+    }
+    @include flex(null, center, 1rem);
+    &:hover {
+        background-color: #f0f0f0;
+    }
+}

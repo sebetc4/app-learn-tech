@@ -1,4 +1,4 @@
-import { STORAGE_FOLDER } from '@/constants'
+import { PROTOCOL, STORAGE_FOLDER } from '@/constants'
 import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
@@ -26,7 +26,7 @@ export class IconStorageManager {
 
             fs.copyFileSync(iconPath, internalIconPath)
 
-            return `icon://${iconName}`
+            return `${PROTOCOL.ICON}://${iconName}`
         } catch (error) {
             console.error(`Error saving course icon: ${error}`)
             throw error

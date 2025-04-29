@@ -32,7 +32,7 @@
 
 .trigger:hover,
 .link:hover {
-    background-color: var(--violet-3);
+    @include background-color('primary');
 }
 
 .trigger {
@@ -70,11 +70,6 @@
 .content[data-motion='to-end'] {
     animation-name: exitToRight;
 }
-@media only screen and (min-width: 600px) {
-    .content {
-        width: auto;
-    }
-}
 
 .indicator {
     display: flex;
@@ -100,7 +95,7 @@
     transform-origin: top center;
     margin-top: 10px;
     width: 100%;
-    background-color: white;
+    @include background-color('base-300');
     border-radius: 6px;
     overflow: hidden;
     box-shadow:
@@ -119,79 +114,12 @@
     animation: scaleOut 200ms ease;
 }
 
-@media only screen and (min-width: 600px) {
-    .viewport {
-        width: var(--radix-navigation-menu-viewport-width);
-    }
-}
-
 .list {
     display: grid;
     padding: 22px;
     margin: 0;
     column-gap: 10px;
     list-style: none;
-}
-
-.item {
-    display: block;
-    outline: none;
-    text-decoration: none;
-    user-select: none;
-    padding: 12px;
-    border-radius: 6px;
-    font-size: 15px;
-    line-height: 1;
-}
-.item:focus {
-    box-shadow: 0 0 0 2px var(--violet-7);
-}
-.item:hover {
-    background-color: var(--mauve-3);
-}
-
-.item__title {
-    font-weight: 500;
-    line-height: 1.2;
-    margin-bottom: 5px;
-}
-
-.item__text {
-    line-height: 1.4;
-    font-weight: initial;
-}
-
-.Callout {
-    display: flex;
-    justify-content: flex-end;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, var(--purple-9) 0%, var(--indigo-9) 100%);
-    border-radius: 6px;
-    padding: 25px;
-    text-decoration: none;
-    outline: none;
-    user-select: none;
-}
-
-.Callout:focus {
-    box-shadow: 0 0 0 2px var(--violet-7);
-}
-
-.CalloutHeading {
-    color: white;
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 1.2;
-    margin-top: 16px;
-    margin-bottom: 7px;
-}
-
-.CalloutText {
-    color: var(--mauve-4);
-    font-size: 14px;
-    line-height: 1.3;
 }
 
 .viewport-container {
@@ -214,14 +142,13 @@
     transform: rotate(-180deg);
 }
 
-.arrow {
-    position: relative;
-    top: 70%;
-    background-color: white;
-    width: 10px;
-    height: 10px;
-    transform: rotate(45deg);
-    border-top-left-radius: 2px;
+@media only screen and (min-width: 600px) {
+    .content {
+        width: auto;
+    }
+    .viewport {
+        width: var(--radix-navigation-menu-viewport-width);
+    }
 }
 
 @keyframes enterFromRight {

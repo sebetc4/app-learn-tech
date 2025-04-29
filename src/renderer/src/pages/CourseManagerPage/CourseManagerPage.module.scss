@@ -4,7 +4,7 @@
 
     &__content {
         padding: 2rem 1rem;
-        @include background-color('interactive-2');
+        @include background-color('base-400');
         @include flex(space-between, center, 2rem);
     }
 }
@@ -19,7 +19,7 @@
 
     &__content {
         padding: 2rem 1rem;
-        @include background-color('interactive-2');
+        @include background-color('base-400');
 
         ul {
             @include flex(center, null, 2rem);
@@ -38,7 +38,7 @@
 
     &__content {
         padding: 2rem 1rem;
-        @include background-color('interactive-2');
+        @include background-color('base-400');
 
         ul {
             @include flex(center, null, 2rem);

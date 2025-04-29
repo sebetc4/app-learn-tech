@@ -1,11 +1,12 @@
 import { FolderService } from '../services'
+import { PROTOCOL } from '@/constants'
 import { net, protocol } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
 
 export const registerCourseProtocol = (folderService: FolderService) => {
-    protocol.handle('course', async (request) => {
+    protocol.handle(PROTOCOL.COURSE, async (request) => {
         try {
             const coursesRootPath = folderService.rootPath
             if (!coursesRootPath) {
