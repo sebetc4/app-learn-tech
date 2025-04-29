@@ -4,6 +4,7 @@ import { dialog, ipcMain } from 'electron'
 
 import type {
     GetCoursesRootFolderIPCHandlerReturn,
+    ImportCourseArchiveIPCHandlerReturn,
     RemoveRootFolderIPCHandlerReturn,
     ScanRootFolderIPCHandlerReturn,
     SetCoursesRootFolderIPCHandlerReturn
@@ -92,6 +93,33 @@ export const registerFolderIpcHandlers = (
             return {
                 success: false,
                 message: "Erreur lors de l'analyse des cours"
+            }
+        }
+    })
+
+    ipcMain.handle(IPC.FOLDER.IMPORT_ARCHIVE, async (): ImportCourseArchiveIPCHandlerReturn => {
+        try {
+            const { canceled, filePaths } = await dialog.showOpenDialog({
+                title: 'Sélectionner un fichier de cours (.zip)',
+                filters: [{ name: 'Archives ZIP', extensions: ['zip'] }],
+                properties: ['openFile']
+            })
+
+            if (canceled || filePaths.length === 0) {
+                return { success: false, message: 'Aborted operation' }
+            }
+            const course = await courseService.importCourseArchive(filePaths[0])
+
+            return {
+                success: true,
+                data: { course },
+                message: 'Course imported successfully'
+            }
+        } catch (error) {
+            console.error('Error durring import course:', error)
+            return {
+                success: false,
+                message: `Error during import: ${error instanceof Error ? error.message : 'Unknown error'}`
             }
         }
     })

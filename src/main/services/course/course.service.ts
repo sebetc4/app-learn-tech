@@ -2,6 +2,7 @@ import { DatabaseService } from '../database'
 import { FolderService } from '../folder'
 import { StorageService } from '../storage'
 import { ArchiveManager, ImportManager } from './managers'
+import { Course } from '@prisma/client'
 import * as fs from 'fs'
 import * as path from 'path'
 
@@ -24,6 +25,19 @@ export class CourseService {
 
         this.#archiveManager = new ArchiveManager()
         this.#importManager = new ImportManager(database, storageService)
+    }
+
+    async getOne(courseId: string): Promise<Course> {
+        try {
+            const course = await this.#database.course.getById(courseId)
+            if (!course) {
+                throw new Error(`Course with ID ${courseId} not found`)
+            }
+            return course
+        } catch (error) {
+            console.error(`Error retrieving course with ID ${courseId}: ${error}`)
+            throw error
+        }
     }
 
     async getAll(): Promise<CoursePreview[]> {

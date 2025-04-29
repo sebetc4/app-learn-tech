@@ -1,5 +1,4 @@
-import { IPC_COURSE, IPC_MEDIA, IPC_THEME } from './channels'
-import { IPC_FOLDER } from './channels/folder-ipc.constants'
+import { IPC_COURSE, IPC_FOLDER, IPC_MEDIA, IPC_THEME } from './channels'
 
 export const IPC = {
     FOLDER: IPC_FOLDER,

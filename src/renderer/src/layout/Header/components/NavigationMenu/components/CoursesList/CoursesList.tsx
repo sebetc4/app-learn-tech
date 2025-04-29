@@ -2,6 +2,7 @@ import styles from './CoursesList.module.scss'
 import { PAGE_PATH } from '@/renderer/src/constants'
 import { useCoursesStore } from '@/renderer/src/store'
 import { NavigationMenu as RadixNavigationMenu } from 'radix-ui'
+import { Link } from 'react-router-dom'
 
 export const CoursesList = () => {
     const courses = useCoursesStore((state) => state.courses)
@@ -10,16 +11,16 @@ export const CoursesList = () => {
             {courses.map(({ id, name, iconPath }) => (
                 <li key={id}>
                     <RadixNavigationMenu.Link asChild>
-                        <a
+                        <Link
                             className={styles.item}
-                            href={`${PAGE_PATH.COURSES}/${id}`}
+                            to={`${PAGE_PATH.COURSES}/${id}`}
                         >
                             <img
                                 src={iconPath}
                                 alt={name}
                             />
                             <span className={styles['item__text']}>{name}</span>
-                        </a>
+                        </Link>
                     </RadixNavigationMenu.Link>
                 </li>
             ))}

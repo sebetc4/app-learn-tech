@@ -7,3 +7,7 @@ export const PAGE_PATH = {
     SIGNUP: '/signup',
     SIGNIN: '/signin'
 } as const
+
+export const PATH_PARAMS = {
+    COURSE_ID: 'courseId'
+}

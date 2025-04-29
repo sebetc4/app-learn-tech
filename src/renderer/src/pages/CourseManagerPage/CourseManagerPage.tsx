@@ -33,7 +33,7 @@ export const CourseImporterPage: FC = () => {
 
     return (
         <div className={styles.container}>
-            <h1>Gestionnaire de cours</h1>
+            <h1 className={styles.title}>Gestionnaire de cours</h1>
 
             <section className={styles['folder']}>
                 <h2>Dossier racine des cours</h2>

@@ -3,26 +3,40 @@ $colors: (
     'primary': '',
 
     // Background
-    'base-100': '',
-    'base-200': '',
-
+    'primary-1': '',
+    'primary-2': '',
     // Interactive
-    'base-300': '',
-    'base-400': '',
-    'base-500': '',
-
+    'primary-3': '',
+    'primary-4': '',
+    'primary-5': '',
     // Border
-    'base-600': '',
-    'base-700': '',
-    'base-800': '',
-
+    'primary-6': '',
+    'primary-7': '',
+    'primary-8': '',
     // Solid
-    'base-900': '',
-    'base-1000': '',
-
+    'primary-9': '',
+    'primary-10': '',
     // Text
-    'base-1100': '',
-    'base-1200': ''
+    'primary-11': '',
+    'primary-12': '',
+
+    // Background
+    'base-1': '',
+    'base-2': '',
+    // Interactive
+    'base-3': '',
+    'base-4': '',
+    'base-5': '',
+    // Border
+    'base-6': '',
+    'base-7': '',
+    'base-8': '',
+    // Solid
+    'base-9': '',
+    'base-10': '',
+    // Text
+    'base-11': '',
+    'base-12': ''
 );
 
 $light-colors: (
@@ -30,26 +44,58 @@ $light-colors: (
     'primary': '79, 152, 114',
 
     // Background
-    'base-100': '252, 253, 252',
-    'base-200': '248, 250, 248',
-
+    'primary-1': '',
+    'primary-2': '',
     // Interactive
-    'base-300': '239, 241, 239',
-    'base-400': '231, 233, 231',
-    'base-500': '223, 226, 223',
-
+    'primary-3': '',
+    'primary-4': '',
+    'primary-5': '',
     // Border
-    'base-600': '215, 218, 215',
-    'base-700': '204, 207, 204',
-    'base-800': '185, 188, 184',
-
+    'primary-6': '',
+    'primary-7': '',
+    'primary-8': '',
     // Solid
-    'base-900': '137, 142, 135',
-    'base-1000': '127,132,125',
-
+    'primary-9': '',
+    'primary-10': '',
     // Text
-    'base-1100': '96, 101, 95',
-    'base-1200': '29, 33, 28'
+    'primary-11': '',
+    'primary-12': '',
+
+    // Background
+    'primary-1': '251, 254, 252',
+    'primary-2': '245, 251, 247',
+    // Interactive
+    'primary-3': '232, 246, 237',
+    'primary-4': '218, 239, 226',
+    'primary-5': '201, 231, 213',
+    // Border
+    'primary-6': '181, 219, 197',
+    'primary-7': '154, 203, 175',
+    'primary-8': '115, 182, 145',
+    // Solid
+    'primary-9': '79, 152, 114',
+    'primary-10': '66, 139, 102',
+    // Text
+    'primary-11': '50, 124, 88',
+    'primary-12': '36, 58, 46',
+
+    // Background
+    'base-1': '252, 253, 252',
+    'base-2': '248, 250, 248',
+    // Interactive
+    'base-3': '239, 241, 239',
+    'base-4': '231, 233, 231',
+    'base-5': '223, 226, 223',
+    // Border
+    'base-6': '215, 218, 215',
+    'base-7': '204, 207, 204',
+    'base-8': '185, 188, 184',
+    // Solid
+    'base-9': '137, 142, 135',
+    'base-10': '127,132,125',
+    // Text
+    'base-11': '96, 101, 95',
+    'base-12': '29, 33, 28'
 );
 
 $dark-colors: (
@@ -57,24 +103,38 @@ $dark-colors: (
     'primary': '79, 152, 114',
 
     // Background
-    'base-100': '17, 18, 16',
-    'base-200': '24, 25, 23',
-
+    'primary-1': '13, 19, 15',
+    'primary-2': '20, 27, 23',
     // Interactive
-    'base-300': ' 33, 34, 32',
-    'base-400': '40, 42, 39',
-    'base-500': '47, 49, 46',
-
+    'primary-3': '24, 44, 33',
+    'primary-4': '27, 57, 41',
+    'primary-5': '36, 70, 52',
     // Border
-    'base-600': '56,58,54',
-    'base-700': '69,72,67',
-    'base-800': '92, 98, 91',
-
+    'primary-6': '46, 84, 64',
+    'primary-7': '58, 101, 78',
+    'primary-8': '70, 122, 94',
     // Solid
-    'base-900': '104, 112, 102',
-    'base-1000': '118, 125, 116',
-
+    'primary-9': '79, 152, 114',
+    'primary-10': '95, 173, 130',
     // Text
-    'base-1100': '175, 181, 173',
-    'base-1200': '236, 238, 236'
+    'primary-11': '130, 204, 163',
+    'primary-12': '188, 236, 208',
+
+    // Background
+    'base-1': '17, 18, 16',
+    'base-2': '24, 25, 23',
+    // Interactive
+    'base-3': ' 33, 34, 32',
+    'base-4': '40, 42, 39',
+    'base-5': '47, 49, 46',
+    // Border
+    'base-6': '56,58,54',
+    'base-7': '69,72,67',
+    'base-8': '92, 98, 91',
+    // Solid
+    'base-9': '104, 112, 102',
+    'base-10': '118, 125, 116',
+    // Text
+    'base-11': '175, 181, 173',
+    'base-12': '236, 238, 236'
 );

@@ -1,1 +1,0 @@
-export * from './course-dato.types'

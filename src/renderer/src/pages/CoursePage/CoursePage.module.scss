@@ -1,0 +1,24 @@
+.header {
+    margin: 4rem;
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+
+    &__icon-container {
+        img {
+            max-width: 250px;
+            height: auto;
+        }
+    }
+
+    &__text-container {
+
+        p {
+            margin-block: 1rem;
+        }
+
+        > div {
+            @include flex(null, center, 1rem);
+        }
+    }
+}

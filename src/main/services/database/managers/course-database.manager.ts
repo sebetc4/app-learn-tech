@@ -1,6 +1,6 @@
 import { Course, PrismaClient } from '@prisma/client'
 
-import { CoursePreview } from '@/types'
+import { CoursePreview, CourseViewModel } from '@/types'
 
 interface CreateCourseParams {
     id: string
@@ -33,9 +33,26 @@ export class CourseDatabaseManager {
         })
     }
 
-    async getById(id: string): Promise<Course | null> {
+    async getById(id: string): Promise<CourseViewModel | null> {
         return await this.#prisma.course.findUnique({
-            where: { id }
+            where: { id },
+            include: {
+                chapters: {
+                    select: {
+                        id: true,
+                        position: true,
+                        name: true,
+                        lessons: {
+                            select: {
+                                id: true,
+                                position: true,
+                                name: true,
+                                type: true
+                            }
+                        }
+                    }
+                }
+            }
         })
     }
 

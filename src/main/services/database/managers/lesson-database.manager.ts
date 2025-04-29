@@ -8,6 +8,7 @@ interface CreatLessonParams {
     type: LessonType
     htmlPath?: string
     videoPath?: string
+    lessonDuration?: number
 
     chapterId: string
 }

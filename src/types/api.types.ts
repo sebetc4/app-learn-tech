@@ -3,6 +3,8 @@ import type {
     AddOneCourseIPCHandlerReturn,
     GetAllAlreadyImportedCourseIPCHandlerReturn,
     GetCoursesRootFolderIPCHandlerReturn,
+    GetOneCourseIPCHandlerParams,
+    GetOneCourseIPCHandlerReturn,
     GetThemeIPCHandlerReturn,
     ImportCourseArchiveIPCHandlerReturn,
     RemoveCourseIPCHandlerParams,
@@ -22,11 +24,12 @@ export interface FolderAPI {
     setRoot: () => SetCoursesRootFolderIPCHandlerReturn
     removeRoot: () => RemoveRootFolderIPCHandlerReturn
     scan: () => ScanRootFolderIPCHandlerReturn
+    importArchive: () => ImportCourseArchiveIPCHandlerReturn
 }
 
 export interface CourseAPI {
+    getOne: (params: GetOneCourseIPCHandlerParams) => GetOneCourseIPCHandlerReturn
     getAll: () => GetAllAlreadyImportedCourseIPCHandlerReturn
-    importArchive: () => ImportCourseArchiveIPCHandlerReturn
     addOne: (params: AddOneCourseIPCHandlerParams) => AddOneCourseIPCHandlerReturn
     uploadOne: (params: UploadOneCourseIPCHandlerParams) => UploadOneCourseIPCHandlerReturn
     removeOne: (params: RemoveCourseIPCHandlerParams) => RemoveCourseIPCHandlerReturn

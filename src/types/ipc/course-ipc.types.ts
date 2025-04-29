@@ -1,9 +1,13 @@
-import { CoursePreview } from '../dto'
+import { CoursePreview, CourseViewModel } from '../view-model'
 import type { IPCHandlerReturnWithData, IPCHandlerReturnWithoutData } from './core-ipc.types'
 
-// Import course archive
-export type ImportCourseArchiveIPCHandlerReturn = IPCHandlerReturnWithData<{
-    course: CoursePreview
+// Get One
+export type GetOneCourseIPCHandlerParams = {
+    courseId: string
+}
+
+export type GetOneCourseIPCHandlerReturn = IPCHandlerReturnWithData<{
+    course: CourseViewModel
 }>
 
 // Get all courses

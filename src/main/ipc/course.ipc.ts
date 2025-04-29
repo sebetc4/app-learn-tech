@@ -1,50 +1,46 @@
 import type { CourseService } from '../services'
 import { IPC } from '@/constants'
-import { dialog, ipcMain } from 'electron'
+import { ipcMain } from 'electron'
 
 import type {
     AddOneCourseIPCHandlerParams,
     AddOneCourseIPCHandlerReturn,
     GetAllAlreadyImportedCourseIPCHandlerReturn,
-    ImportCourseArchiveIPCHandlerReturn,
+    GetOneCourseIPCHandlerParams,
     RemoveCourseIPCHandlerParams,
     RemoveCourseIPCHandlerReturn
 } from '@/types'
 
 export const registerCourseIpcHandlers = (courseService: CourseService) => {
+    ipcMain.handle(
+        IPC.COURSE.GET_ONE,
+        async (
+            _event,
+            { courseId }: GetOneCourseIPCHandlerParams
+        ): AddOneCourseIPCHandlerReturn => {
+            try {
+                const course = await courseService.getOne(courseId)
+                return {
+                    success: true,
+                    data: { course },
+                    message: 'Cours récupéré avec succès'
+                }
+            } catch (error) {
+                console.error('Error during import course:', error)
+                return {
+                    success: false,
+                    message: `Erreur lors de la récupération du cours`
+                }
+            }
+        }
+    )
+
     ipcMain.handle(IPC.COURSE.GET_ALL, async (): GetAllAlreadyImportedCourseIPCHandlerReturn => {
         const courses = await courseService.getAll()
         return {
             success: true,
             data: { courses },
             message: 'Cours récupérés avec succès'
-        }
-    })
-
-    ipcMain.handle(IPC.COURSE.IMPORT_ARCHIVE, async (): ImportCourseArchiveIPCHandlerReturn => {
-        try {
-            const { canceled, filePaths } = await dialog.showOpenDialog({
-                title: 'Sélectionner un fichier de cours (.zip)',
-                filters: [{ name: 'Archives ZIP', extensions: ['zip'] }],
-                properties: ['openFile']
-            })
-
-            if (canceled || filePaths.length === 0) {
-                return { success: false, message: 'Aborted operation' }
-            }
-            const course = await courseService.importCourseArchive(filePaths[0])
-
-            return {
-                success: true,
-                data: { course },
-                message: 'Course imported successfully'
-            }
-        } catch (error) {
-            console.error('Error durring import course:', error)
-            return {
-                success: false,
-                message: `Error during import: ${error instanceof Error ? error.message : 'Unknown error'}`
-            }
         }
     })
 
