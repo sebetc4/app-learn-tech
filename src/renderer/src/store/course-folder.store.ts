@@ -6,7 +6,8 @@ import { ScannedCourse } from '@/types'
 interface CourseFolderState {
     rootFolder: string | null
     scannedCourses: ScannedCourse[]
-    isLoading: boolean
+    selectFolderIsLoading: boolean
+    scanCoursesIsLoading: boolean
 }
 
 interface CourseFolderActions {
@@ -19,7 +20,8 @@ interface CourseFolderActions {
 const initialState: CourseFolderState = {
     rootFolder: null,
     scannedCourses: [],
-    isLoading: false
+    selectFolderIsLoading: false,
+    scanCoursesIsLoading: false
 }
 
 interface CourseFolderStore extends CourseFolderState, CourseFolderActions {}
@@ -28,7 +30,6 @@ export const useCourseFolderStore = create<CourseFolderStore>()((set) => ({
     ...initialState,
 
     initialize: async () => {
-        set({ isLoading: true })
         try {
             const response = await window.api.folder.getRoot()
             if (response.success) {
@@ -39,13 +40,11 @@ export const useCourseFolderStore = create<CourseFolderStore>()((set) => ({
         } catch (error) {
             console.error(error)
             toast.error("Erreur lors de l'initialisation du dossier racine")
-        } finally {
-            set({ isLoading: false })
         }
     },
 
     handleSelectRootFolder: async () => {
-        set({ isLoading: true })
+        set({ selectFolderIsLoading: true })
         try {
             const response = await window.api.folder.setRoot()
             if (response.success) {
@@ -58,12 +57,12 @@ export const useCourseFolderStore = create<CourseFolderStore>()((set) => ({
             console.error(error)
             toast.error('Erreur lors de la définition du dossier racine')
         } finally {
-            set({ isLoading: false })
+            set({ selectFolderIsLoading: false })
         }
     },
 
     scan: async () => {
-        set({ isLoading: true })
+        set({ scanCoursesIsLoading: true })
         try {
             const response = await window.api.folder.scan()
             if (response.success) {
@@ -78,7 +77,7 @@ export const useCourseFolderStore = create<CourseFolderStore>()((set) => ({
             console.error(error)
             toast.error("Erreur lors de l'analyse des cours")
         } finally {
-            set({ isLoading: false })
+            set({ scanCoursesIsLoading: false })
         }
     },
 

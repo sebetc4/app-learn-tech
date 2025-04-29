@@ -6,7 +6,6 @@ import { pathToFileURL } from 'url'
 
 export const registerIconProtocol = () => {
     protocol.handle(PROTOCOL.ICON, async (request) => {
-        console.log(request)
         try {
             const iconRootPath = path.join(app.getPath('userData'), STORAGE_FOLDER.COURSE_ICON)
             if (!iconRootPath) {

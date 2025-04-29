@@ -31,7 +31,9 @@ export const useCoursesStore = create<CoursesStore>()((set) => ({
         try {
             const response = await window.api.course.getAll()
             if (response.success) {
-                set({ courses: response.data.courses })
+                set({
+                    courses: response.data.courses.sort((a, b) => a.name.localeCompare(b.name))
+                })
             } else {
                 toast.error(response.message)
             }

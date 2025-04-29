@@ -1,13 +1,23 @@
 .item {
-    padding: 0.5rem 1rem;
+    width: 200px;
+    padding: 1rem 1.5rem;
     cursor: pointer;
-    width: 150px;
+    @include flex(null, center, 1rem);
+    
     img {
         width: 2rem;
         height: 2rem;
     }
-    @include flex(null, center, 1rem);
+
+    &__text {
+        font-size: 0.75rem;
+        font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+    }
     &:hover {
-        background-color: #f0f0f0;
+        @include background-color('base-400');
     }
 }

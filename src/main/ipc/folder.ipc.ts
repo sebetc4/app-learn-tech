@@ -78,10 +78,14 @@ export const registerFolderIpcHandlers = (
     ipcMain.handle(IPC.FOLDER.SCAN, async (): ScanRootFolderIPCHandlerReturn => {
         try {
             const courses = await folderService.scanForCourses()
+            const scannedCourses = await courseService.sortScannedCourses(courses)
             return {
                 success: true,
-                data: { scannedCourses: await courseService.sortScannedCourses(courses) },
-                message: `${courses.length} cours trouvés`
+                data: { scannedCourses },
+                message:
+                    scannedCourses.length > 0
+                        ? `${scannedCourses.length} nouveaux cours ou mises à jour détectés`
+                        : 'Pas de nouveau cours ou mise à jour détecté'
             }
         } catch (error) {
             console.error('Error during scan course folder: ', error)

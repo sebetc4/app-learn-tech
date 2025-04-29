@@ -1,4 +1,5 @@
 import styles from './CoursesList.module.scss'
+import { PAGE_PATH } from '@/renderer/src/constants'
 import { useCoursesStore } from '@/renderer/src/store'
 import { NavigationMenu as RadixNavigationMenu } from 'radix-ui'
 
@@ -11,13 +12,13 @@ export const CoursesList = () => {
                     <RadixNavigationMenu.Link asChild>
                         <a
                             className={styles.item}
-                            href={'https://sebastien-etcheto.com'}
+                            href={`${PAGE_PATH.COURSES}/${id}`}
                         >
                             <img
                                 src={iconPath}
                                 alt={name}
                             />
-                            <p className={styles['item__text']}>{name}</p>
+                            <span className={styles['item__text']}>{name}</span>
                         </a>
                     </RadixNavigationMenu.Link>
                 </li>

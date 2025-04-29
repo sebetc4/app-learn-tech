@@ -3,6 +3,7 @@ import App from '@renderer/App'
 import { PAGE_PATH } from '@renderer/constants'
 import { CourseImporterPage, ErrorPage, HomePage, ProfilePage } from '@renderer/pages'
 import { createHashRouter } from 'react-router-dom'
+import { CoursePage } from '../pages/CoursePage/CoursePage'
 
 export const router = createHashRouter([
     {
@@ -15,7 +16,11 @@ export const router = createHashRouter([
                 element: <HomePage />
             },
             {
-                path: PAGE_PATH.COURSE_IMPORTER,
+                path: `${PAGE_PATH.COURSES}/:courseId`,
+                element: <CoursePage />
+            },
+            {
+                path: PAGE_PATH.COURSE_MANAGER,
                 element: <CourseImporterPage />
             },
             {

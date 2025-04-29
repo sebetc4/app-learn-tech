@@ -8,11 +8,24 @@ import { FC, useEffect } from 'react'
 export const CourseImporterPage: FC = () => {
     const rootFolder = useCourseFolderStore((state) => state.rootFolder)
     const scannedCourses = useCourseFolderStore((state) => state.scannedCourses)
-    const isLoading = useCourseFolderStore((state) => state.isLoading)
+    const selectFolderIsLoading = useCourseFolderStore((state) => state.selectFolderIsLoading)
+    const scanCoursesIsLoading = useCourseFolderStore((state) => state.scanCoursesIsLoading)
     const handleSelectRootFolder = useCourseFolderStore((state) => state.handleSelectRootFolder)
     const scanRootFolder = useCourseFolderStore((state) => state.scan)
 
     const importedCourses = useCoursesStore((state) => state.courses)
+
+    const directoryButtonText = () => {
+        if (selectFolderIsLoading) return 'Chargement...'
+        if (rootFolder) return 'Modifier le dossier'
+        return 'Sélectionner un dossier'
+    }
+
+    const directoryText = () => {
+        if (selectFolderIsLoading) return 'Chargement...'
+        if (rootFolder) return rootFolder
+        return 'Aucun dossier sélectionné'
+    }
 
     useEffect(() => {
         scanRootFolder()
@@ -25,17 +38,12 @@ export const CourseImporterPage: FC = () => {
             <section className={styles['folder']}>
                 <h2>Dossier racine des cours</h2>
                 <div className={styles['folder__content']}>
-                    {rootFolder ? (
-                        <span>{rootFolder}</span>
-                    ) : (
-                        <span>Aucun dossier sélectionné</span>
-                    )}
+                    <p>{directoryText()}</p>
                     <Button
                         onClick={handleSelectRootFolder}
-                        disabled={isLoading}
-                        className="select-folder-button"
+                        disabled={selectFolderIsLoading}
                     >
-                        {isLoading ? 'Chargement...' : 'Sélectionner un dossier'}
+                        {directoryButtonText()}
                     </Button>
                 </div>
             </section>
@@ -43,10 +51,10 @@ export const CourseImporterPage: FC = () => {
             {rootFolder && (
                 <section className={styles['import']}>
                     <div className={styles['import__header']}>
-                        <h2>Cours disponibles ({scannedCourses.length})</h2>
+                        <h2>Nouveaux cours / mises à jour disponibles ({scannedCourses.length})</h2>
                         <Button
                             onClick={scanRootFolder}
-                            disabled={isLoading}
+                            disabled={scanCoursesIsLoading}
                             variant="text"
                         >
                             <RefreshCw />
@@ -54,7 +62,7 @@ export const CourseImporterPage: FC = () => {
                         </Button>
                         <Button
                             // onClick={handleImportAllCourses}
-                            disabled={isLoading || scannedCourses.length === 0}
+                            disabled={scanCoursesIsLoading || scannedCourses.length === 0}
                             variant="text"
                         >
                             <CircleArrowDown />
@@ -63,10 +71,10 @@ export const CourseImporterPage: FC = () => {
                     </div>
 
                     <div className={styles['import__content']}>
-                        {isLoading ? (
+                        {selectFolderIsLoading ? (
                             <p>Chargement...</p>
                         ) : scannedCourses.length === 0 ? (
-                            <p>Aucun cours trouvé dans le dossier sélectionné.</p>
+                            <p>Pas de nouveaux cours ni de mises à jour disponibles.</p>
                         ) : (
                             <ul>
                                 {scannedCourses.map(({ metadata, directory }) => (
@@ -86,7 +94,7 @@ export const CourseImporterPage: FC = () => {
                     <h2>Cours importés dans la base de données ({importedCourses.length})</h2>
                 </div>
                 <div className={styles['import__content']}>
-                    {isLoading ? (
+                    {selectFolderIsLoading ? (
                         <p>Chargement...</p>
                     ) : importedCourses.length === 0 ? (
                         <p>Aucun cours importé dans la base de données.</p>

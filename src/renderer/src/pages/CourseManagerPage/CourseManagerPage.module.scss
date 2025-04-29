@@ -1,24 +1,33 @@
+h1 {
+    padding: 0 1rem;
+}
+
 .folder {
-    margin-top: 2rem;
+    margin-top: 4rem;
     @include flex-col(null, null, 1rem);
 
+    h2 {
+        padding: 0 1rem;
+    }
+
     &__content {
-        padding: 2rem 1rem;
+        padding: 2rem;
         @include background-color('base-400');
         @include flex(space-between, center, 2rem);
     }
 }
 
 .import {
-    margin-top: 2rem;
+    margin-top: 4rem;
     @include flex-col(null, null, 1rem);
 
     &__header {
+        padding: 0 1rem;
         @include flex(null, center, 1rem);
     }
 
     &__content {
-        padding: 2rem 1rem;
+        padding: 2rem;
         @include background-color('base-400');
 
         ul {
@@ -29,15 +38,16 @@
 }
 
 .imported {
-    margin-top: 2rem;
+    margin-top: 4rem;
     @include flex-col(null, null, 1rem);
 
     &__header {
+        padding: 0 1rem;
         @include flex(null, center, 1rem);
     }
 
     &__content {
-        padding: 2rem 1rem;
+        padding: 2rem;
         @include background-color('base-400');
 
         ul {

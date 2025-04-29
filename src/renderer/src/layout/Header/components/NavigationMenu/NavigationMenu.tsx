@@ -34,8 +34,8 @@ export const NavigationMenu = () => {
                 <RadixNavigationMenu.Item>
                     <RadixNavigationMenu.Link asChild>
                         <Link
-                            to={PAGE_PATH.COURSE_IMPORTER}
-                            className="NavigationMenuLink"
+                            to={PAGE_PATH.COURSE_MANAGER}
+                            className={styles.link}
                         >
                             Ajouter un cours
                         </Link>
