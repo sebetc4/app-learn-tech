@@ -91,7 +91,7 @@ export class ImportManager {
 
     #processLesson = async (courseId: string, chapterId: string, lessonData: LessonMetadata) => {
         try {
-            const lessonDir = path.join(courseId, chapterId, lessonData.id)
+            const lessonDir = path.join(courseId, 'chapters', chapterId, lessonData.id)
 
             const assetPaths = this.#lessonAssetPaths(lessonDir, lessonData)
 
@@ -117,19 +117,21 @@ export class ImportManager {
     #lessonAssetPaths(
         lessonDir: string,
         lessonData: LessonMetadata
-    ): { htmlPath?: string; videoPath?: string } {
+    ): { htmlPath?: string; videoPath?: string; videoDuration?: number } {
         if (lessonData.type === 'TEXT') {
             return {
                 htmlPath: path.join(lessonDir, 'index.html')
             }
         } else if (lessonData.type === 'VIDEO') {
             return {
-                videoPath: path.join(lessonDir, 'video.mp4')
+                videoPath: path.join(lessonDir, 'video.mp4'),
+                videoDuration: lessonData.videoDuration
             }
         } else if (lessonData.type === 'TEXT_AND_VIDEO') {
             return {
                 htmlPath: path.join(lessonDir, 'index.html'),
-                videoPath: path.join(lessonDir, 'video.mp4')
+                videoPath: path.join(lessonDir, 'video.mp4'),
+                videoDuration: lessonData.videoDuration
             }
         } else {
             throw new Error(`Unknown lesson type: ${lessonData.type}`)

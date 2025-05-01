@@ -2,11 +2,16 @@ import { DatabaseService } from '../database'
 import { FolderService } from '../folder'
 import { StorageService } from '../storage'
 import { ArchiveManager, ImportManager } from './managers'
-import { Course } from '@prisma/client'
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { CourseMetadata, CourseMetadataAndDirectory, CoursePreview, ScannedCourse } from '@/types'
+import type {
+    CourseMetadata,
+    CourseMetadataAndDirectory,
+    CoursePreview,
+    CourseViewModel,
+    ScannedCourse
+} from '@/types'
 
 export class CourseService {
     #database: DatabaseService
@@ -27,7 +32,7 @@ export class CourseService {
         this.#importManager = new ImportManager(database, storageService)
     }
 
-    async getOne(courseId: string): Promise<Course> {
+    async getOne(courseId: string): Promise<CourseViewModel> {
         try {
             const course = await this.#database.course.getById(courseId)
             if (!course) {

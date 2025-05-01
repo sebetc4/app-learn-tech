@@ -1,0 +1,14 @@
+.folder {
+    margin-top: 4rem;
+    @include flex-col(null, null, 1rem);
+
+    h2 {
+        padding: 0 1rem;
+    }
+
+    &__content {
+        padding: 2rem;
+        @include background-color('base-4');
+        @include flex(space-between, center, 2rem);
+    }
+}

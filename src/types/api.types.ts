@@ -5,6 +5,7 @@ import type {
     GetCoursesRootFolderIPCHandlerReturn,
     GetOneCourseIPCHandlerParams,
     GetOneCourseIPCHandlerReturn,
+    GetOneLessonIPCHandlerParams,
     GetThemeIPCHandlerReturn,
     ImportCourseArchiveIPCHandlerReturn,
     RemoveCourseIPCHandlerParams,
@@ -18,6 +19,7 @@ import type {
     UploadOneCourseIPCHandlerParams,
     UploadOneCourseIPCHandlerReturn
 } from './ipc'
+import { GetOneLessonIPCHandlerReturn } from './ipc/lesson-ipc.types'
 
 export interface FolderAPI {
     getRoot: () => GetCoursesRootFolderIPCHandlerReturn
@@ -35,6 +37,10 @@ export interface CourseAPI {
     removeOne: (params: RemoveCourseIPCHandlerParams) => RemoveCourseIPCHandlerReturn
 }
 
+export interface LessonAPI {
+    getOne: (params: GetOneLessonIPCHandlerParams) => GetOneLessonIPCHandlerReturn
+}
+
 export interface ThemeAPI {
     get: () => GetThemeIPCHandlerReturn
     set: (params: SetThemeIPCHandlerParams) => SetThemeIPCHandlerReturn
@@ -44,5 +50,6 @@ export interface ThemeAPI {
 export interface AppAPI {
     course: CourseAPI
     folder: FolderAPI
+    lesson: LessonAPI
     theme: ThemeAPI
 }

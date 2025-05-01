@@ -1,0 +1,19 @@
+.imported {
+    margin-top: 4rem;
+    @include flex-col(null, null, 1rem);
+
+    &__header {
+        padding: 0 1rem;
+        @include flex(null, center, 1rem);
+    }
+
+    &__content {
+        padding: 2rem;
+        @include background-color('base-4');
+
+        ul {
+            @include flex(center, null, 2rem);
+            flex-wrap: wrap;
+        }
+    }
+}

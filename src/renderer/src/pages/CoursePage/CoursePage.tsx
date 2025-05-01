@@ -1,11 +1,11 @@
 import styles from './CoursePage.module.scss'
-import { ChaptersAccordion } from './components/Chapters/ChaptersAccordion'
-import { useCallback, useEffect, useState } from 'react'
+import { ChaptersAccordion } from './components'
+import { FC, useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import type { CourseViewModel } from '@/types'
 
-export const CoursePage = () => {
+export const CoursePage: FC = () => {
     const { courseId } = useParams()
     const [course, setCourse] = useState<CourseViewModel | null>(null)
     const [loading, setLoading] = useState(true)
@@ -48,7 +48,10 @@ export const CoursePage = () => {
                 </div>
             </section>
             <section>
-                <ChaptersAccordion chapters={course.chapters} />
+                <ChaptersAccordion
+                    chapters={course.chapters}
+                    courseId={course.id}
+                />
             </section>
         </div>
     ) : (

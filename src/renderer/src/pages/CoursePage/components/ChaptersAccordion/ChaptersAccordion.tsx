@@ -1,4 +1,5 @@
 import styles from './ChaptersAccordion.module.scss'
+import { LessonsList } from './components'
 import * as Accordion from '@radix-ui/react-accordion'
 import { ChevronDown } from 'lucide-react'
 import { FC, forwardRef } from 'react'
@@ -6,37 +7,49 @@ import { FC, forwardRef } from 'react'
 import { CourseViewModel } from '@/types'
 
 interface ChaptersAccordionProps {
+    courseId: string
     chapters: CourseViewModel['chapters']
 }
 
-export const ChaptersAccordion: FC<ChaptersAccordionProps> = ({ chapters }) => (
-    <Accordion.Root
-        className={styles.root}
-        type="single"
-        defaultValue="item-1"
-        collapsible
-    >
-        {chapters.map((chapter) => (
-            <ChapterItem
-                key={chapter.id}
-                chapter={chapter}
-            />
-        ))}
-    </Accordion.Root>
-)
+export const ChaptersAccordion: FC<ChaptersAccordionProps> = ({ chapters, courseId }) => {
+    const sortedChapters = [...chapters].sort((a, b) => a.position - b.position)
+    return (
+        <Accordion.Root
+            className={styles.root}
+            type="single"
+            defaultValue={chapters[0].id}
+            collapsible
+        >
+            {sortedChapters.map((chapter) => (
+                <ChapterItem
+                    key={chapter.id}
+                    courseId={courseId}
+                    chapter={chapter}
+                />
+            ))}
+        </Accordion.Root>
+    )
+}
 
 interface ChapterItemProps {
+    courseId: string
     chapter: CourseViewModel['chapters'][0]
 }
 
-const ChapterItem: FC<ChapterItemProps> = ({ chapter }) => (
+const ChapterItem: FC<ChapterItemProps> = ({ courseId, chapter }) => (
     <Accordion.Item
         key={chapter.id}
         className={styles.item}
         value={chapter.id}
     >
-        <AccordionTrigger>{chapter.name}</AccordionTrigger>
-        <AccordionContent>{chapter.name}</AccordionContent>
+        <AccordionTrigger>{`${chapter.position}. ${chapter.name}`}</AccordionTrigger>
+        <AccordionContent>
+            <LessonsList
+                courseId={courseId}
+                chapterId={chapter.id}
+                lessons={chapter.lessons}
+            />
+        </AccordionContent>
     </Accordion.Item>
 )
 
@@ -46,9 +59,9 @@ interface AccordionTriggerProps extends React.ComponentPropsWithRef<typeof Accor
 
 const AccordionTrigger = forwardRef<HTMLButtonElement, AccordionTriggerProps>(
     ({ children, ...props }, forwardedRef) => (
-        <Accordion.Header className="AccordionHeader">
+        <Accordion.Header className={styles.header}>
             <Accordion.Trigger
-                className={'AccordionTrigger'}
+                className={styles.trigger}
                 {...props}
                 ref={forwardedRef}
             >
@@ -71,11 +84,11 @@ interface AccordionContentProps extends React.ComponentPropsWithRef<typeof Accor
 const AccordionContent = forwardRef<HTMLDivElement, AccordionContentProps>(
     ({ children, ...props }, forwardedRef) => (
         <Accordion.Content
-            className={'AccordionContent'}
+            className={styles.content}
             {...props}
             ref={forwardedRef}
         >
-            <div className="AccordionContentText">{children}</div>
+            {children}
         </Accordion.Content>
     )
 )

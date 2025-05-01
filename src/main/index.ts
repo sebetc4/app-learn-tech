@@ -2,10 +2,17 @@ import icon from '../../resources/icon.png?asset'
 import {
     registerCourseIpcHandlers,
     registerFolderIpcHandlers,
+    registerLessonIpcHandlers,
     registerThemeIpcHandlers
 } from './ipc'
 import { registerCourseProtocol, registerIconProtocol } from './protocol'
-import { CourseService, FolderService, StorageService, ThemeService } from './services'
+import {
+    CourseService,
+    FolderService,
+    LessonService,
+    StorageService,
+    ThemeService
+} from './services'
 import { DatabaseService } from './services/database'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { BrowserWindow, app, ipcMain, shell } from 'electron'
@@ -48,10 +55,12 @@ const registerProtocols = (folderService: FolderService) => {
 const registerIpcHandlers = (
     courseService: CourseService,
     folderService: FolderService,
+    lessonService: LessonService,
     themeService: ThemeService
 ) => {
     registerFolderIpcHandlers(courseService, folderService)
     registerCourseIpcHandlers(courseService)
+    registerLessonIpcHandlers(lessonService)
     registerThemeIpcHandlers(themeService)
 }
 
@@ -71,11 +80,13 @@ app.whenReady().then(async () => {
 
     const courseService = new CourseService(database, storageService, folderService)
 
+    const lessonService = new LessonService(database)
+
     const themeService = new ThemeService(database)
     await themeService.initialize()
 
     registerProtocols(folderService)
-    registerIpcHandlers(courseService, folderService, themeService)
+    registerIpcHandlers(courseService, folderService, lessonService, themeService)
 
     ipcMain.on('ping', () => console.log('pong'))
 

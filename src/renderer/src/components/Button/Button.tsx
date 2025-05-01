@@ -1,7 +1,8 @@
 import styles from './Button.module.scss'
 import { VariantProps, cva } from 'class-variance-authority'
 import clsx from 'clsx'
-import { ButtonHTMLAttributes, ForwardedRef, PropsWithChildren, forwardRef } from 'react'
+import { Loader } from 'lucide-react'
+import { ButtonHTMLAttributes, ForwardedRef, PropsWithChildren, ReactNode, forwardRef } from 'react'
 import { Link, LinkProps } from 'react-router-dom'
 
 const buttonVariants = cva(styles.button, {
@@ -20,6 +21,9 @@ const buttonVariants = cva(styles.button, {
 type CompBaseProps = VariantProps<typeof buttonVariants> &
     PropsWithChildren<{
         className?: string
+        icon?: ReactNode
+        iconPosition?: 'start' | 'end'
+        isLoading?: boolean
     }>
 
 type CompButtonProps = CompBaseProps &
@@ -35,8 +39,33 @@ type CompLinkProps = CompBaseProps &
 export type ButtonProps = CompButtonProps | CompLinkProps
 
 export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
-    ({ className, children, to, variant, ...restProps }, ref) => {
-        const compClassName = clsx(buttonVariants({ variant }), className)
+    (
+        { className, children, to, variant, icon, iconPosition = 'start', isLoading, ...restProps },
+        ref
+    ) => {
+        const compClassName = clsx(
+            buttonVariants({ variant }),
+            className,
+            isLoading ? styles.loading : ''
+        )
+
+        const content = (
+            <>
+                {isLoading ? (
+                    <>
+                        <Loader />
+                        {children}
+                    </>
+                ) : (
+                    <>
+                        {icon && iconPosition === 'start' && icon}
+                        {children}
+                        {icon && iconPosition === 'end' && icon}
+                    </>
+                )}
+            </>
+        )
+
         if (to !== undefined) {
             return (
                 <Link
@@ -45,7 +74,7 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
                     to={to}
                     {...(restProps as Omit<CompLinkProps, 'to' | 'className' | 'children'>)}
                 >
-                    {children}
+                    {content}
                 </Link>
             )
         } else {
@@ -55,7 +84,7 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
                     className={compClassName}
                     {...(restProps as Omit<CompButtonProps, 'className' | 'children'>)}
                 >
-                    {children}
+                    {content}
                 </button>
             )
         }

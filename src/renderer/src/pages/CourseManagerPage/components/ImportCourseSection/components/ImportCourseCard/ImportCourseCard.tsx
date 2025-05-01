@@ -1,9 +1,9 @@
 import styles from './ImportCourseCard.module.scss'
 import { Button } from '@/renderer/src/components'
 import { protocolService } from '@/renderer/src/services'
-import { useCoursesStore } from '@/renderer/src/store'
+import { useCourseFolderStore, useCoursesStore } from '@/renderer/src/store'
 import { CircleFadingArrowUp, SquarePlus } from 'lucide-react'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 
 import type { CourseMetadata } from '@/types'
 
@@ -20,6 +20,21 @@ export const ImportCourseCard: FC<ImportCourseCardProps> = ({
 }) => {
     const addCourse = useCoursesStore((state) => state.addCourse)
     const updateCourse = useCoursesStore((state) => state.updateCourse)
+    const isLoading = useCourseFolderStore((state) => state.isLoading)
+
+    const [cardIsLoading, setCardIsLoading] = useState(false)
+
+    const handleAddCourse = async () => {
+        setCardIsLoading(true)
+        await addCourse(directory)
+        setCardIsLoading(false)
+    }
+
+    const handleUpdateCourse = async () => {
+        setCardIsLoading(true)
+        await updateCourse(directory)
+        setCardIsLoading(false)
+    }
 
     return (
         <li className={styles.card}>
@@ -34,9 +49,21 @@ export const ImportCourseCard: FC<ImportCourseCardProps> = ({
             </div>
             <div className={styles['card__button-container']}>
                 {isNew ? (
-                    <Button onClick={() => addCourse(directory)}>Ajouter</Button>
+                    <Button
+                        onClick={handleAddCourse}
+                        disabled={isLoading}
+                        isLoading={cardIsLoading}
+                    >
+                        Ajouter
+                    </Button>
                 ) : (
-                    <Button onClick={() => updateCourse(directory)}>Mettre à jour</Button>
+                    <Button
+                        onClick={handleUpdateCourse}
+                        disabled={isLoading}
+                        isLoading={cardIsLoading}
+                    >
+                        Mettre à jour
+                    </Button>
                 )}
             </div>
             {isNew ? (

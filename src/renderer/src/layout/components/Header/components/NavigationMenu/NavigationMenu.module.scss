@@ -1,31 +1,26 @@
 .root {
     position: relative;
-    display: flex;
-    justify-content: center;
+    @include flex(center);
     height: 100%;
     z-index: 1;
 }
 
 .menu {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    @include flex(center, center);
     height: 100%;
     margin: 0;
 
     li {
         height: 100%;
-        display: flex;
-        align-items: center;
+        @include flex(null, center);
     }
 }
 
 .trigger,
 .link {
-    display: flex;
-    align-items: center;
-    padding-inline: 1rem;
-    height: 100%;
+    @include flex(null, center);
+    padding: 0.25rem 1rem;
+    border-radius: 0.5rem;
     user-select: none;
     font-weight: 500;
     transition:
@@ -66,9 +61,7 @@
 }
 
 .indicator {
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
+    @include flex(center, flex-end);
     height: 10px;
     top: 100%;
     overflow: hidden;
@@ -89,7 +82,7 @@
     transform-origin: top center;
     margin-top: 10px;
     width: 100%;
-    @include background-color('base-300');
+    @include background-color('base-3');
     border-radius: 6px;
     overflow: hidden;
     box-shadow:

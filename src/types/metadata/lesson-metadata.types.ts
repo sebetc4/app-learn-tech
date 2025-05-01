@@ -9,6 +9,8 @@ export interface LessonMetadata {
 
     type: LessonType
 
+    videoDuration?: number
+
     codeSnippets: CodeSnippetMetadata[]
     resources: ResourceMetadata[]
 }

@@ -1,5 +1,6 @@
 export { CourseService } from './course'
 export { DatabaseService } from './database'
 export { FolderService } from './folder'
+export { LessonService } from './lesson'
 export { ThemeService } from './theme'
 export { StorageService } from './storage'

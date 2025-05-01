@@ -1,0 +1,22 @@
+.list {
+    padding: 1rem;
+    @include flex-col(null, null, 0.5rem);
+    li {
+        width: 100%;
+        @include flex();
+    }
+}
+
+.item {
+    width: 100%;
+    padding: .5rem 1rem;
+    border-radius: 0.5rem;
+
+    &__position {
+        font-weight: bold;
+    }
+
+    &:hover {
+        @include background-color('primary-2');
+    }
+}

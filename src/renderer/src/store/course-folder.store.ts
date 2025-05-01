@@ -6,27 +6,28 @@ import { ScannedCourse } from '@/types'
 interface CourseFolderState {
     rootFolder: string | null
     scannedCourses: ScannedCourse[]
-    selectFolderIsLoading: boolean
-    scanCoursesIsLoading: boolean
+    rootFolderScanLoading: boolean
+    isLoading: boolean
 }
 
 interface CourseFolderActions {
     initialize: () => void
-    handleSelectRootFolder: () => void
+    handleSelectRootFolder: () => Promise<void>
     scan: () => Promise<void>
     delete: (courseId: string) => void
+    setIsLoading: (loading: boolean) => void
 }
 
 const initialState: CourseFolderState = {
     rootFolder: null,
     scannedCourses: [],
-    selectFolderIsLoading: false,
-    scanCoursesIsLoading: false
+    rootFolderScanLoading: false,
+    isLoading: false
 }
 
 interface CourseFolderStore extends CourseFolderState, CourseFolderActions {}
 
-export const useCourseFolderStore = create<CourseFolderStore>()((set) => ({
+export const useCourseFolderStore = create<CourseFolderStore>()((set, get) => ({
     ...initialState,
 
     initialize: async () => {
@@ -44,7 +45,7 @@ export const useCourseFolderStore = create<CourseFolderStore>()((set) => ({
     },
 
     handleSelectRootFolder: async () => {
-        set({ selectFolderIsLoading: true })
+        set({ isLoading: true })
         try {
             const response = await window.api.folder.setRoot()
             if (response.success) {
@@ -53,16 +54,17 @@ export const useCourseFolderStore = create<CourseFolderStore>()((set) => ({
             } else {
                 toast.error(response.message)
             }
+            await get().scan()
         } catch (error) {
             console.error(error)
             toast.error('Erreur lors de la définition du dossier racine')
         } finally {
-            set({ selectFolderIsLoading: false })
+            set({ isLoading: false })
         }
     },
 
     scan: async () => {
-        set({ scanCoursesIsLoading: true })
+        set({ isLoading: true, rootFolderScanLoading: true })
         try {
             const response = await window.api.folder.scan()
             if (response.success) {
@@ -77,7 +79,7 @@ export const useCourseFolderStore = create<CourseFolderStore>()((set) => ({
             console.error(error)
             toast.error("Erreur lors de l'analyse des cours")
         } finally {
-            set({ scanCoursesIsLoading: false })
+            set({ isLoading: false, rootFolderScanLoading: false })
         }
     },
 
@@ -85,5 +87,9 @@ export const useCourseFolderStore = create<CourseFolderStore>()((set) => ({
         set((state) => ({
             scannedCourses: state.scannedCourses.filter(({ metadata }) => metadata.id !== courseId)
         }))
+    },
+
+    setIsLoading: (isLoading: boolean) => {
+        set({ isLoading })
     }
 }))

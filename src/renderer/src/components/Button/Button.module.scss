@@ -1,5 +1,7 @@
 .button {
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     color: inherit;
 
@@ -14,15 +16,22 @@
     // Contained
     &.variant-contained {
         @include background-color('primary');
-        @include color('base-100');
+        @include color('base-1');
     }
 
     // Outlined
     &.variant-outlined {
+        // Styles existants
     }
 
     // Text
     &.variant-text {
         padding: 0.5rem;
+    }
+
+    &.loading {
+        opacity: 0.7;
+        cursor: wait;
+        pointer-events: none;
     }
 }

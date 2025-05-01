@@ -1,14 +1,21 @@
 // Libs
-import { CoursePage } from '../pages/CoursePage/CoursePage'
-import App from '@renderer/App'
+import { Layout } from '../layout'
 import { PAGE_PATH } from '@renderer/constants'
-import { CourseImporterPage, ErrorPage, HomePage, ProfilePage } from '@renderer/pages'
+import {
+    CourseImporterPage,
+    CoursePage,
+    CoursesListPage,
+    ErrorPage,
+    HomePage,
+    LessonPage,
+    ProfilePage
+} from '@renderer/pages'
 import { createHashRouter } from 'react-router-dom'
 
 export const router = createHashRouter([
     {
         path: PAGE_PATH.ROOT,
-        element: <App />,
+        element: <Layout />,
         errorElement: <ErrorPage />,
         children: [
             {
@@ -16,8 +23,26 @@ export const router = createHashRouter([
                 element: <HomePage />
             },
             {
-                path: `${PAGE_PATH.COURSES}/:courseId`,
-                element: <CoursePage />
+                path: PAGE_PATH.COURSES,
+                children: [
+                    {
+                        index: true,
+                        element: <CoursesListPage />
+                    },
+                    {
+                        path: `:courseId`,
+                        children: [
+                            {
+                                index: true,
+                                element: <CoursePage />
+                            },
+                            {
+                                path: `:chapterId/:lessonId`,
+                                element: <LessonPage />
+                            }
+                        ]
+                    }
+                ]
             },
             {
                 path: PAGE_PATH.COURSE_MANAGER,

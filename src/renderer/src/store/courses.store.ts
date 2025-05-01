@@ -11,9 +11,9 @@ interface CoursesState {
 
 interface CoursesAction {
     initialize: () => Promise<void>
-    addCourse: (courseDirName: string) => void
-    updateCourse: (courseDirName: string) => void
-    removeCourse: (courseId: string) => void
+    addCourse: (courseDirName: string) => Promise<void>
+    updateCourse: (courseDirName: string) => Promise<void>
+    removeCourse: (courseId: string) => Promise<void>
 }
 
 interface CoursesStore extends CoursesState, CoursesAction {}
@@ -71,7 +71,7 @@ export const useCoursesStore = create<CoursesStore>()((set) => ({
         useCourseFolderStore.getState().delete(course.id)
     },
 
-    removeCourse: (courseId: string) => {
+    removeCourse: async (courseId: string) => {
         set((state) => ({
             courses: state.courses.filter((course) => course.id !== courseId)
         }))

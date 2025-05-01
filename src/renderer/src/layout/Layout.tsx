@@ -1,10 +1,10 @@
-import { useInitializeStore } from './hooks/useInitializeStore.hooks'
-import { Header } from './layout'
-import { JSX } from 'react'
+import { useInitializeStore } from '../hooks'
+import { Header } from './components'
+import { FC } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Toaster } from 'sonner'
 
-function App(): JSX.Element {
+export const Layout: FC = () => {
     const isInitialized = useInitializeStore()
 
     return isInitialized ? (
@@ -21,5 +21,3 @@ function App(): JSX.Element {
         </main>
     )
 }
-
-export default App
