@@ -17,4 +17,10 @@ export class ChapterDatabaseManager {
     async create(data: CreateChapterParams): Promise<Chapter> {
         return await this.#prisma.chapter.create({ data })
     }
+
+    async getById(id: string): Promise<Chapter | null> {
+        return await this.#prisma.chapter.findUnique({
+            where: { id }
+        })
+    }
 }

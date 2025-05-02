@@ -2,7 +2,12 @@ import { LessonService } from '../services/lesson/lesson.service'
 import { IPC } from '@/constants'
 import { ipcMain } from 'electron'
 
-import { GetOneLessonIPCHandlerParams, GetOneLessonIPCHandlerReturn } from '@/types'
+import type {
+    GetNavigationElementIPCHandlerParams,
+    GetNavigationElementIPCHandlerReturn,
+    GetOneLessonIPCHandlerParams,
+    GetOneLessonIPCHandlerReturn
+} from '@/types'
 
 export const registerLessonIpcHandlers = (lessonService: LessonService) => {
     ipcMain.handle(
@@ -23,6 +28,32 @@ export const registerLessonIpcHandlers = (lessonService: LessonService) => {
                 return {
                     success: false,
                     message: `Erreur lors de la récupération de la leçon`
+                }
+            }
+        }
+    )
+
+    ipcMain.handle(
+        IPC.LESSON.GET_NAVIGATION_ELEMENT,
+        async (
+            _event,
+            { courseId, chapterId }: GetNavigationElementIPCHandlerParams
+        ): GetNavigationElementIPCHandlerReturn => {
+            try {
+                const navigationElement = await lessonService.getNavigationElement({
+                    courseId,
+                    chapterId
+                })
+                return {
+                    success: true,
+                    data: { navigationElement },
+                    message: 'Élément de navigation récupéré avec succès'
+                }
+            } catch (error) {
+                console.error('Error during import course:', error)
+                return {
+                    success: false,
+                    message: `Erreur lors de la récupération de l'élément de navigation`
                 }
             }
         }

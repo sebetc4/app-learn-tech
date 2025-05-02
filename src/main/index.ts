@@ -1,22 +1,16 @@
-import icon from '../../resources/icon.png?asset'
-import {
-    registerCourseIpcHandlers,
-    registerFolderIpcHandlers,
-    registerLessonIpcHandlers,
-    registerThemeIpcHandlers
-} from './ipc'
-import { registerCourseProtocol, registerIconProtocol } from './protocol'
-import {
-    CourseService,
-    FolderService,
-    LessonService,
-    StorageService,
-    ThemeService
-} from './services'
-import { DatabaseService } from './services/database'
-import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { BrowserWindow, app, ipcMain, shell } from 'electron'
-import { join } from 'path'
+import icon from '../../resources/icon.png?asset';
+import { registerCourseIpcHandlers, registerFolderIpcHandlers, registerLessonIpcHandlers, registerThemeIpcHandlers } from './ipc';
+import { registerCourseProtocol, registerIconProtocol } from './protocol';
+import { CourseService, FolderService, LessonService, StorageService, ThemeService } from './services';
+import { DatabaseService } from './services/database';
+import { PROTOCOL } from '@/constants';
+import { electronApp, is, optimizer } from '@electron-toolkit/utils';
+import { BrowserWindow, app, ipcMain, protocol, shell } from 'electron';
+import { join } from 'path';
+
+
+
+
 
 const createWindow = (): void => {
     const mainWindow = new BrowserWindow({
@@ -46,6 +40,19 @@ const createWindow = (): void => {
         mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
     }
 }
+
+protocol.registerSchemesAsPrivileged([
+    {
+        scheme: PROTOCOL.COURSE,
+        privileges: {
+            standard: true,
+            secure: true,
+            supportFetchAPI: true,
+            stream: true,
+            bypassCSP: true
+        }
+    }
+])
 
 const registerProtocols = (folderService: FolderService) => {
     registerCourseProtocol(folderService)
