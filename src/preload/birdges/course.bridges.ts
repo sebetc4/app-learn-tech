@@ -13,7 +13,7 @@ export const courseContextBridge = {
         ipcRenderer.invoke(IPC.COURSE.GET_ONE, params),
     getAll: () => ipcRenderer.invoke(IPC.COURSE.GET_ALL),
     addOne: (params: AddOneCourseIPCHandlerParams) =>
-        ipcRenderer.invoke(IPC.COURSE.ADD_ONE, params),
+        ipcRenderer.invoke(IPC.COURSE.CREATE_ONE, params),
     uploadOne: (params: UploadOneCourseIPCHandlerParams) =>
         ipcRenderer.invoke(IPC.COURSE.UPDATE_ONE, params),
     removeOne: (params: RemoveCourseIPCHandlerParams) =>

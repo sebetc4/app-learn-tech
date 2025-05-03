@@ -1,15 +1,11 @@
-import { DatabaseService } from '../database';
+import { DatabaseService } from '../database'
 
-
-
-import { LessonViewModel } from '@/types';
-
+import { LessonViewModel } from '@/types'
 
 interface GetNavigationElementParams {
     courseId: string
     chapterId: string
 }
-
 
 export class LessonService {
     #database: DatabaseService
@@ -30,7 +26,7 @@ export class LessonService {
         }
     }
 
-    async getNavigationElement({courseId, chapterId}: GetNavigationElementParams)  {
+    async getNavigationElement({ courseId, chapterId }: GetNavigationElementParams) {
         try {
             const course = await this.#database.course.getById(courseId)
             if (!course) {

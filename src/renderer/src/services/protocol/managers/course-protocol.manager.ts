@@ -3,9 +3,7 @@ export class CourseProtocolManager {
         return `course://${courseDirName}/icon.png`
     }
 
-    getVideoPath(videoPath: string): string {
+    getFilePath(videoPath: string): string {
         return `course://${videoPath}`
     }
-
-    
 }

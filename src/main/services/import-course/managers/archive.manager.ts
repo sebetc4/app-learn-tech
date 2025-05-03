@@ -21,10 +21,8 @@ export class ArchiveManager {
         try {
             console.log(`Extracting archive: ${zipFilePath}`)
 
-            // Extraire le nom de base du fichier zip (sans extension)
             const zipFileName = path.basename(zipFilePath, path.extname(zipFilePath))
 
-            // Créer le chemin de destination final basé sur le nom du fichier zip
             const finalDestPath = path.join(courseRootPath, zipFileName)
 
             const tempId = `extract_${Date.now()}`

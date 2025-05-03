@@ -4,6 +4,7 @@ import type {
     GetAllAlreadyImportedCourseIPCHandlerReturn,
     GetCoursesRootFolderIPCHandlerReturn,
     GetNavigationElementIPCHandlerParams,
+    GetNavigationElementIPCHandlerReturn,
     GetOneCourseIPCHandlerParams,
     GetOneCourseIPCHandlerReturn,
     GetOneLessonIPCHandlerParams,
@@ -42,7 +43,7 @@ export interface LessonAPI {
     getOne: (params: GetOneLessonIPCHandlerParams) => GetOneLessonIPCHandlerReturn
     getNavigationElement: (
         params: GetNavigationElementIPCHandlerParams
-    ) => GetOneLessonIPCHandlerReturn
+    ) => GetNavigationElementIPCHandlerReturn
 }
 
 export interface ThemeAPI {

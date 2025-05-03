@@ -1,16 +1,24 @@
-import icon from '../../resources/icon.png?asset';
-import { registerCourseIpcHandlers, registerFolderIpcHandlers, registerLessonIpcHandlers, registerThemeIpcHandlers } from './ipc';
-import { registerCourseProtocol, registerIconProtocol } from './protocol';
-import { CourseService, FolderService, LessonService, StorageService, ThemeService } from './services';
-import { DatabaseService } from './services/database';
-import { PROTOCOL } from '@/constants';
-import { electronApp, is, optimizer } from '@electron-toolkit/utils';
-import { BrowserWindow, app, ipcMain, protocol, shell } from 'electron';
-import { join } from 'path';
-
-
-
-
+import icon from '../../resources/icon.png?asset'
+import {
+    registerCourseIpcHandlers,
+    registerFolderIpcHandlers,
+    registerLessonIpcHandlers,
+    registerThemeIpcHandlers
+} from './ipc'
+import { registerCourseProtocol, registerIconProtocol } from './protocol'
+import {
+    CourseService,
+    FolderService,
+    ImportCourseService,
+    LessonService,
+    StorageService,
+    ThemeService
+} from './services'
+import { DatabaseService } from './services/database'
+import { PROTOCOL } from '@/constants'
+import { electronApp, is, optimizer } from '@electron-toolkit/utils'
+import { BrowserWindow, app, ipcMain, protocol, shell } from 'electron'
+import { join } from 'path'
 
 const createWindow = (): void => {
     const mainWindow = new BrowserWindow({
@@ -85,7 +93,9 @@ app.whenReady().then(async () => {
     const folderService = new FolderService(database)
     await folderService.initialize()
 
-    const courseService = new CourseService(database, storageService, folderService)
+    const importCourseService = new ImportCourseService(database, storageService, folderService)
+
+    const courseService = new CourseService(database, folderService, importCourseService)
 
     const lessonService = new LessonService(database)
 

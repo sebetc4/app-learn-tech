@@ -108,7 +108,7 @@ export const registerFolderIpcHandlers = (
             if (canceled || filePaths.length === 0) {
                 return { success: false, message: 'Aborted operation' }
             }
-            const course = await courseService.importCourseArchive(filePaths[0])
+            const course = await courseService.create(filePaths[0], 'archive')
 
             return {
                 success: true,
@@ -116,7 +116,7 @@ export const registerFolderIpcHandlers = (
                 message: 'Course imported successfully'
             }
         } catch (error) {
-            console.error('Error durring import course:', error)
+            console.error('Error during import course:', error)
             return {
                 success: false,
                 message: `Error during import: ${error instanceof Error ? error.message : 'Unknown error'}`

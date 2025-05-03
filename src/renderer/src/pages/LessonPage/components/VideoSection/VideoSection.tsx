@@ -25,7 +25,7 @@ export const VideoSection: FC<VideoSectionProps> = ({ videoPath }) => {
                     onCanPlay={() => console.log('Vidéo prête à être jouée')}
                 >
                     <source
-                        src={protocolService.course.getVideoPath(videoPath)}
+                        src={protocolService.course.getFilePath(videoPath)}
                         type="video/mp4"
                     />
                 </video>

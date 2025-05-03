@@ -1,0 +1,12 @@
+.navigation {
+    @include flex(null, null, 0.5rem);
+    margin: 2rem;
+
+    a {
+        transition: color 0.2s ease-in-out;
+
+        &:hover {
+            @include color('primary');
+        }
+    }
+}

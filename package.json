@@ -28,6 +28,8 @@
     "dependencies": {
         "@electron-toolkit/preload": "^3.0.2",
         "@electron-toolkit/utils": "^4.0.0",
+        "@mdx-js/loader": "^3.1.0",
+        "@mdx-js/react": "^3.1.0",
         "@prisma/client": "^6.7.0",
         "@radix-ui/react-navigation-menu": "^1.2.10",
         "adm-zip": "^0.5.16",

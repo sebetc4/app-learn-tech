@@ -8,7 +8,7 @@ interface CreatLessonParams {
     name: string
 
     type: LessonType
-    htmlPath?: string
+    mdxPath?: string
     videoPath?: string
     videoDuration?: number
 

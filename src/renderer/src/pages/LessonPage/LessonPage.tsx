@@ -1,8 +1,7 @@
-import { PAGE_PATH } from '../../constants'
 import styles from './LessonPage.module.scss'
-import { VideoSection } from './components'
+import { Navigation, TextSection, VideoSection } from './components'
 import { FC, useCallback, useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import { LessonViewModel } from '@/types'
 
@@ -25,19 +24,20 @@ export const LessonPage: FC = () => {
     const [loading, setLoading] = useState(true)
 
     const fetchNavigationElement = useCallback(async () => {
-        if (!courseId || !chapterId)
-            throw new Error('Course ID, Chapter ID are required')
+        if (!courseId || !chapterId) throw new Error('Course ID, Chapter ID are required')
         const response = await window.api.lesson.getNavigationElement({ courseId, chapterId })
+        console.log('response', response)
         if (response.success) {
+            const { course, chapter } = response.data.navigationElement
             setNavigationElement({
                 course: {
-                    id: response.data.course.id,
-                    name: response.data.course.name
+                    id: course.id,
+                    name: course.name
                 },
                 chapter: {
-                    id: response.data.chapter.id,
-                    name: response.data.chapter.name,
-                    position: response.data.chapter.position
+                    id: chapter.id,
+                    name: chapter.name,
+                    position: chapter.position
                 }
             })
         } else {
@@ -56,28 +56,31 @@ export const LessonPage: FC = () => {
         setLoading(false)
     }, [lessonId])
 
+    const fetchNavigationElementAndLesson = useCallback(async () => {
+        try {
+            await Promise.all([fetchNavigationElement(), fetchLesson()])
+        } catch (error) {
+            console.error(`Error fetching navigation element and lesson: ${error}`)
+        }
+    }, [fetchNavigationElement, fetchLesson])
+
     useEffect(() => {
-        fetchLesson()
-    }, [fetchLesson])
+        fetchNavigationElementAndLesson()
+    }, [fetchNavigationElementAndLesson])
     return !loading && lesson ? (
         <div className={styles.container}>
             {navigationElement && (
-                <nav className={styles.navigation}>
-                    <Link to={`${PAGE_PATH.COURSES}/${navigationElement.course.id}`}>
-                        {navigationElement.course.name}
-                    </Link>
-                    <span>{' > '}</span>
-                    <Link to={`${PAGE_PATH.COURSES}/${navigationElement.course.id}`}>
-                        {`${navigationElement.chapter.position} ${navigationElement.chapter.name}`}
-                    </Link>
-                    <span>{' > '}</span>
-                    <Link to={`${PAGE_PATH.COURSES}/${navigationElement.course.id}`}>
-                        {`${lesson.position} ${lesson.name}`}
-                    </Link>
-                </nav>
+                <Navigation
+                    course={navigationElement.course}
+                    chapter={navigationElement.chapter}
+                    lesson={lesson}
+                />
             )}
-            <h1>Leçon {lesson.name}</h1>
-            <VideoSection videoPath={lesson.videoPath!} />
+            <h1 className={styles.title}>{lesson.name}</h1>
+            {lesson.type !== 'TEXT' && lesson.videoPath && (
+                <VideoSection videoPath={lesson.videoPath} />
+            )}
+            {lesson.type !== 'VIDEO' && lesson.mdxPath && <TextSection mdxPath={lesson.mdxPath} />}
         </div>
     ) : (
         <p>Chargement...</p>

@@ -45,13 +45,13 @@ export const registerCourseIpcHandlers = (courseService: CourseService) => {
     })
 
     ipcMain.handle(
-        IPC.COURSE.ADD_ONE,
+        IPC.COURSE.CREATE_ONE,
         async (
             _event,
             { courseDirName }: AddOneCourseIPCHandlerParams
         ): AddOneCourseIPCHandlerReturn => {
             try {
-                const course = await courseService.addOne(courseDirName)
+                const course = await courseService.create(courseDirName, 'directory')
                 return {
                     success: true,
                     data: { course },
