@@ -29,8 +29,6 @@ export class LessonManager {
                 this.#processLessonCodeSnippets(lessonData.id, lessonData.codeSnippets),
                 this.#processLessonResources(lessonData.id, lessonData.resources)
             ])
-
-            console.log(`Lesson "${lessonData.name}" created in database`)
         } catch (error) {
             console.error('Error creating lesson in database:', error)
         }
@@ -39,10 +37,10 @@ export class LessonManager {
     #lessonAssetPaths(
         lessonDir: string,
         lessonData: LessonMetadata
-    ): { mdxPath?: string; videoPath?: string; videoDuration?: number } {
+    ): { jsxPath?: string; videoPath?: string; videoDuration?: number } {
         if (lessonData.type === 'TEXT') {
             return {
-                mdxPath: path.join(lessonDir, 'course.mdx')
+                jsxPath: path.join(lessonDir, 'CourseContent.jsx')
             }
         } else if (lessonData.type === 'VIDEO') {
             return {
@@ -51,7 +49,7 @@ export class LessonManager {
             }
         } else if (lessonData.type === 'TEXT_AND_VIDEO') {
             return {
-                mdxPath: path.join(lessonDir, 'course.mdx'),
+                jsxPath: path.join(lessonDir, 'CourseContent.jsx'),
                 videoPath: path.join(lessonDir, 'video.mp4'),
                 videoDuration: lessonData.videoDuration
             }
@@ -68,7 +66,6 @@ export class LessonManager {
                     lessonId
                 })
             }
-            console.log(`Code snippets for lesson ${lessonId} processed`)
         } catch (error) {
             console.error('Error processing lesson code snippets:', error)
             throw error
@@ -85,7 +82,6 @@ export class LessonManager {
                     lessonId: lessonId
                 })
             }
-            console.log(`Resources for lesson ${lessonId} processed`)
         } catch (error) {
             console.error('Error processing lesson resources:', error)
             throw error

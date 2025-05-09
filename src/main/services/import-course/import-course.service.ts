@@ -30,8 +30,6 @@ export class ImportCourseService {
 
     async importArchive(zipFilePath: string): Promise<CoursePreview> {
         try {
-            console.log(`Starting course import from ${zipFilePath}`)
-
             const rootPath = this.#getRootPath()
 
             const courseDirPath = await this.#archiveManager.extractArchive(zipFilePath, rootPath)
@@ -40,11 +38,8 @@ export class ImportCourseService {
             const metadataContent = fs.readFileSync(metadataPath, 'utf8')
             const courseData: CourseMetadata = JSON.parse(metadataContent)
 
-            console.log(`Importing course "${courseData.name}" (ID: ${courseData.id})`)
-
             const coursePreview = await this.#courseManager.process(courseData, courseDirPath)
 
-            console.log(`Course "${courseData.name}" successfully imported`)
             return coursePreview
         } catch (error) {
             console.error(`Error during course import: ${error}`)

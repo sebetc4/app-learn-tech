@@ -10,7 +10,7 @@ model Lesson {
   name     String
 
   type      LessonType
-  mdxPath  String?    @map("mdx_path")
+  jsxPath  String?    @map("jsx_path")
   videoPath String?    @map("video_path")
   videoDuration Int?      @map("video_duration")
 

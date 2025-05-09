@@ -23,8 +23,6 @@ export class ChapterManager {
             for (const lessonData of chapterData.lessons) {
                 await this.#lessonManager.process(courseId, chapterData.id, lessonData)
             }
-
-            console.log(`Chapter "${chapterData.name}" created in database`)
         } catch (error) {
             console.error('Error creating chapter in database:', error)
         }

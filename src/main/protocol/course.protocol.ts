@@ -5,7 +5,66 @@ import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
 
-function nodeStreamToWeb(nodeStream: fs.ReadStream): ReadableStream {
+export const registerCourseProtocol = (folderService: FolderService) => {
+    protocol.handle(PROTOCOL.COURSE, async (request) => {
+        try {
+            const coursesRootPath = folderService.rootPath
+            if (!coursesRootPath) {
+                return new Response('Courses root path is not set', {
+                    status: 500,
+                    headers: { 'Content-Type': 'text/plain' }
+                })
+            }
+
+            const url = new URL(request.url)
+            let relativePath = url.host
+            let pathnamePart = decodeURIComponent(url.pathname)
+            if (pathnamePart.startsWith('/')) {
+                pathnamePart = pathnamePart.substring(1)
+            }
+            if (pathnamePart) {
+                relativePath = path.join(relativePath, pathnamePart)
+            }
+
+            const filePath = path.join(coursesRootPath, relativePath)
+
+            if (!filePath.startsWith(coursesRootPath)) {
+                return new Response('Access denied', {
+                    status: 403,
+                    headers: { 'Content-Type': 'text/plain' }
+                })
+            }
+
+            if (!fs.existsSync(filePath)) {
+                return new Response(`Media not found: ${relativePath}`, {
+                    status: 404,
+                    headers: { 'Content-Type': 'text/plain' }
+                })
+            }
+
+            const ext = path.extname(filePath).toLowerCase()
+
+            if (isVideo(ext)) {
+                return handleVideoRequest(filePath, request, ext)
+            } else if (isJavaScript(ext)) {
+                return handleJavaScriptRequest(filePath)
+            } else {
+                return handleOtherRequest(filePath, ext)
+            }
+        } catch (error) {
+            console.error('Course protocol error:', error)
+            return new Response(
+                `Internal Error: ${error instanceof Error ? error.message : String(error)}`,
+                {
+                    status: 500,
+                    headers: { 'Content-Type': 'text/plain' }
+                }
+            )
+        }
+    })
+}
+
+const nodeStreamToWeb = (nodeStream: fs.ReadStream): ReadableStream => {
     return new ReadableStream({
         start(controller) {
             nodeStream.on('data', (chunk) => {
@@ -86,6 +145,30 @@ const handleVideoRequest = (filePath: string, request: Request, ext: string) => 
 }
 const isVideo = (ext: string) => ['.mp4', '.webm', '.mov', '.avi', '.mkv'].includes(ext)
 
+const isJavaScript = (ext: string) => ['.js', '.jsx', '.mjs'].includes(ext)
+
+const handleJavaScriptRequest = (filePath: string) => {
+    try {
+        const content = fs.readFileSync(filePath, 'utf-8')
+
+        return new Response(content, {
+            headers: {
+                'Content-Type': 'application/javascript; charset=utf-8',
+                'Cache-Control': 'no-cache'
+            }
+        })
+    } catch (error) {
+        console.error('Error handling JavaScript file:', error)
+        return new Response(
+            `Error reading JavaScript file: ${error instanceof Error ? error.message : String(error)}`,
+            {
+                status: 500,
+                headers: { 'Content-Type': 'text/plain' }
+            }
+        )
+    }
+}
+
 const contentType = (ext: string) => {
     switch (ext) {
         case '.mp4':
@@ -98,66 +181,40 @@ const contentType = (ext: string) => {
             return 'video/x-msvideo'
         case '.mkv':
             return 'video/x-matroska'
+        case '.js':
+        case '.jsx':
+        case '.mjs':
+            return 'application/javascript; charset=utf-8'
+        case '.css':
+            return 'text/css; charset=utf-8'
+        case '.html':
+            return 'text/html; charset=utf-8'
+        case '.json':
+            return 'application/json; charset=utf-8'
+        case '.png':
+            return 'image/png'
+        case '.jpg':
+        case '.jpeg':
+            return 'image/jpeg'
+        case '.svg':
+            return 'image/svg+xml'
+        case '.pdf':
+            return 'application/pdf'
         default:
             return 'application/octet-stream'
     }
 }
 
-const handleOtherRequest = (filePath: string) => {
-    return net.fetch(pathToFileURL(filePath).toString())
-}
-
-export const registerCourseProtocol = (folderService: FolderService) => {
-    protocol.handle(PROTOCOL.COURSE, async (request) => {
-        try {
-            const coursesRootPath = folderService.rootPath
-            if (!coursesRootPath) {
-                return new Response('Courses root path is not set', {
-                    status: 500,
-                    headers: { 'Content-Type': 'text/plain' }
-                })
+const handleOtherRequest = (filePath: string, ext: string) => {
+    try {
+        const content = fs.readFileSync(filePath)
+        return new Response(content, {
+            headers: {
+                'Content-Type': contentType(ext),
+                'Cache-Control': 'public, max-age=3600'
             }
-
-            const url = new URL(request.url)
-            let relativePath = url.host
-            let pathnamePart = decodeURIComponent(url.pathname)
-            if (pathnamePart.startsWith('/')) {
-                pathnamePart = pathnamePart.substring(1)
-            }
-            if (pathnamePart) {
-                relativePath = path.join(relativePath, pathnamePart)
-            }
-
-            const filePath = path.join(coursesRootPath, relativePath)
-
-            if (!filePath.startsWith(coursesRootPath)) {
-                return new Response('Access denied', {
-                    status: 403,
-                    headers: { 'Content-Type': 'text/plain' }
-                })
-            }
-
-            if (!fs.existsSync(filePath)) {
-                return new Response(`Media not found: ${relativePath}`, {
-                    status: 404,
-                    headers: { 'Content-Type': 'text/plain' }
-                })
-            }
-
-            const ext = path.extname(filePath).toLowerCase()
-
-            return isVideo(ext)
-                ? handleVideoRequest(filePath, request, ext)
-                : handleOtherRequest(filePath)
-        } catch (error) {
-            console.error('Course protocol error:', error)
-            return new Response(
-                `Internal Error: ${error instanceof Error ? error.message : String(error)}`,
-                {
-                    status: 500,
-                    headers: { 'Content-Type': 'text/plain' }
-                }
-            )
-        }
-    })
+        })
+    } catch {
+        return net.fetch(pathToFileURL(filePath).toString())
+    }
 }

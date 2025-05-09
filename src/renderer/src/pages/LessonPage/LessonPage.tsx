@@ -26,7 +26,6 @@ export const LessonPage: FC = () => {
     const fetchNavigationElement = useCallback(async () => {
         if (!courseId || !chapterId) throw new Error('Course ID, Chapter ID are required')
         const response = await window.api.lesson.getNavigationElement({ courseId, chapterId })
-        console.log('response', response)
         if (response.success) {
             const { course, chapter } = response.data.navigationElement
             setNavigationElement({
@@ -80,7 +79,7 @@ export const LessonPage: FC = () => {
             {lesson.type !== 'TEXT' && lesson.videoPath && (
                 <VideoSection videoPath={lesson.videoPath} />
             )}
-            {lesson.type !== 'VIDEO' && lesson.mdxPath && <TextSection mdxPath={lesson.mdxPath} />}
+            {lesson.type !== 'VIDEO' && lesson.jsxPath && <TextSection jsxPath={lesson.jsxPath} />}
         </div>
     ) : (
         <p>Chargement...</p>

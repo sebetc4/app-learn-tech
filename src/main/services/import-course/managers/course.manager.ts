@@ -55,7 +55,6 @@ export class CourseManager {
 
             for (const chapterData of chapters) await this.#chapterManager.process(id, chapterData)
 
-            console.log(`Course "${name}" created in database`)
             return {
                 id,
                 name,
@@ -77,8 +76,6 @@ export class CourseManager {
             await this.#database.course.deleteById(courseMetadata.id)
 
             const coursePreview = await this.#createCourse(courseMetadata, courseDirPath)
-
-            console.log(`Course "${courseMetadata.name}" updated in database`)
 
             return coursePreview
         } catch (error) {

@@ -75,7 +75,7 @@ const registerIpcHandlers = (
 ) => {
     registerFolderIpcHandlers(courseService, folderService)
     registerCourseIpcHandlers(courseService)
-    registerLessonIpcHandlers(lessonService)
+    registerLessonIpcHandlers(lessonService, folderService)
     registerThemeIpcHandlers(themeService)
 }
 

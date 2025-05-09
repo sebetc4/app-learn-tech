@@ -29,3 +29,15 @@ export type GetNavigationElementIPCHandlerReturn = IPCHandlerReturnWithData<{
         }
     }
 }>
+
+// Get MDX Content
+export type GetJSXLessonContentIPCHandlerParams = {
+    jsxPath: string
+}
+
+export type GetJSXLessonContentIPCHandlerReturn = IPCHandlerReturnWithData<{
+    jsxContent: string
+    dependencies: {
+        [key: string]: string
+    }
+}>

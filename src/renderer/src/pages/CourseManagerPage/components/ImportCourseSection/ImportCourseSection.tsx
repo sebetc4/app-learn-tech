@@ -1,7 +1,7 @@
 import styles from './ImportCourseSection.module.scss'
 import { ImportCourseCard } from './components'
-import { Button } from '@/renderer/src/components'
-import { useCourseFolderStore } from '@/renderer/src/store'
+import { Button } from '@renderer/components'
+import { useCourseFolderStore } from '@renderer/store'
 import { CircleArrowDown, RefreshCw } from 'lucide-react'
 import { type FC } from 'react'
 

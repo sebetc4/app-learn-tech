@@ -19,8 +19,6 @@ export class ArchiveManager {
 
     public async extractArchive(zipFilePath: string, courseRootPath: string) {
         try {
-            console.log(`Extracting archive: ${zipFilePath}`)
-
             const zipFileName = path.basename(zipFilePath, path.extname(zipFilePath))
 
             const finalDestPath = path.join(courseRootPath, zipFileName)
@@ -38,7 +36,6 @@ export class ArchiveManager {
 
             const metadataContent = fs.readFileSync(metadataPath, 'utf8')
             const courseMetadata: CourseMetadata = JSON.parse(metadataContent)
-            console.log(`Imported course data:`, courseMetadata.name)
 
             fs.mkdirSync(path.dirname(finalDestPath), { recursive: true })
 
@@ -61,7 +58,6 @@ export class ArchiveManager {
                     ? `powershell -command "Expand-Archive -Path '${zipFilePath}' -DestinationPath '${extractPath}' -Force"`
                     : `unzip -o "${zipFilePath}" -d "${extractPath}"`
             await execPromise(cmd)
-            console.log(`File ${zipFilePath} extracted to ${extractPath}`)
         } catch (error) {
             console.error(`Error extracting file ${zipFilePath}: ${error}`)
             throw error

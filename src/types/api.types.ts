@@ -3,11 +3,14 @@ import type {
     AddOneCourseIPCHandlerReturn,
     GetAllAlreadyImportedCourseIPCHandlerReturn,
     GetCoursesRootFolderIPCHandlerReturn,
+    GetJSXLessonContentIPCHandlerParams,
+    GetJSXLessonContentIPCHandlerReturn,
     GetNavigationElementIPCHandlerParams,
     GetNavigationElementIPCHandlerReturn,
     GetOneCourseIPCHandlerParams,
     GetOneCourseIPCHandlerReturn,
     GetOneLessonIPCHandlerParams,
+    GetOneLessonIPCHandlerReturn,
     GetThemeIPCHandlerReturn,
     ImportCourseArchiveIPCHandlerReturn,
     RemoveCourseIPCHandlerParams,
@@ -21,7 +24,6 @@ import type {
     UploadOneCourseIPCHandlerParams,
     UploadOneCourseIPCHandlerReturn
 } from './ipc'
-import { GetOneLessonIPCHandlerReturn } from './ipc/lesson-ipc.types'
 
 export interface FolderAPI {
     getRoot: () => GetCoursesRootFolderIPCHandlerReturn
@@ -44,6 +46,9 @@ export interface LessonAPI {
     getNavigationElement: (
         params: GetNavigationElementIPCHandlerParams
     ) => GetNavigationElementIPCHandlerReturn
+    getJSXContent: (
+        params: GetJSXLessonContentIPCHandlerParams
+    ) => GetJSXLessonContentIPCHandlerReturn
 }
 
 export interface ThemeAPI {

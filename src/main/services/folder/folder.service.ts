@@ -60,6 +60,13 @@ export class FolderService {
         }
     }
 
+    getFullPath(relativePath: string): string {
+        if (!this.#rootPath) {
+            throw new Error('Root folder path is not set')
+        }
+        return path.join(this.#rootPath, relativePath)
+    }
+
     async scanForCourses(): Promise<CourseMetadataAndDirectory[]> {
         try {
             const rootPath = await this.#database.setting.get<string>('COURSES_ROOT_FOLDER')
@@ -81,9 +88,6 @@ export class FolderService {
                             const metadataContent = fs.readFileSync(metadataPath, 'utf8')
                             const courseMetadata: CourseMetadata = JSON.parse(metadataContent)
                             courses.push({ metadata: courseMetadata, directory: dir.name })
-                            console.log(
-                                `Course found: ${courseMetadata.name} (ID: ${courseMetadata.id})`
-                            )
                         } catch (error) {
                             console.error(
                                 `Error reading metadata.json file in ${courseDirPath}:`,

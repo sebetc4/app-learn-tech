@@ -77,8 +77,6 @@ export class CourseService {
             if (fs.existsSync(courseDirPath)) {
                 fs.rmSync(courseDirPath, { recursive: true, force: true })
             }
-
-            console.log(`Course ${course.id} successfully removed`)
         } catch (error) {
             console.error(`Error removing course: ${error}`)
             throw error

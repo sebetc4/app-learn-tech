@@ -1,2 +1,3 @@
 export { Button } from './Button/Button'
-export { MDXComponent } from './MDXComponent/MDXComponent'
+export { CodeSnippet } from './course/CodeSnippet/CodeSnippet'
+export { CourseImage } from './course/CourseImage/CourseImage'
