@@ -8,8 +8,8 @@ interface VideoSectionProps {
 
 export const VideoSection: FC<VideoSectionProps> = ({ videoPath }) => {
     return (
-        <section className={styles.video}>
-            <div className={styles['video__container']}>
+        <section className={styles.section}>
+            <div className={styles['video-container']}>
                 <video
                     width="100%"
                     height="100%"

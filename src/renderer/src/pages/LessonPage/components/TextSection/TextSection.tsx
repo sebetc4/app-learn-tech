@@ -1,3 +1,4 @@
+import styles from './TextSection.module.scss'
 import { CodeSnippet, CourseImage } from '@/renderer/src/components'
 import * as babel from '@babel/standalone'
 import React, { ComponentType, FC, useEffect, useState } from 'react'
@@ -19,8 +20,6 @@ interface CompiledModuleExports {
 export const TextSection: FC<TextSectionProps> = ({ jsxPath }) => {
     const [CompiledComponent, setCompiledComponent] =
         useState<ComponentType<CompiledComponentProps> | null>(null)
-    const [error, setError] = useState<string | null>(null)
-    const [loading, setLoading] = useState<boolean>(true)
 
     const compileJsx = (jsx: string): ComponentType<CompiledComponentProps> => {
         try {
@@ -60,9 +59,6 @@ export const TextSection: FC<TextSectionProps> = ({ jsxPath }) => {
     useEffect(() => {
         const loadCourseContent = async () => {
             try {
-                setLoading(true)
-                setError(null)
-
                 const response = await window.api.lesson.getJSXContent({ jsxPath })
 
                 if (response.success) {
@@ -74,13 +70,6 @@ export const TextSection: FC<TextSectionProps> = ({ jsxPath }) => {
                 }
             } catch (err) {
                 console.error('Erreur lors du chargement du contenu:', err)
-                setError(
-                    typeof err === 'object' && err !== null && 'message' in err
-                        ? String(err.message)
-                        : 'Erreur inconnue'
-                )
-            } finally {
-                setLoading(false)
             }
         }
 
@@ -93,24 +82,14 @@ export const TextSection: FC<TextSectionProps> = ({ jsxPath }) => {
         }
     }, [jsxPath])
 
-    if (loading) {
-        return <div className="loading">Chargement du contenu du cours...</div>
-    }
-
-    if (error) {
-        return <div className="error">Erreur: {error}</div>
-    }
-
-    if (!CompiledComponent) {
-        return <div className="empty">Aucun contenu disponible</div>
-    }
-
     return (
-        <div className="course-content">
-            <CompiledComponent
-                CodeSnippet={CodeSnippet}
-                CourseImage={CourseImage}
-            />
-        </div>
+        <section className={styles.section}>
+            {CompiledComponent && (
+                <CompiledComponent
+                    CodeSnippet={CodeSnippet}
+                    CourseImage={CourseImage}
+                />
+            )}
+        </section>
     )
 }

@@ -1,0 +1,164 @@
+.section {
+    margin: 2rem;
+
+    h3 {
+        border-top: 2px solid #d7dad7;
+        padding-top: 2rem;
+        font-size: 1.6rem;
+        @include color('primary');
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Paragraphs */
+    p {
+        margin-bottom: var(--text-margin);
+        text-align: justify;
+    }
+
+    /* Highlighting important terms */
+    strong {
+        font-weight: 600;
+    }
+
+    em {
+        font-style: italic;
+        color: var(--header-color);
+    }
+
+    /* Links */
+    a {
+        color: var(--link-color);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    a:hover {
+        color: var(--link-hover-color);
+    }
+
+    /* Table styles */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: var(--section-margin) 0;
+        font-size: 0.95rem;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+    }
+
+    thead {
+        background-color: var(--primary-color);
+        color: var(--background-color);
+    }
+
+    th {
+        text-align: left;
+        padding: 0.75rem 1rem;
+        font-weight: 600;
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    th:last-child {
+        border-right: none;
+    }
+
+    td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--separator-color);
+        border-right: 1px solid var(--separator-color);
+    }
+
+    td:last-child {
+        border-right: none;
+    }
+
+    tr:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+
+    [data-theme='dark'] tr:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    tr:hover {
+        background-color: rgba(42, 126, 59, 0.05);
+    }
+
+    [data-theme='dark'] tr:hover {
+        background-color: rgba(70, 167, 88, 0.05);
+    }
+
+    /* Code toolbar */
+    .code-toolbar {
+        position: relative;
+    }
+
+    .toolbar {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .copy-to-clipboard-button {
+        background-color: #f0f0f0;
+        border: none;
+        border-radius: 3px;
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        color: #555;
+    }
+
+    .copy-to-clipboard-button:hover {
+        background-color: #e0e0e0;
+    }
+
+    /* Lists */
+    ul {
+        padding-left: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    ul li {
+        margin-bottom: 0.8rem;
+    }
+
+    ul ul {
+        margin-top: 0.8rem;
+    }
+
+    /* Video */
+    .video-container {
+        max-width: 100%;
+        aspect-ratio: 16 / 9;
+    }
+
+    /* Buttons */
+    .button-primary {
+        display: inline-block;
+        background-color: var(--primary-color);
+        color: var(--button-color);
+        padding: var(--button-padding);
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: 600;
+        transition: transform 0.2s;
+    }
+
+    .button-primary:hover {
+        color: var(--button-color);
+        transform: scale(1.03);
+    }
+
+    /* Images */
+    img {
+        max-width: 100%;
+        border-radius: var(--code-border-radius);
+        margin: var(--section-margin) auto;
+        display: block;
+        box-shadow: var(--card-shadow);
+    }
+}
