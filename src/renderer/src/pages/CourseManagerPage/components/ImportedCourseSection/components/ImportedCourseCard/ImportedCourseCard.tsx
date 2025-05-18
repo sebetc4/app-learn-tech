@@ -1,4 +1,5 @@
 import styles from './ImportedCourseCard.module.scss'
+import { protocolService } from '@/renderer/src/services'
 import { FC } from 'react'
 
 import type { CoursePreview } from '@/types'
@@ -8,11 +9,11 @@ interface ImportedCourseCardProps {
 }
 
 export const ImportedCourseCard: FC<ImportedCourseCardProps> = ({ course }) => {
-    const { name, description, iconPath } = course
+    const { name, description, folderName } = course
     return (
         <li className={styles.card}>
             <img
-                src={iconPath}
+                src={protocolService.course.getIconPath(folderName)}
                 alt={course.name}
                 className={styles['card__icon']}
             />

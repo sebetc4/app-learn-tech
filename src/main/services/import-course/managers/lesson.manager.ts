@@ -1,7 +1,10 @@
 import { DatabaseService } from '../../database'
-import path from 'path'
 
 import type { CodeSnippetMetadata, LessonMetadata, ResourceMetadata } from '@/types'
+
+interface ProcessParams extends LessonMetadata {
+    courseId: string
+}
 
 export class LessonManager {
     #database: DatabaseService
@@ -10,51 +13,36 @@ export class LessonManager {
         this.#database = database
     }
 
-    process = async (courseId: string, chapterId: string, lessonData: LessonMetadata) => {
+    process = async (
+        chapterId: string,
+        {
+            id,
+            name,
+            position,
+            type,
+            videoDuration,
+            codeSnippets,
+            resources,
+            courseId
+        }: ProcessParams
+    ) => {
         try {
-            const lessonDir = path.join(courseId, 'chapters', chapterId, lessonData.id)
-
-            const assetPaths = this.#lessonAssetPaths(lessonDir, lessonData)
-
             await this.#database.lesson.create({
-                id: lessonData.id,
-                name: lessonData.name,
-                position: lessonData.position,
-                chapterId: chapterId,
-                type: lessonData.type,
-                ...assetPaths
+                id,
+                name,
+                position,
+                type,
+                videoDuration,
+                chapterId,
+                courseId
             })
 
             await Promise.all([
-                this.#processLessonCodeSnippets(lessonData.id, lessonData.codeSnippets),
-                this.#processLessonResources(lessonData.id, lessonData.resources)
+                this.#processLessonCodeSnippets(id, codeSnippets),
+                this.#processLessonResources(id, resources)
             ])
         } catch (error) {
             console.error('Error creating lesson in database:', error)
-        }
-    }
-
-    #lessonAssetPaths(
-        lessonDir: string,
-        lessonData: LessonMetadata
-    ): { jsxPath?: string; videoPath?: string; videoDuration?: number } {
-        if (lessonData.type === 'TEXT') {
-            return {
-                jsxPath: path.join(lessonDir, 'CourseContent.jsx')
-            }
-        } else if (lessonData.type === 'VIDEO') {
-            return {
-                videoPath: path.join(lessonDir, 'video.mp4'),
-                videoDuration: lessonData.videoDuration
-            }
-        } else if (lessonData.type === 'TEXT_AND_VIDEO') {
-            return {
-                jsxPath: path.join(lessonDir, 'CourseContent.jsx'),
-                videoPath: path.join(lessonDir, 'video.mp4'),
-                videoDuration: lessonData.videoDuration
-            }
-        } else {
-            throw new Error(`Unknown lesson type: ${lessonData.type}`)
         }
     }
 

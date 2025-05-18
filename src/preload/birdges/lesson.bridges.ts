@@ -1,13 +1,18 @@
 import { IPC } from '@/constants'
 import { ipcRenderer } from 'electron'
 
-import { GetJSXLessonContentIPCHandlerParams, GetOneLessonIPCHandlerParams } from '@/types'
+import type {
+    GetCodeSnippetContentIPCHandlerParams,
+    GetJSXLessonContentIPCHandlerParams,
+    GetLessonDataIPCHandlerParams,
+    LessonAPI
+} from '@/types'
 
-export const lessonContextBridge = {
-    getOne: (params: GetOneLessonIPCHandlerParams) =>
-        ipcRenderer.invoke(IPC.LESSON.GET_ONE, params),
-    getNavigationElement: (params: { courseId: string; chapterId: string }) =>
-        ipcRenderer.invoke(IPC.LESSON.GET_NAVIGATION_ELEMENT, params),
+export const lessonContextBridge: LessonAPI = {
+    getData: (params: GetLessonDataIPCHandlerParams) =>
+        ipcRenderer.invoke(IPC.LESSON.GET_DATA, params),
     getJSXContent: (params: GetJSXLessonContentIPCHandlerParams) =>
-        ipcRenderer.invoke(IPC.LESSON.GET_JSX_CONTENT, params)
+        ipcRenderer.invoke(IPC.LESSON.GET_JSX_CONTENT, params),
+    getCodeSnippetContent: (params: GetCodeSnippetContentIPCHandlerParams) =>
+        ipcRenderer.invoke(IPC.LESSON.GET_CODE_SNIPPET_CONTENT, params)
 }

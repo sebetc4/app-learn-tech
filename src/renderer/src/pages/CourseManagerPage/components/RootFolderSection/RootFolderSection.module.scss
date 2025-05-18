@@ -8,7 +8,7 @@
 
     &__content {
         padding: 2rem;
-        @include background-color('base-4');
+        @include bg-color('base-4');
         @include flex(space-between, center, 2rem);
     }
 }

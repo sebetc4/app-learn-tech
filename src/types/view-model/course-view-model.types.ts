@@ -1,4 +1,4 @@
-import { Course } from '@prisma/client'
+import { Course, LessonType } from '@prisma/client'
 
 export interface CourseViewModel extends Course {
     chapters: {
@@ -9,9 +9,10 @@ export interface CourseViewModel extends Course {
             id: string
             position: number
             name: string
-            type: string
+            type: LessonType
+            videoDuration: number | null
         }[]
     }[]
 }
 
-export type CoursePreview = Pick<Course, 'id' | 'name' | 'description' | 'iconPath' | 'buildAt'>
+export type CoursePreview = Pick<Course, 'id' | 'name' | 'description' | 'folderName' | 'buildAt'>

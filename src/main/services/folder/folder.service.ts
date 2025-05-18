@@ -60,7 +60,7 @@ export class FolderService {
         }
     }
 
-    getFullPath(relativePath: string): string {
+    getPathFromFolder(relativePath: string): string {
         if (!this.#rootPath) {
             throw new Error('Root folder path is not set')
         }

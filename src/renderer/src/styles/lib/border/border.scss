@@ -1,0 +1,20 @@
+@use '../core/get-color' as *;
+@mixin border($color, $width: 1px, $style: solid, $alpha: 1) {
+  border: $width $style get-color($color, $alpha);
+}
+
+@mixin border-top($color, $width: 1px, $style: solid, $alpha: 1) {
+  border-top: $width $style get-color($color, $alpha);
+}
+
+@mixin border-right($color, $width: 1px, $style: solid, $alpha: 1) {
+  border-right: $width $style get-color($color, $alpha);
+}
+
+@mixin border-bottom($color, $width: 1px, $style: solid, $alpha: 1) {
+  border-bottom: $width $style get-color($color, $alpha);
+}
+
+@mixin border-left($color, $width: 1px, $style: solid, $alpha: 1) {
+  border-left: $width $style get-color($color, $alpha);
+}

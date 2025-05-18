@@ -3,10 +3,11 @@ model Course {
   name        String @unique
   description String
 
-  iconPath String
-  buildAt String
+  folderName String @unique @map("folder_name")
+  buildAt    String @map("build_at")
 
   chapters Chapter[]
+  lessons  Lesson[]
 
   @@map("courses")
 }

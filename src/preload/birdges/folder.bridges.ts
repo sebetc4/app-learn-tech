@@ -1,7 +1,9 @@
 import { IPC } from '@/constants'
 import { ipcRenderer } from 'electron'
 
-export const folderContextBridge = {
+import { FolderAPI } from '@/types'
+
+export const folderContextBridge: FolderAPI = {
     // Root
     getRoot: () => ipcRenderer.invoke(IPC.FOLDER.GET_ROOT),
     setRoot: () => ipcRenderer.invoke(IPC.FOLDER.SET_ROOT),

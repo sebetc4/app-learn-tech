@@ -9,7 +9,7 @@
 
     &__content {
         padding: 2rem;
-        @include background-color('base-4');
+        @include bg-color('base-4');
 
         ul {
             @include flex(center, null, 2rem);

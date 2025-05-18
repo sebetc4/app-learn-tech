@@ -8,11 +8,10 @@ interface CreatLessonParams {
     name: string
 
     type: LessonType
-    jsxPath?: string
-    videoPath?: string
     videoDuration?: number
 
     chapterId: string
+    courseId: string
 }
 
 export class LessonDatabaseManager {
@@ -47,5 +46,31 @@ export class LessonDatabaseManager {
                 }
             }
         })
+    }
+
+    async getAdjacentLessons(courseId: string, currentLessonPosition: number) {
+        const previousLesson =
+            currentLessonPosition > 1
+                ? await this.#prisma.lesson.findFirst({
+                      where: {
+                          courseId,
+                          position: currentLessonPosition - 1
+                      },
+                      select: { id: true }
+                  })
+                : null
+
+        const nextLesson = await this.#prisma.lesson.findFirst({
+            where: {
+                courseId,
+                position: currentLessonPosition + 1
+            },
+            select: { id: true }
+        })
+
+        return {
+            previousLessonId: previousLesson?.id || null,
+            nextLessonId: nextLesson?.id || null
+        }
     }
 }

@@ -1,12 +1,18 @@
 import styles from './VideoSection.module.scss'
 import { protocolService } from '@/renderer/src/services'
+import { useLessonStore } from '@/renderer/src/store/lesson.store'
 import { FC } from 'react'
 
-interface VideoSectionProps {
-    videoPath: string
-}
+export const VideoSection: FC = () => {
+    const courseId = useLessonStore((state) => state.course?.id)
+    const chapterId = useLessonStore((state) => state.chapter?.id)
+    const lessonId = useLessonStore((state) => state.lesson?.id)
 
-export const VideoSection: FC<VideoSectionProps> = ({ videoPath }) => {
+    if (!courseId || !chapterId || !lessonId) {
+        console.error('Navigation: Missing courseId, chapterId, or lessonId data')
+        return null
+    }
+
     return (
         <section className={styles.section}>
             <div className={styles['video-container']}>
@@ -22,7 +28,12 @@ export const VideoSection: FC<VideoSectionProps> = ({ videoPath }) => {
                     }}
                 >
                     <source
-                        src={protocolService.course.getFilePath(videoPath)}
+                        src={protocolService.course.getFilePath(
+                            courseId,
+                            chapterId,
+                            lessonId,
+                            'video.mp4'
+                        )}
                         type="video/mp4"
                     />
                 </video>

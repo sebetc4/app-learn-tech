@@ -1,27 +1,54 @@
 import styles from './TextSection.module.scss'
 import { CodeSnippet, CourseImage } from '@/renderer/src/components'
+import { useLessonStore } from '@/renderer/src/store/lesson.store'
 import * as babel from '@babel/standalone'
-import React, { ComponentType, FC, useEffect, useState } from 'react'
-
-interface TextSectionProps {
-    jsxPath: string
-}
+import React, { ComponentType, FC, useCallback, useEffect, useState } from 'react'
 
 interface CompiledComponentProps {
-    CodeSnippet: ComponentType
-    CourseImage: ComponentType
+    CodeSnippet: typeof CodeSnippet
+    CourseImage: typeof CourseImage
 }
+
+type CompiledComponent = ComponentType<CompiledComponentProps>
 
 interface CompiledModuleExports {
     CourseContent?: ComponentType<CompiledComponentProps>
     default?: ComponentType<CompiledComponentProps>
 }
 
-export const TextSection: FC<TextSectionProps> = ({ jsxPath }) => {
-    const [CompiledComponent, setCompiledComponent] =
-        useState<ComponentType<CompiledComponentProps> | null>(null)
+export const TextSection: FC = () => {
+    const courseId = useLessonStore((state) => state.course?.id)
+    const chapterId = useLessonStore((state) => state.chapter?.id)
+    const lessonId = useLessonStore((state) => state.lesson?.id)
+    const [CompiledComponent, setCompiledComponent] = useState<CompiledComponent | null>(null)
 
-    const compileJsx = (jsx: string): ComponentType<CompiledComponentProps> => {
+    const loadCourseContent = useCallback(
+        async (courseId: string, chapterId: string, lessonId: string) => {
+            try {
+                if (!courseId || !chapterId || !lessonId) {
+                    throw new Error('Missing courseId, chapterId, or lessonId')
+                }
+                const response = await window.api.lesson.getJSXContent({
+                    courseId,
+                    chapterId,
+                    lessonId
+                })
+
+                if (response.success) {
+                    const { jsxContent } = response.data
+                    const Component = compileJsx(jsxContent)
+                    setCompiledComponent(() => Component)
+                } else {
+                    throw new Error('Failed to get JSX content')
+                }
+            } catch (err) {
+                console.error('Erreur lors du chargement du contenu:', err)
+            }
+        },
+        []
+    )
+
+    const compileJsx = (jsx: string): CompiledComponent => {
         try {
             if (!jsx || typeof jsx !== 'string') {
                 throw new Error('JSX content is empty or invalid')
@@ -57,30 +84,19 @@ export const TextSection: FC<TextSectionProps> = ({ jsxPath }) => {
     }
 
     useEffect(() => {
-        const loadCourseContent = async () => {
-            try {
-                const response = await window.api.lesson.getJSXContent({ jsxPath })
-
-                if (response.success) {
-                    const { jsxContent } = response.data
-                    const Component = compileJsx(jsxContent)
-                    setCompiledComponent(() => Component)
-                } else {
-                    throw new Error('Failed to get JSX content')
-                }
-            } catch (err) {
-                console.error('Erreur lors du chargement du contenu:', err)
-            }
-        }
-
-        if (jsxPath) {
-            loadCourseContent()
+        if (courseId && chapterId && lessonId) {
+            loadCourseContent(courseId, chapterId, lessonId)
         }
 
         return () => {
             setCompiledComponent(null)
         }
-    }, [jsxPath])
+    }, [loadCourseContent, courseId, chapterId, lessonId])
+
+    if (!courseId || !chapterId || !lessonId) {
+        console.error('Navigation: Missing courseId, chapterId, or lessonId data')
+        return null
+    }
 
     return (
         <section className={styles.section}>

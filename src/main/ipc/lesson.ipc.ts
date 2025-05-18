@@ -1,15 +1,15 @@
 import { FolderService } from '../services'
 import { LessonService } from '../services/lesson/lesson.service'
+import { pathService } from '../services/pats/pathService'
 import { IPC } from '@/constants'
 import { ipcMain } from 'electron'
 import fs from 'fs/promises'
 
 import type {
+    GetCodeSnippetContentIPCHandlerParams,
     GetJSXLessonContentIPCHandlerParams,
-    GetNavigationElementIPCHandlerParams,
-    GetNavigationElementIPCHandlerReturn,
-    GetOneLessonIPCHandlerParams,
-    GetOneLessonIPCHandlerReturn
+    GetLessonDataIPCHandlerParams,
+    GetLessonDataIPCHandlerReturn
 } from '@/types'
 
 export const registerLessonIpcHandlers = (
@@ -17,16 +17,13 @@ export const registerLessonIpcHandlers = (
     folderService: FolderService
 ) => {
     ipcMain.handle(
-        IPC.LESSON.GET_ONE,
-        async (
-            _event,
-            { lessonId }: GetOneLessonIPCHandlerParams
-        ): GetOneLessonIPCHandlerReturn => {
+        IPC.LESSON.GET_DATA,
+        async (_event, params: GetLessonDataIPCHandlerParams): GetLessonDataIPCHandlerReturn => {
             try {
-                const lesson = await lessonService.getOne(lessonId)
+                const dataLesson = await lessonService.getData(params)
                 return {
                     success: true,
-                    data: { lesson },
+                    data: dataLesson,
                     message: 'Leçon récupérée avec succès'
                 }
             } catch (error) {
@@ -40,36 +37,12 @@ export const registerLessonIpcHandlers = (
     )
 
     ipcMain.handle(
-        IPC.LESSON.GET_NAVIGATION_ELEMENT,
-        async (
-            _event,
-            { courseId, chapterId }: GetNavigationElementIPCHandlerParams
-        ): GetNavigationElementIPCHandlerReturn => {
-            try {
-                const navigationElement = await lessonService.getNavigationElement({
-                    courseId,
-                    chapterId
-                })
-                return {
-                    success: true,
-                    data: { navigationElement },
-                    message: 'Élément de navigation récupéré avec succès'
-                }
-            } catch (error) {
-                console.error('Error during import course:', error)
-                return {
-                    success: false,
-                    message: `Erreur lors de la récupération de l'élément de navigation`
-                }
-            }
-        }
-    )
-
-    ipcMain.handle(
         IPC.LESSON.GET_JSX_CONTENT,
-        async (_event, { jsxPath }: GetJSXLessonContentIPCHandlerParams) => {
+        async (_event, params: GetJSXLessonContentIPCHandlerParams) => {
             try {
-                const fullJsxPath = folderService.getFullPath(jsxPath)
+                const jsxPath = pathService.getJsxPath(params)
+                console.log('jsxPath', jsxPath)
+                const fullJsxPath = folderService.getPathFromFolder(jsxPath)
 
                 try {
                     await fs.access(fullJsxPath)
@@ -92,6 +65,36 @@ export const registerLessonIpcHandlers = (
                 return {
                     success: false,
                     message: `Erreur lors du chargement du contenu JSX`
+                }
+            }
+        }
+    )
+
+    ipcMain.handle(
+        IPC.LESSON.GET_CODE_SNIPPET_CONTENT,
+        async (_event, params: GetCodeSnippetContentIPCHandlerParams) => {
+            try {
+                const codeSnippetPath = pathService.getCodeSnippetPath(params)
+                const fullPath = folderService.getPathFromFolder(codeSnippetPath)
+                console.log('fullPath', fullPath)
+
+                try {
+                    await fs.access(fullPath)
+                } catch {
+                    throw new Error(`Fichier de code non trouvé: ${codeSnippetPath}`)
+                }
+
+                const content = await fs.readFile(fullPath, 'utf-8')
+                return {
+                    success: true,
+                    data: { content },
+                    message: 'Contenu du code récupéré avec succès'
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement du contenu du code:', error)
+                return {
+                    success: false,
+                    message: `Erreur lors du chargement du contenu du code`
                 }
             }
         }

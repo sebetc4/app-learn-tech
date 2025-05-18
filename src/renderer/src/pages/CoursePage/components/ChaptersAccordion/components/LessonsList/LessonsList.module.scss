@@ -1,5 +1,4 @@
 .list {
-    padding: 1rem;
     @include flex-col(null, null, 0.5rem);
     li {
         width: 100%;
@@ -9,14 +8,28 @@
 
 .item {
     width: 100%;
-    padding: .5rem 1rem;
-    border-radius: 0.5rem;
+    padding: 1.25rem 3.5rem 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
 
     &__position {
         font-weight: bold;
     }
 
+    
     &:hover {
-        @include background-color('primary-2');
+        @include bg-color('base-6');
+    }
+}
+
+.text-and-video-icons {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+
+    &__video {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 }

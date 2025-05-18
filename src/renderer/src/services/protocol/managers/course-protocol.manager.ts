@@ -3,7 +3,12 @@ export class CourseProtocolManager {
         return `course://${courseDirName}/icon.png`
     }
 
-    getFilePath(filePath: string): string {
-        return `course://${filePath}`
+    getFilePath(
+        courseDirName: string,
+        chapterId: string,
+        lessonId: string,
+        fileName: string
+    ): string {
+        return `course://${courseDirName}/chapters/${chapterId}/${lessonId}/${fileName}`
     }
 }

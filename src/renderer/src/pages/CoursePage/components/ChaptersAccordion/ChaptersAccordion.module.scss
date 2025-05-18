@@ -1,13 +1,14 @@
 .root {
     margin-inline: 2rem;
     border-radius: 0.5rem;
-    @include background-color('base-3');
+    @include bg-color('base-3');
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .item {
     overflow: hidden;
     margin-top: 1px;
+    
 
     &:first-child {
         margin-top: 0;
@@ -47,7 +48,7 @@
 	line-height: 1;
 	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
     color: inherit;
-	@include background-color('base-3');
+	@include bg-color('base-3');
     transition: color 300ms cubic-bezier(0.87, 0, 0.13, 1);
 
     .chevron {
@@ -61,7 +62,7 @@
     
 
     &:hover {
-        @include background-color('primary-3');
+        @include bg-color('primary-3');
     }
 }
 
@@ -69,7 +70,7 @@
 .content {
 	overflow: hidden;
 	font-size: 15px;
-    @include background-color('base-4');
+    @include bg-color('base-4');
 
     &[data-state="open"] {
         animation: slideDown 300ms cubic-bezier(0.87, 0, 0.13, 1);

@@ -1,0 +1,14 @@
+@use 'sass:map';
+@use '../../theme/colors' as *;
+
+@function get-color($color, $alpha: 1, $property: 'color') {
+    @if (map.has-key($colors, $color)) {
+      @if ($alpha == 1) {
+        @return rgb(var(--compress-color-#{$color}));
+      } @else {
+        @return rgba(var(--compress-color-#{$color}), $alpha);
+      }
+    } @else {
+      @error "🚫 #{$property} '#{$color}' not found in colors map. | Available colors => #{map.keys($colors)}";
+    }
+  }

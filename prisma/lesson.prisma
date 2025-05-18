@@ -9,13 +9,14 @@ model Lesson {
   position Int
   name     String
 
-  type      LessonType
-  jsxPath  String?    @map("jsx_path")
-  videoPath String?    @map("video_path")
-  videoDuration Int?      @map("video_duration")
+  type          LessonType
+  videoDuration Int?       @map("video_duration")
 
   chapterId String  @map("chapter_id")
   chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  courseId String @map("course_id")
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   codeSnippets CodeSnippet[]
   resources    Resource[]

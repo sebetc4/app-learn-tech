@@ -1,3 +1,4 @@
+import { protocolService } from '../../services'
 import styles from './CoursePage.module.scss'
 import { ChaptersAccordion } from './components'
 import { FC, useCallback, useEffect, useState } from 'react'
@@ -34,7 +35,7 @@ export const CoursePage: FC = () => {
             <section className={styles.header}>
                 <div className={styles['header__icon-container']}>
                     <img
-                        src={course.iconPath}
+                        src={protocolService.course.getIconPath(course.folderName)}
                         alt={course.name}
                     />
                 </div>

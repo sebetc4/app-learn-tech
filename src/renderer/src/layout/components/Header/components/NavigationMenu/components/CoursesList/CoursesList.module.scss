@@ -18,6 +18,6 @@
         max-width: 150px;
     }
     &:hover {
-        @include background-color('base-4');
+        @include bg-color('base-4');
     }
 }

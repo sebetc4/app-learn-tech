@@ -5,6 +5,10 @@ import path from 'path'
 
 import { CourseMetadata, CoursePreview } from '@/types'
 
+interface CreateCourseParams extends CourseMetadata {
+    folderName: string
+}
+
 export class CourseManager {
     #database: DatabaseService
     #storage: StorageService
@@ -29,7 +33,8 @@ export class CourseManager {
             if (existingCourse) {
                 return await this.#updateExistingCourse(metadata, courseDirPath)
             } else {
-                return await this.#createCourse(metadata, courseDirPath)
+                const folderName = path.basename(courseDirPath)
+                return await this.#createCourse({ ...metadata, folderName }, courseDirPath)
             }
         } catch (error) {
             console.error(`Error adding course to database: ${error}`)
@@ -38,18 +43,18 @@ export class CourseManager {
     }
 
     async #createCourse(
-        { id, name, description, chapters, buildAt }: CourseMetadata,
+        { id, name, description, chapters, folderName, buildAt }: CreateCourseParams,
         courseDirPath: string
     ): Promise<CoursePreview> {
         try {
             const courseIconPath = path.join(courseDirPath, 'icon.png')
-            const iconPath = await this.#storage.icon.save(id, courseIconPath)
+            await this.#storage.icon.save(id, courseIconPath)
 
             await this.#database.course.create({
                 id,
                 name,
                 description,
-                iconPath,
+                folderName,
                 buildAt
             })
 
@@ -59,7 +64,7 @@ export class CourseManager {
                 id,
                 name,
                 description,
-                iconPath,
+                folderName,
                 buildAt
             }
         } catch (error) {
@@ -75,7 +80,11 @@ export class CourseManager {
         try {
             await this.#database.course.deleteById(courseMetadata.id)
 
-            const coursePreview = await this.#createCourse(courseMetadata, courseDirPath)
+            const folderName = path.basename(courseDirPath)
+            const coursePreview = await this.#createCourse(
+                { ...courseMetadata, folderName },
+                courseDirPath
+            )
 
             return coursePreview
         } catch (error) {

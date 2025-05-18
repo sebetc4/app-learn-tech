@@ -6,7 +6,7 @@ interface CreateCourseParams {
     id: string
     name: string
     description: string
-    iconPath: string
+    folderName: string
     buildAt: string
 }
 
@@ -27,7 +27,7 @@ export class CourseDatabaseManager {
                 id: true,
                 name: true,
                 description: true,
-                iconPath: true,
+                folderName: true,
                 buildAt: true
             }
         })
@@ -47,6 +47,7 @@ export class CourseDatabaseManager {
                                 id: true,
                                 position: true,
                                 name: true,
+                                videoDuration: true,
                                 type: true
                             }
                         }

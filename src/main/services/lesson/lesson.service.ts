@@ -5,6 +5,7 @@ import { LessonViewModel } from '@/types'
 interface GetNavigationElementParams {
     courseId: string
     chapterId: string
+    lessonId: string
 }
 
 export class LessonService {
@@ -13,6 +14,7 @@ export class LessonService {
         this.#database = database
     }
 
+    // Read
     async getOne(lessonId: string): Promise<LessonViewModel> {
         try {
             const lesson = await this.#database.lesson.getById(lessonId)
@@ -26,8 +28,9 @@ export class LessonService {
         }
     }
 
-    async getNavigationElement({ courseId, chapterId }: GetNavigationElementParams) {
+    async getData({ courseId, chapterId, lessonId }: GetNavigationElementParams) {
         try {
+            const lesson = await this.getOne(lessonId)
             const course = await this.#database.course.getById(courseId)
             if (!course) {
                 throw new Error(`Course with ID ${courseId} not found`)
@@ -36,6 +39,8 @@ export class LessonService {
             if (!chapter) {
                 throw new Error(`Chapter with ID ${chapterId} not found`)
             }
+            const { previousLessonId, nextLessonId } =
+                await this.#database.lesson.getAdjacentLessons(courseId, lesson.position)
             return {
                 course: {
                     id: course.id,
@@ -45,6 +50,21 @@ export class LessonService {
                     id: chapter.id,
                     name: chapter.name,
                     position: chapter.position
+                },
+                lesson,
+                adjacentLessons: {
+                    previous: previousLessonId
+                        ? {
+                              id: previousLessonId,
+                              position: lesson.position - 1
+                          }
+                        : null,
+                    next: nextLessonId
+                        ? {
+                              id: nextLessonId,
+                              position: lesson.position + 1
+                          }
+                        : null
                 }
             }
         } catch (error) {

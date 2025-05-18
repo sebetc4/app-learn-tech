@@ -13,11 +13,11 @@
  * --------------------------------
  */
 @use './lib/color/color' as *;
-@use './lib/color/background-color' as *;
+@use './lib/color/bg-color' as *;
 @use './lib/display/flex' as *;
 
 body {
-    @include background-color('base-1');
+    @include bg-color('base-1');
     @include color('base-12');
 }
 
@@ -25,7 +25,7 @@ main {
     padding: calc(var(--size-header-height) + 2rem) 0 2rem;
     margin-inline: auto;
     width: var(--size-container-width);
-    @include background-color('base-2');
+    @include bg-color('base-2');
     min-height: 100vh;
     @include flex-col();
 }

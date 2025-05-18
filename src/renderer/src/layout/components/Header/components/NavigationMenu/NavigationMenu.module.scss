@@ -24,13 +24,13 @@
     user-select: none;
     font-weight: 500;
     transition:
-        background-color 250ms ease,
+        bg-color 250ms ease,
         color 250ms ease;
 }
 
 .trigger:hover,
 .link:hover {
-    @include background-color('primary');
+    @include bg-color('primary');
 }
 
 .trigger {
@@ -82,7 +82,7 @@
     transform-origin: top center;
     margin-top: 10px;
     width: 100%;
-    @include background-color('base-3');
+    @include bg-color('base-3');
     border-radius: 6px;
     overflow: hidden;
     box-shadow:

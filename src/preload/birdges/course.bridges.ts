@@ -3,12 +3,13 @@ import { ipcRenderer } from 'electron'
 
 import type {
     AddOneCourseIPCHandlerParams,
+    CourseAPI,
     GetOneCourseIPCHandlerParams,
     RemoveCourseIPCHandlerParams,
     UploadOneCourseIPCHandlerParams
 } from '@/types'
 
-export const courseContextBridge = {
+export const courseContextBridge: CourseAPI = {
     getOne: (params: GetOneCourseIPCHandlerParams) =>
         ipcRenderer.invoke(IPC.COURSE.GET_ONE, params),
     getAll: () => ipcRenderer.invoke(IPC.COURSE.GET_ALL),
