@@ -1,4 +1,14 @@
+enum Theme {
+    LIGHT
+    DARK
+    SYSTEM
+}
+
 model User {
-    id   String @id @default(uuid())
-    name String
+    id    String @id @default(uuid())
+    name  String
+    theme Theme  @default(SYSTEM)
+
+    progress Progress[]
+    @@map("users")
 }

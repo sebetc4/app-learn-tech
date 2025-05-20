@@ -24,13 +24,13 @@ export const registerLessonIpcHandlers = (
                 return {
                     success: true,
                     data: dataLesson,
-                    message: 'Leçon récupérée avec succès'
+                    message: 'Lesson retrieved successfully'
                 }
             } catch (error) {
                 console.error('Error during import course:', error)
                 return {
                     success: false,
-                    message: `Erreur lors de la récupération de la leçon`
+                    message: `Error retrieving lesson: ${error instanceof Error ? error.message : 'Unknown error'}`
                 }
             }
         }
@@ -47,7 +47,7 @@ export const registerLessonIpcHandlers = (
                 try {
                     await fs.access(fullJsxPath)
                 } catch {
-                    throw new Error(`Fichier JSX non trouvé: ${jsxPath}`)
+                    throw new Error(`JSX file not found: ${jsxPath}`)
                 }
 
                 const jsxContent = await fs.readFile(fullJsxPath, 'utf-8')
@@ -58,13 +58,13 @@ export const registerLessonIpcHandlers = (
                         jsxContent,
                         dependencies
                     },
-                    message: 'Élément de navigation récupéré avec succès'
+                    message: 'Navigation element retrieved successfully'
                 }
             } catch (error) {
-                console.error('Erreur lors du chargement du contenu JSX:', error)
+                console.error('Error loading JSX content:', error)
                 return {
                     success: false,
-                    message: `Erreur lors du chargement du contenu JSX`
+                    message: `Error loading JSX content: ${error instanceof Error ? error.message : 'Unknown error'}`
                 }
             }
         }
@@ -81,20 +81,20 @@ export const registerLessonIpcHandlers = (
                 try {
                     await fs.access(fullPath)
                 } catch {
-                    throw new Error(`Fichier de code non trouvé: ${codeSnippetPath}`)
+                    throw new Error(`Code file not found: ${codeSnippetPath}`)
                 }
 
                 const content = await fs.readFile(fullPath, 'utf-8')
                 return {
                     success: true,
                     data: { content },
-                    message: 'Contenu du code récupéré avec succès'
+                    message: 'Code content retrieved successfully'
                 }
             } catch (error) {
-                console.error('Erreur lors du chargement du contenu du code:', error)
+                console.error('Error loading code content:', error)
                 return {
                     success: false,
-                    message: `Erreur lors du chargement du contenu du code`
+                    message: `Error loading code content: ${error instanceof Error ? error.message : 'Unknown error'}`
                 }
             }
         }

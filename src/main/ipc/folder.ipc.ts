@@ -23,19 +23,19 @@ export const registerFolderIpcHandlers = (
         return {
             success: true,
             data: { path: folderService.rootPath },
-            message: 'Dossier racine des cours défini avec succès'
+            message: 'Root folder retrieved successfully'
         }
     })
 
     ipcMain.handle(IPC.FOLDER.SET_ROOT, async (): SetCoursesRootFolderIPCHandlerReturn => {
         try {
             const { canceled, filePaths } = await dialog.showOpenDialog({
-                title: 'Sélectionner le dossier racine des cours',
+                title: 'Select Root Folder',
                 properties: ['openDirectory']
             })
 
             if (canceled || filePaths.length === 0) {
-                return { success: false, message: 'Opération annulée' }
+                return { success: false, message: 'Operation canceled' }
             }
 
             const rootPath = filePaths[0]
@@ -44,13 +44,13 @@ export const registerFolderIpcHandlers = (
             return {
                 success: true,
                 data: { path: rootPath },
-                message: 'Dossier racine des cours défini avec succès'
+                message: 'Root folder set successfully'
             }
         } catch (error) {
             console.error('Error during course folder selection:', error)
             return {
                 success: false,
-                message: `Erreur lors de la sélection du dossier racine des cours`
+                message: `Error selecting root folder: ${error instanceof Error ? error.message : 'Unknown error'}`
             }
         }
     })
@@ -60,13 +60,13 @@ export const registerFolderIpcHandlers = (
             await folderService.removeRootPath()
             return {
                 success: true,
-                message: 'Dossier racine des cours supprimé avec succès'
+                message: 'Root folder removed successfully'
             }
         } catch (error) {
             console.error('Error during course folder deletion:', error)
             return {
                 success: false,
-                message: `Erreur lors de la suppression du dossier racine des cours`
+                message: `Error removing root folder: ${error instanceof Error ? error.message : 'Unknown error'}`
             }
         }
     })
@@ -85,14 +85,14 @@ export const registerFolderIpcHandlers = (
                 data: { scannedCourses },
                 message:
                     scannedCourses.length > 0
-                        ? `${scannedCourses.length} nouveaux cours ou mises à jour détectés`
-                        : 'Pas de nouveau cours ou mise à jour détecté'
+                        ? `${scannedCourses.length} new courses or updates detected`
+                        : 'No new courses or updates detected'
             }
         } catch (error) {
             console.error('Error during scan course folder: ', error)
             return {
                 success: false,
-                message: "Erreur lors de l'analyse des cours"
+                message: `Error during scan: ${error instanceof Error ? error.message : 'Unknown error'}`
             }
         }
     })
@@ -100,8 +100,8 @@ export const registerFolderIpcHandlers = (
     ipcMain.handle(IPC.FOLDER.IMPORT_ARCHIVE, async (): ImportCourseArchiveIPCHandlerReturn => {
         try {
             const { canceled, filePaths } = await dialog.showOpenDialog({
-                title: 'Sélectionner un fichier de cours (.zip)',
-                filters: [{ name: 'Archives ZIP', extensions: ['zip'] }],
+                title: 'Select Course File (.zip)',
+                filters: [{ name: 'ZIP Archives', extensions: ['zip'] }],
                 properties: ['openFile']
             })
 

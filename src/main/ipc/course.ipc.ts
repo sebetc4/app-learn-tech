@@ -23,13 +23,13 @@ export const registerCourseIpcHandlers = (courseService: CourseService) => {
                 return {
                     success: true,
                     data: { course },
-                    message: 'Cours récupéré avec succès'
+                    message: 'Course retrieved successfully'
                 }
             } catch (error) {
                 console.error('Error during import course:', error)
                 return {
                     success: false,
-                    message: `Erreur lors de la récupération du cours`
+                    message: `Error retrieving course: ${error instanceof Error ? error.message : 'Unknown error'}`
                 }
             }
         }
@@ -40,7 +40,7 @@ export const registerCourseIpcHandlers = (courseService: CourseService) => {
         return {
             success: true,
             data: { courses },
-            message: 'Cours récupérés avec succès'
+            message: 'Courses retrieved successfully'
         }
     })
 
@@ -55,7 +55,7 @@ export const registerCourseIpcHandlers = (courseService: CourseService) => {
                 return {
                     success: true,
                     data: { course },
-                    message: 'Cours importé avec succès'
+                    message: 'Course added successfully'
                 }
             } catch (error) {
                 console.error('Error during import course:', error)

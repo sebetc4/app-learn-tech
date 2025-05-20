@@ -1,6 +1,6 @@
 enum SettingKey {
-  THEME
   COURSES_ROOT_FOLDER
+  CURRENT_USER
 }
 
 model Setting {

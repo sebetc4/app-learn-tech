@@ -5,7 +5,7 @@ interface CreateOrUpdateSettingParams {
     value: string
 }
 
-export class CoursesFolderDatabaseManager {
+export class SettingDatabaseManager {
     #prisma: PrismaClient
 
     constructor(prisma: PrismaClient) {

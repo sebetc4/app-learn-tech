@@ -5,22 +5,19 @@ import {
     ResourceDatabaseManager
 } from './managers'
 import { CodeSnippetDatabaseManager } from './managers/code-snippet-database.manager'
-import { CoursesFolderDatabaseManager } from './managers/setting.manager'
-import { PrismaClient, SettingKey } from '@prisma/client'
+import { SettingDatabaseManager } from './managers/setting.manager'
+import { UserDatabaseManager } from './managers/user-database.manager'
+import { PrismaClient } from '@prisma/client'
 
 export class DatabaseService {
-    readonly #DEFAULT_SETTINGS: Partial<Record<SettingKey, string>> = {
-        THEME: 'system'
-    }
-
     #prisma: PrismaClient
-
     #courseManager: CourseDatabaseManager
     #chapterManager: ChapterDatabaseManager
     #lessonManager: LessonDatabaseManager
     #codeSnippetManager: CodeSnippetDatabaseManager
     #resourceManager: ResourceDatabaseManager
-    #settingManager: CoursesFolderDatabaseManager
+    #settingManager: SettingDatabaseManager
+    #userManager: UserDatabaseManager
 
     get course() {
         return this.#courseManager
@@ -46,6 +43,10 @@ export class DatabaseService {
         return this.#settingManager
     }
 
+    get user() {
+        return this.#userManager
+    }
+
     constructor() {
         this.#prisma = new PrismaClient()
 
@@ -54,20 +55,17 @@ export class DatabaseService {
         this.#lessonManager = new LessonDatabaseManager(this.#prisma)
         this.#codeSnippetManager = new CodeSnippetDatabaseManager(this.#prisma)
         this.#resourceManager = new ResourceDatabaseManager(this.#prisma)
-        this.#settingManager = new CoursesFolderDatabaseManager(this.#prisma)
+        this.#settingManager = new SettingDatabaseManager(this.#prisma)
+        this.#userManager = new UserDatabaseManager(this.#prisma)
     }
 
     async initialize() {
-        for (const [keyString, value] of Object.entries(this.#DEFAULT_SETTINGS)) {
-            const key = keyString as SettingKey
-            const existing = await this.#settingManager.get(key)
-
-            if (existing === null || existing === undefined) {
-                await this.#settingManager.create({
-                    key,
-                    value
-                })
-            }
+        const newUser = await this.#userManager.createDefaultUserIfNoneExist()
+        if (newUser) {
+            this.#settingManager.create({
+                key: 'CURRENT_USER',
+                value: newUser.id
+            })
         }
     }
 

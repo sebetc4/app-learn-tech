@@ -40,7 +40,7 @@ export const useCourseFolderStore = create<CourseFolderStore>()((set, get) => ({
             }
         } catch (error) {
             console.error(error)
-            toast.error("Erreur lors de l'initialisation du dossier racine")
+            toast.error('Error during root folder initialization')
         }
     },
 
@@ -57,7 +57,7 @@ export const useCourseFolderStore = create<CourseFolderStore>()((set, get) => ({
             await get().scan()
         } catch (error) {
             console.error(error)
-            toast.error('Erreur lors de la définition du dossier racine')
+            toast.error('Error during root folder selection')
         } finally {
             set({ isLoading: false })
         }
@@ -77,7 +77,7 @@ export const useCourseFolderStore = create<CourseFolderStore>()((set, get) => ({
             }
         } catch (error) {
             console.error(error)
-            toast.error("Erreur lors de l'analyse des cours")
+            toast.error('Error during course analysis')
         } finally {
             set({ isLoading: false, rootFolderScanLoading: false })
         }

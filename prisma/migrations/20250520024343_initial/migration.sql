@@ -32,11 +32,20 @@ CREATE TABLE "lessons" (
     "position" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
     "type" TEXT NOT NULL,
-    "jsx_path" TEXT,
-    "video_path" TEXT,
     "video_duration" INTEGER,
     "chapter_id" TEXT NOT NULL,
-    CONSTRAINT "lessons_chapter_id_fkey" FOREIGN KEY ("chapter_id") REFERENCES "chapters" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "course_id" TEXT NOT NULL,
+    CONSTRAINT "lessons_chapter_id_fkey" FOREIGN KEY ("chapter_id") REFERENCES "chapters" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "lessons_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "courses" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "progress" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "lesson_id" TEXT NOT NULL,
+    CONSTRAINT "progress_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "progress_lesson_id_fkey" FOREIGN KEY ("lesson_id") REFERENCES "lessons" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -52,6 +61,13 @@ CREATE TABLE "resources" (
 CREATE TABLE "settings" (
     "key" TEXT NOT NULL PRIMARY KEY,
     "value" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "users" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "theme" TEXT NOT NULL DEFAULT 'SYSTEM'
 );
 
 -- CreateIndex

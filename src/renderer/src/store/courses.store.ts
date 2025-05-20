@@ -39,7 +39,7 @@ export const useCoursesStore = create<CoursesStore>()((set) => ({
             }
         } catch (error) {
             console.error(error)
-            toast.error("Erreur lors de l'initialisation des cours importés")
+            toast.error('Error during courses initialization')
         } finally {
             set({ isLoading: false })
         }
