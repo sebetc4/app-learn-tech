@@ -1,30 +1,23 @@
-/* reset */
 .trigger {
-    border-radius: 4px;
-    padding: 0.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2px;
+    border-radius: 100%;
+	height: 2rem;
 
+	aspect-ratio: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    svg {
+        @include stroke('base-11');
+    }
     &:hover {
         @include bg-color('primary');
     }
-
-    svg {
-        @include stroke('base-12');
-    }
-}
-
-.trigger[data-highlighted],
-.trigger[data-state='open'] {
-    background-color: var(--violet-4);
 }
 
 .content,
 .sub-content {
     min-width: 220px;
-    @include bg-color('base-3');
+    @include bg-color('base-4');
     border-radius: 6px;
     padding: 5px;
     box-shadow:
@@ -33,53 +26,49 @@
     animation-duration: 400ms;
     animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform, opacity;
+    &[data-side='top'] {
+        animation-name: slideDownAndFade;
+    }
+    &[data-side='right'] {
+        animation-name: slideLeftAndFade;
+    }
+    &[data-side='bottom'] {
+        animation-name: slideUpAndFade;
+    }
+    &[data-side='left'] {
+        animation-name: slideRightAndFade;
+    }
 }
 
 .item,
+.radio-item,
 .sub-trigger {
-    all: unset;
-    font-size: 13px;
-    line-height: 1;
-    color: var(--violet-11);
-    border-radius: 4px;
+    border-radius: 3px;
     display: flex;
     align-items: center;
     height: 25px;
-    padding: 0 10px;
+    padding: 0 5px;
     position: relative;
+    padding-left: 25px;
     user-select: none;
+    outline: none;
+    &[data-highlighted] {
+        background-color: var(--violet-9);
+        @include color('primary');
+    }
+
+    .check {
+        height: 1rem;
+    }
+
+    .check, .dot {
+        margin-right: 0.5rem;
+    }
 }
 
-.item.inset,
-.sub-trigger.inset {
-    padding-left: 20px;
-}
-
-.item[data-state='open'],
-.sub-trigger[data-state='open'] {
+.sub-trigger[data-state='open']:not([data-highlighted], [data-disabled]) {
     background-color: var(--violet-4);
     color: var(--violet-11);
-}
-
-.item[data-highlighted],
-.sub-trigger[data-highlighted] {
-    background-image: linear-gradient(135deg, var(--violet-9) 0%, var(--violet-10) 100%);
-    color: var(--violet-1);
-}
-
-.item[data-disabled],
-.sub-triggerdata-disabled {
-    color: var(--mauve-8);
-    pointer-events: none;
-}
-
-.itemIndicator {
-    position: absolute;
-    left: 0;
-    width: 20px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .separator {
@@ -88,16 +77,61 @@
     margin: 5px;
 }
 
-.chevron-right {
+.arrow {
+    fill: white;
+}
+
+.right-slot {
     margin-left: auto;
     padding-left: 20px;
-    color: var(--mauve-9);
+    [data-highlighted] > & {
+        @include color('primary');
+    }
+    svg {
+        height: 1.25rem;
+    }
 }
 
-[data-highlighted] > .chevron-right {
-    color: white;
+@keyframes slideUpAndFade {
+    from {
+        opacity: 0;
+        transform: translateY(2px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-[data-disabled] > .chevron-right {
-    color: var(--mauve-8);
+@keyframes slideRightAndFade {
+    from {
+        opacity: 0;
+        transform: translateX(-2px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideDownAndFade {
+    from {
+        opacity: 0;
+        transform: translateY(-2px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideLeftAndFade {
+    from {
+        opacity: 0;
+        transform: translateX(2px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }

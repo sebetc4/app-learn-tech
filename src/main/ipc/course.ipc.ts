@@ -7,6 +7,7 @@ import type {
     AddOneCourseIPCHandlerReturn,
     GetAllAlreadyImportedCourseIPCHandlerReturn,
     GetOneCourseIPCHandlerParams,
+    GetOneCourseIPCHandlerReturn,
     RemoveCourseIPCHandlerParams,
     RemoveCourseIPCHandlerReturn
 } from '@/types'
@@ -16,10 +17,10 @@ export const registerCourseIpcHandlers = (courseService: CourseService) => {
         IPC.COURSE.GET_ONE,
         async (
             _event,
-            { courseId }: GetOneCourseIPCHandlerParams
-        ): AddOneCourseIPCHandlerReturn => {
+            { courseId, userId }: GetOneCourseIPCHandlerParams
+        ): GetOneCourseIPCHandlerReturn => {
             try {
-                const course = await courseService.getOne(courseId)
+                const course = await courseService.getOne(courseId, userId)
                 return {
                     success: true,
                     data: { course },

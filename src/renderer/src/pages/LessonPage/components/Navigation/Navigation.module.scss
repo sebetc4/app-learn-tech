@@ -10,3 +10,21 @@
         }
     }
 }
+
+.adjacent-lessons {
+    @include flex(null, null, 1rem);
+    margin: 2rem;
+
+    &__link {
+        @include flex(null, null, 0.25rem);
+        transition: color 0.2s ease-in-out;
+
+        svg {
+            width: 1.25rem;
+        }
+
+        &:hover {
+            @include color('primary');
+        }
+    }
+}

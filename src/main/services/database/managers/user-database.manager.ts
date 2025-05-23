@@ -1,5 +1,7 @@
 import { PrismaClient, Theme } from '@prisma/client'
 
+import { UserViewModelWithoutTheme } from '@/types'
+
 interface CreateUserParams {
     name: string
 }
@@ -18,8 +20,13 @@ export class UserDatabaseManager {
         return this.#prisma.user.findUnique({ where: { id } })
     }
 
-    async getAll() {
-        return this.#prisma.user.findMany()
+    async getAll(): Promise<UserViewModelWithoutTheme[]> {
+        return this.#prisma.user.findMany({
+            select: {
+                id: true,
+                name: true
+            }
+        })
     }
 
     async updateTheme(id: string, theme: Theme) {

@@ -10,15 +10,24 @@
     width: 100%;
     padding: 1.25rem 3.5rem 1.25rem 1.5rem;
     display: flex;
-    justify-content: space-between;
+    gap: 1rem;
+
+    &__text {
+        flex: 1;
+    }
 
     &__position {
         font-weight: bold;
     }
 
-    
     &:hover {
         @include bg-color('base-6');
+    }
+}
+
+.progress-icon{
+    &__base {
+        @include stroke('base-11')
     }
 }
 

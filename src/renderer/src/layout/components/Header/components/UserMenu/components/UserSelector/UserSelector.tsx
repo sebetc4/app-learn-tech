@@ -1,36 +1,20 @@
 import styles from '../../UserMenu.module.scss'
 import { useUserStore } from '@/renderer/src/store/user.store'
-import { Theme } from '@prisma/client'
 import { Check, ChevronRight, Dot } from 'lucide-react'
 import { DropdownMenu } from 'radix-ui'
 
-const themes = [
-    {
-        name: 'Light',
-        value: Theme.LIGHT
-    },
-    {
-        name: 'Dark',
-        value: Theme.DARK
-    },
-    {
-        name: 'System',
-        value: Theme.SYSTEM
-    }
-]
+export const UserSelector = () => {
+    const currentUserId = useUserStore((state) => state.current.id)
+    const users = useUserStore((state) => state.users)
 
-export const ThemeSelector = () => {
-    const currentTheme = useUserStore((state) => state.current.theme)
-    const updateTheme = useUserStore((state) => state.updateTheme)
-
-    const applyTheme = (theme: Theme) => {
-        updateTheme(theme)
+    const changeUser = () => {
+        console.log('Change user')
     }
 
     return (
         <DropdownMenu.Sub>
             <DropdownMenu.SubTrigger className={styles['sub-trigger']}>
-                Theme
+                User
                 <div className={styles['right-slot']}>
                     <ChevronRight />
                 </div>
@@ -41,18 +25,18 @@ export const ThemeSelector = () => {
                     sideOffset={2}
                     alignOffset={-5}
                 >
-                    {themes.map((theme) => (
+                    {users.map((user) => (
                         <DropdownMenu.Item
-                            key={theme.value}
+                            key={user.id}
                             className={styles.item}
-                            onClick={() => applyTheme(theme.value)}
+                            onClick={() => changeUser()}
                         >
-                            {currentTheme === theme.value ? (
+                            {currentUserId === user.id ? (
                                 <Check className={styles.check} />
                             ) : (
                                 <Dot className={styles.dot} />
                             )}
-                            {theme.name}
+                            {user.name}
                         </DropdownMenu.Item>
                     ))}
                 </DropdownMenu.SubContent>

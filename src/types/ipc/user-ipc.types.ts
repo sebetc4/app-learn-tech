@@ -1,4 +1,4 @@
-import { UserViewModel } from '../view-model/user-view-model.types'
+import { UserViewModel, UserViewModelWithoutTheme } from '../view-model/user-view-model.types'
 import { IPCHandlerReturnWithData } from './core-ipc.types'
 import { Theme } from '@prisma/client'
 
@@ -24,7 +24,7 @@ export interface GetOneUserIPCHandlerReturn
 // Get All
 export interface GetAllUsersIPCHandlerReturn
     extends IPCHandlerReturnWithData<{
-        users: UserViewModel[]
+        users: UserViewModelWithoutTheme[]
     }> {}
 
 // Update Theme

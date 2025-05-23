@@ -8,7 +8,7 @@ import {
 } from '@/types/ipc/user-ipc.types'
 
 export const userContextBridge: UserAPI = {
-    getCurrentUser: () => ipcRenderer.invoke(IPC.USER.GET_CURRENT_USER),
+    getCurrent: () => ipcRenderer.invoke(IPC.USER.GET_CURRENT_USER),
     setCurrentUser: (params: SetCurrentUserIPCHandlerParams) =>
         ipcRenderer.invoke(IPC.USER.SET_CURRENT_USER, params),
     getOne: () => ipcRenderer.invoke(IPC.USER.GET_ONE),

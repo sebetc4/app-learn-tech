@@ -2,13 +2,21 @@ import { LessonViewModel } from '../view-model'
 import type { IPCHandlerReturnWithData } from './core-ipc.types'
 
 // Get One
-export type GetLessonDataIPCHandlerParams = {
+export type GetLessonStoreDataIPCHandlerParams = {
     courseId: string
     chapterId: string
     lessonId: string
+    userId: string
 }
 
-export type GetLessonDataIPCHandlerReturn = IPCHandlerReturnWithData<{
+interface AdjacentLesson {
+    id: string
+    chapterId: string
+    position: number
+    name: string
+}
+
+export type GetLessonStoreDataIPCHandlerReturn = IPCHandlerReturnWithData<{
     course: {
         id: string
         name: string
@@ -20,14 +28,8 @@ export type GetLessonDataIPCHandlerReturn = IPCHandlerReturnWithData<{
     }
     lesson: LessonViewModel
     adjacentLessons: {
-        previous: {
-            id: string
-            position: number
-        } | null
-        next: {
-            id: string
-            position: number
-        } | null
+        previous: AdjacentLesson | null
+        next: AdjacentLesson | null
     }
 }>
 

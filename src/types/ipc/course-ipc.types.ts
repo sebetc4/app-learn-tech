@@ -4,6 +4,7 @@ import type { IPCHandlerReturnWithData, IPCHandlerReturnWithoutData } from './co
 // Get One
 export type GetOneCourseIPCHandlerParams = {
     courseId: string
+    userId: string
 }
 
 export type GetOneCourseIPCHandlerReturn = IPCHandlerReturnWithData<{

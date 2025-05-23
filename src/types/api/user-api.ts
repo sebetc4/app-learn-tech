@@ -1,16 +1,18 @@
-import { GetOneCourseIPCHandlerParams, GetOneCourseIPCHandlerReturn } from '../ipc'
-import {
+import type {
+    GetAllUsersIPCHandlerReturn,
     GetCurrentUserIPCHandlerReturn,
+    GetOneUserIPCHandlerParams,
+    GetOneUserIPCHandlerReturn,
     SetCurrentUserIPCHandlerParams,
     UpdateUserThemeIPCHandlerParams
-} from '../ipc/user-ipc.types'
+} from '../ipc'
 
 export type UserAPI = {
-    getCurrentUser: () => GetCurrentUserIPCHandlerReturn
+    getCurrent: () => GetCurrentUserIPCHandlerReturn
     setCurrentUser: (params: SetCurrentUserIPCHandlerParams) => Promise<void>
 
-    getOne: (params: GetOneCourseIPCHandlerParams) => GetOneCourseIPCHandlerReturn
-    getAll: () => GetOneCourseIPCHandlerReturn
+    getOne: (params: GetOneUserIPCHandlerParams) => GetOneUserIPCHandlerReturn
+    getAll: () => GetAllUsersIPCHandlerReturn
 
     updateTheme: (params: UpdateUserThemeIPCHandlerParams) => Promise<void>
 }

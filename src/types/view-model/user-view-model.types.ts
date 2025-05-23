@@ -5,3 +5,5 @@ export interface UserViewModel {
     name: string
     theme: Theme
 }
+
+export type UserViewModelWithoutTheme = Omit<UserViewModel, 'theme'>

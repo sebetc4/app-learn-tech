@@ -20,7 +20,8 @@ model Lesson {
 
   codeSnippets CodeSnippet[]
   resources    Resource[]
-  progress     Progress[]
+  lessonProgress     LessonProgress[]
+
 
   @@map("lessons")
 }

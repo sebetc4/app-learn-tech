@@ -10,6 +10,11 @@ interface CreateCourseParams {
     buildAt: string
 }
 
+interface GetByIdParams {
+    courseId: string
+    userId: string
+}
+
 export class CourseDatabaseManager {
     #prisma: PrismaClient
 
@@ -33,9 +38,23 @@ export class CourseDatabaseManager {
         })
     }
 
-    async getById(id: string): Promise<CourseViewModel | null> {
+    getById(id: string): Promise<Course | null> {
+        try {
+            return this.#prisma.course.findUnique({
+                where: { id }
+            })
+        } catch (error) {
+            console.error(`Error retrieving course by ID: ${error}`)
+            throw error
+        }
+    }
+
+    async getCourseViewModelById({
+        courseId,
+        userId
+    }: GetByIdParams): Promise<CourseViewModel | null> {
         return await this.#prisma.course.findUnique({
-            where: { id },
+            where: { id: courseId },
             include: {
                 chapters: {
                     select: {
@@ -48,13 +67,33 @@ export class CourseDatabaseManager {
                                 position: true,
                                 name: true,
                                 videoDuration: true,
-                                type: true
+                                type: true,
+                                lessonProgress: {
+                                    where: { userId },
+                                    select: {
+                                        id: true,
+                                        status: true
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
         })
+    }
+
+    async getOneById(id: string): Promise<Course> {
+        try {
+            const course = await this.#prisma.course.findUnique({ where: { id } })
+            if (!course) {
+                throw new Error(`Course with ID ${id} not found`)
+            }
+            return course
+        } catch (error) {
+            console.error(`Error retrieving course by ID: ${error}`)
+            throw error
+        }
     }
 
     async getByName(name: string): Promise<Course | null> {

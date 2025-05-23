@@ -38,9 +38,9 @@ export class CourseService {
     }
 
     // Read
-    async getOne(courseId: string): Promise<CourseViewModel> {
+    async getOne(courseId: string, userId: string): Promise<CourseViewModel> {
         try {
-            const course = await this.#database.course.getById(courseId)
+            const course = await this.#database.course.getCourseViewModelById({ courseId, userId })
             if (!course) {
                 throw new Error(`Course with ID ${courseId} not found`)
             }

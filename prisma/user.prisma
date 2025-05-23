@@ -9,6 +9,6 @@ model User {
     name  String
     theme Theme  @default(SYSTEM)
 
-    progress Progress[]
+    progress LessonProgress[]
     @@map("users")
 }

@@ -2,10 +2,16 @@ import { DatabaseService } from '../database'
 
 import { LessonViewModel } from '@/types'
 
+interface GetLessonViewModelParams {
+    lessonId: string
+    userId: string
+}
+
 interface GetNavigationElementParams {
     courseId: string
     chapterId: string
     lessonId: string
+    userId: string
 }
 
 export class LessonService {
@@ -15,9 +21,12 @@ export class LessonService {
     }
 
     // Read
-    async getOne(lessonId: string): Promise<LessonViewModel> {
+    async getLessonViewModel({
+        lessonId,
+        userId
+    }: GetLessonViewModelParams): Promise<LessonViewModel> {
         try {
-            const lesson = await this.#database.lesson.getById(lessonId)
+            const lesson = await this.#database.lesson.getLessonViewModelById({ lessonId, userId })
             if (!lesson) {
                 throw new Error(`Lesson with ID ${lessonId} not found`)
             }
@@ -28,10 +37,15 @@ export class LessonService {
         }
     }
 
-    async getData({ courseId, chapterId, lessonId }: GetNavigationElementParams) {
+    async getLessonStoreData({
+        courseId,
+        chapterId,
+        lessonId,
+        userId
+    }: GetNavigationElementParams) {
         try {
-            const lesson = await this.getOne(lessonId)
-            const course = await this.#database.course.getById(courseId)
+            const lesson = await this.getLessonViewModel({ lessonId, userId })
+            const course = await this.#database.course.getOneById(courseId)
             if (!course) {
                 throw new Error(`Course with ID ${courseId} not found`)
             }
@@ -39,11 +53,13 @@ export class LessonService {
             if (!chapter) {
                 throw new Error(`Chapter with ID ${chapterId} not found`)
             }
-            const { previousLessonId, nextLessonId } =
-                await this.#database.lesson.getAdjacentLessons(courseId, lesson.position)
+            const { previousLesson, nextLesson } = await this.#database.lesson.getAdjacentLessons(
+                courseId,
+                lesson.position
+            )
             return {
                 course: {
-                    id: course.id,
+                    id: courseId,
                     name: course.name
                 },
                 chapter: {
@@ -53,15 +69,15 @@ export class LessonService {
                 },
                 lesson,
                 adjacentLessons: {
-                    previous: previousLessonId
+                    previous: previousLesson
                         ? {
-                              id: previousLessonId,
+                              ...previousLesson,
                               position: lesson.position - 1
                           }
                         : null,
-                    next: nextLessonId
+                    next: nextLesson
                         ? {
-                              id: nextLessonId,
+                              ...nextLesson,
                               position: lesson.position + 1
                           }
                         : null

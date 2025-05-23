@@ -14,6 +14,11 @@ interface CreatLessonParams {
     courseId: string
 }
 
+interface GetByLessonViewModelByIdParams {
+    lessonId: string
+    userId: string
+}
+
 export class LessonDatabaseManager {
     #prisma: PrismaClient
 
@@ -25,9 +30,25 @@ export class LessonDatabaseManager {
         return await this.#prisma.lesson.create({ data })
     }
 
-    async getById(id: string): Promise<LessonViewModel | null> {
+    async getOneById(id: string): Promise<Lesson> {
+        try {
+            const lesson = await this.#prisma.lesson.findUnique({ where: { id } })
+            if (!lesson) {
+                throw new Error(`Lesson with ID ${id} not found`)
+            }
+            return lesson
+        } catch (error) {
+            console.error(`Error retrieving lesson by ID: ${error}`)
+            throw error
+        }
+    }
+
+    async getLessonViewModelById({
+        lessonId,
+        userId
+    }: GetByLessonViewModelByIdParams): Promise<LessonViewModel | null> {
         return await this.#prisma.lesson.findUnique({
-            where: { id },
+            where: { id: lessonId },
             include: {
                 codeSnippets: {
                     select: {
@@ -43,6 +64,13 @@ export class LessonDatabaseManager {
                         type: true,
                         url: true
                     }
+                },
+                lessonProgress: {
+                    where: { userId },
+                    select: {
+                        id: true,
+                        status: true
+                    }
                 }
             }
         })
@@ -56,7 +84,7 @@ export class LessonDatabaseManager {
                           courseId,
                           position: currentLessonPosition - 1
                       },
-                      select: { id: true }
+                      select: { id: true, chapterId: true, name: true }
                   })
                 : null
 
@@ -65,12 +93,12 @@ export class LessonDatabaseManager {
                 courseId,
                 position: currentLessonPosition + 1
             },
-            select: { id: true }
+            select: { id: true, chapterId: true, name: true }
         })
 
         return {
-            previousLessonId: previousLesson?.id || null,
-            nextLessonId: nextLesson?.id || null
+            previousLesson: previousLesson || null,
+            nextLesson: nextLesson || null
         }
     }
 }

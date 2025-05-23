@@ -1,10 +1,11 @@
 import { Theme } from '@prisma/client'
 import { create } from 'zustand'
 
+import { UserViewModel, UserViewModelWithoutTheme } from '@/types'
+
 interface UserState {
-    id: string
-    name: string
-    theme: Theme
+    current: UserViewModel
+    users: UserViewModelWithoutTheme[]
 }
 
 interface UserActions {
@@ -13,9 +14,12 @@ interface UserActions {
 }
 
 const initialState: UserState = {
-    id: '',
-    name: '',
-    theme: 'SYSTEM'
+    current: {
+        id: '',
+        name: '',
+        theme: 'SYSTEM'
+    },
+    users: []
 }
 
 interface UserStore extends UserState, UserActions {}
@@ -24,16 +28,24 @@ export const useUserStore = create<UserStore>()((set, get) => ({
     ...initialState,
 
     initialize: async () => {
-        const response = await window.api.user.getCurrentUser()
-        if (response.success) {
-            set({ ...response.data.user })
+        const [currentUserResponse, allUsersResponse] = await Promise.all([
+            window.api.user.getCurrent(),
+            window.api.user.getAll()
+        ])
+        if (currentUserResponse.success && allUsersResponse.success) {
+            set({
+                current: {
+                    ...currentUserResponse.data.user
+                },
+                users: allUsersResponse.data.users
+            })
         }
-        console.log('User store initialized', response)
+        console.log('allUsersResponse', allUsersResponse)
     },
 
     updateTheme: async (theme: Theme) => {
-        const { id } = get()
-        window.api.user.updateTheme({ userId: id, theme })
-        set({ theme })
+        const { current } = get()
+        window.api.user.updateTheme({ userId: current.id, theme })
+        set({ current: { ...current, theme } })
     }
 }))

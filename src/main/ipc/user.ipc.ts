@@ -27,7 +27,7 @@ export const registerUserIpcHandlers = (userService: UserService) => {
             const user = await userService.getOne(userId)
             return {
                 success: true,
-                data: user,
+                data: { user },
                 message: 'User retrieved successfully'
             }
         } catch (error) {
@@ -46,7 +46,7 @@ export const registerUserIpcHandlers = (userService: UserService) => {
             const users = await userService.getAll()
             return {
                 success: true,
-                data: users,
+                data: { users },
                 message: 'Users retrieved successfully'
             }
         } catch (error) {

@@ -1,3 +1,4 @@
+import { useUserStore } from '../../store'
 import { useLessonStore } from '../../store/lesson.store'
 import styles from './LessonPage.module.scss'
 import { Navigation, TextSection, VideoSection } from './components'
@@ -11,14 +12,15 @@ export const LessonPage: FC = () => {
     }
 
     const lesson = useLessonStore((state) => state.lesson)
+    const userId = useUserStore((state) => state.current.id)
     const initializeLessonData = useLessonStore((state) => state.initialize)
     const [loading, setLoading] = useState(true)
 
     const fetchLessonData = useCallback(async () => {
         setLoading(true)
-        await initializeLessonData(courseId, chapterId, lessonId)
+        await initializeLessonData(courseId, chapterId, lessonId, userId)
         setLoading(false)
-    }, [courseId, chapterId, lessonId, initializeLessonData])
+    }, [courseId, chapterId, lessonId, userId, initializeLessonData])
 
     useEffect(() => {
         fetchLessonData()

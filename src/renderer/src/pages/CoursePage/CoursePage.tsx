@@ -1,30 +1,35 @@
 import { protocolService } from '../../services'
+import { useCurrentCourseStore, useUserStore } from '../../store'
 import styles from './CoursePage.module.scss'
 import { ChaptersAccordion } from './components'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
-import type { CourseViewModel } from '@/types'
-
 export const CoursePage: FC = () => {
     const { courseId } = useParams()
-    const [course, setCourse] = useState<CourseViewModel | null>(null)
+    const userId = useUserStore((state) => state.current.id)
+    const course = useCurrentCourseStore((state) => state.course)
+    const fetchCourse = useCurrentCourseStore((state) => state.fetchCourse)
     const [loading, setLoading] = useState(true)
 
-    const fetchCourse = useCallback(async () => {
-        if (!courseId) throw new Error('Course ID is required')
-        const response = await window.api.course.getOne({ courseId })
-        if (response.success) {
-            setCourse(response.data.course)
-        } else {
-            console.error(`Error fetching course: ${response.message}`)
-        }
-        setLoading(false)
-    }, [courseId])
+    const handleFetchCourse = useCallback(
+        async (courseId: string, userId: string) => {
+            setLoading(true)
+            await fetchCourse(courseId, userId)
+            setLoading(false)
+        },
+        [fetchCourse]
+    )
 
     useEffect(() => {
-        fetchCourse()
-    }, [fetchCourse])
+        if (!courseId) {
+            console.error('Course ID is not defined')
+            return
+        }
+        handleFetchCourse(courseId, userId)
+    }, [courseId, userId, handleFetchCourse])
+
+    console.log('CoursePage', course)
 
     const chapterNumber = course?.chapters?.length || 0
     const lessonNumber =

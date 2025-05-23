@@ -2,7 +2,7 @@ import { DatabaseService } from '../database'
 import { ThemeService } from '../theme/theme.service'
 import { Theme } from '@prisma/client'
 
-import { UserViewModel } from '@/types/view-model/user-view-model.types'
+import type { UserViewModel, UserViewModelWithoutTheme } from '@/types'
 
 export class UserService {
     #database: DatabaseService
@@ -40,7 +40,7 @@ export class UserService {
         }
     }
 
-    async getAll(): Promise<UserViewModel[]> {
+    async getAll(): Promise<UserViewModelWithoutTheme[]> {
         try {
             const users = await this.#database.user.getAll()
             if (!users) {

@@ -1,38 +1,44 @@
 import {
     ChapterDatabaseManager,
+    CodeSnippetDatabaseManager,
     CourseDatabaseManager,
     LessonDatabaseManager,
-    ResourceDatabaseManager
+    ProgressDatabaseManager,
+    ResourceDatabaseManager,
+    SettingDatabaseManager,
+    UserDatabaseManager
 } from './managers'
-import { CodeSnippetDatabaseManager } from './managers/code-snippet-database.manager'
-import { SettingDatabaseManager } from './managers/setting.manager'
-import { UserDatabaseManager } from './managers/user-database.manager'
 import { PrismaClient } from '@prisma/client'
 
 export class DatabaseService {
     #prisma: PrismaClient
-    #courseManager: CourseDatabaseManager
     #chapterManager: ChapterDatabaseManager
-    #lessonManager: LessonDatabaseManager
     #codeSnippetManager: CodeSnippetDatabaseManager
+    #courseManager: CourseDatabaseManager
+    #lessonManager: LessonDatabaseManager
+    #progressManager: ProgressDatabaseManager
     #resourceManager: ResourceDatabaseManager
     #settingManager: SettingDatabaseManager
     #userManager: UserDatabaseManager
 
-    get course() {
-        return this.#courseManager
-    }
-
     get chapter() {
         return this.#chapterManager
+    }
+
+    get codeSnippet() {
+        return this.#codeSnippetManager
+    }
+
+    get course() {
+        return this.#courseManager
     }
 
     get lesson() {
         return this.#lessonManager
     }
 
-    get codeSnippet() {
-        return this.#codeSnippetManager
+    get progress() {
+        return this.#progressManager
     }
 
     get resource() {
@@ -50,10 +56,11 @@ export class DatabaseService {
     constructor() {
         this.#prisma = new PrismaClient()
 
-        this.#courseManager = new CourseDatabaseManager(this.#prisma)
         this.#chapterManager = new ChapterDatabaseManager(this.#prisma)
-        this.#lessonManager = new LessonDatabaseManager(this.#prisma)
         this.#codeSnippetManager = new CodeSnippetDatabaseManager(this.#prisma)
+        this.#courseManager = new CourseDatabaseManager(this.#prisma)
+        this.#lessonManager = new LessonDatabaseManager(this.#prisma)
+        this.#progressManager = new ProgressDatabaseManager(this.#prisma)
         this.#resourceManager = new ResourceDatabaseManager(this.#prisma)
         this.#settingManager = new SettingDatabaseManager(this.#prisma)
         this.#userManager = new UserDatabaseManager(this.#prisma)

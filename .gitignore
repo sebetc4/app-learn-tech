@@ -5,6 +5,6 @@ out
 .eslintcache
 *.log*
 
-/resources/database
+/resources/database/*
 /build
 /.vscode

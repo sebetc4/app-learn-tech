@@ -3,12 +3,14 @@ import type {
     GetCodeSnippetContentIPCHandlerReturn,
     GetJSXLessonContentIPCHandlerParams,
     GetJSXLessonContentIPCHandlerReturn,
-    GetLessonDataIPCHandlerParams,
-    GetLessonDataIPCHandlerReturn
+    GetLessonStoreDataIPCHandlerParams,
+    GetLessonStoreDataIPCHandlerReturn
 } from '../ipc'
 
 export interface LessonAPI {
-    getData: (params: GetLessonDataIPCHandlerParams) => GetLessonDataIPCHandlerReturn
+    getLessonStoreData: (
+        params: GetLessonStoreDataIPCHandlerParams
+    ) => GetLessonStoreDataIPCHandlerReturn
     getJSXContent: (
         params: GetJSXLessonContentIPCHandlerParams
     ) => GetJSXLessonContentIPCHandlerReturn

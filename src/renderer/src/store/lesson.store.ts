@@ -16,17 +16,21 @@ interface LessonState {
     adjacentLessons: {
         previous: {
             id: string
+            chapterId: string
             position: number
+            name: string
         } | null
         next: {
             id: string
+            chapterId: string
             position: number
+            name: string
         } | null
     } | null
 }
 
 interface LessonAction {
-    initialize: (courseId: string, chapterId: string, lessonId: string) => Promise<void>
+    initialize: (courseId: string, chapterId: string, lessonId: string, userId: string) => Promise<void>
 }
 
 interface LessonStore extends LessonState, LessonAction {}
@@ -41,9 +45,14 @@ const initialState: LessonState = {
 export const useLessonStore = create<LessonStore>()((set) => ({
     ...initialState,
 
-    initialize: async (courseId, chapterId, lessonId) => {
+    initialize: async (courseId, chapterId, lessonId, userId) => {
         if (!courseId || !chapterId) throw new Error('Course ID, Chapter ID are required')
-        const response = await window.api.lesson.getData({ courseId, chapterId, lessonId })
+        const response = await window.api.lesson.getLessonStoreData({
+            courseId,
+            chapterId,
+            lessonId,
+            userId
+        })
         if (response.success) {
             const { course, chapter, lesson } = response.data
             set({
@@ -61,13 +70,17 @@ export const useLessonStore = create<LessonStore>()((set) => ({
                     previous: response.data.adjacentLessons.previous
                         ? {
                               id: response.data.adjacentLessons.previous.id,
-                              position: response.data.adjacentLessons.previous.position
+                              position: response.data.adjacentLessons.previous.position,
+                              chapterId: response.data.adjacentLessons.previous.chapterId,
+                              name: response.data.adjacentLessons.previous.name
                           }
                         : null,
                     next: response.data.adjacentLessons.next
                         ? {
                               id: response.data.adjacentLessons.next.id,
-                              position: response.data.adjacentLessons.next.position
+                              position: response.data.adjacentLessons.next.position,
+                              chapterId: response.data.adjacentLessons.next.chapterId,
+                              name: response.data.adjacentLessons.next.name
                           }
                         : null
                 }

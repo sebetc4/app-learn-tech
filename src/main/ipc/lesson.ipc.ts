@@ -1,6 +1,6 @@
 import { FolderService } from '../services'
 import { LessonService } from '../services/lesson/lesson.service'
-import { pathService } from '../services/pats/pathService'
+import { pathService } from '../services/path/path.service'
 import { IPC } from '@/constants'
 import { ipcMain } from 'electron'
 import fs from 'fs/promises'
@@ -8,8 +8,8 @@ import fs from 'fs/promises'
 import type {
     GetCodeSnippetContentIPCHandlerParams,
     GetJSXLessonContentIPCHandlerParams,
-    GetLessonDataIPCHandlerParams,
-    GetLessonDataIPCHandlerReturn
+    GetLessonStoreDataIPCHandlerParams,
+    GetLessonStoreDataIPCHandlerReturn
 } from '@/types'
 
 export const registerLessonIpcHandlers = (
@@ -18,12 +18,15 @@ export const registerLessonIpcHandlers = (
 ) => {
     ipcMain.handle(
         IPC.LESSON.GET_DATA,
-        async (_event, params: GetLessonDataIPCHandlerParams): GetLessonDataIPCHandlerReturn => {
+        async (
+            _event,
+            params: GetLessonStoreDataIPCHandlerParams
+        ): GetLessonStoreDataIPCHandlerReturn => {
             try {
-                const dataLesson = await lessonService.getData(params)
+                const data = await lessonService.getLessonStoreData(params)
                 return {
                     success: true,
-                    data: dataLesson,
+                    data,
                     message: 'Lesson retrieved successfully'
                 }
             } catch (error) {

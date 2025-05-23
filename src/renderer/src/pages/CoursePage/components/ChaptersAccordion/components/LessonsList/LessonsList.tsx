@@ -1,27 +1,21 @@
-import styles from './LessonsList.module.scss';
-import { PAGE_PATH } from '@/renderer/src/constants';
-import { LetterText, SquarePlay } from 'lucide-react';
-import { FC, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import styles from './LessonsList.module.scss'
+import { PAGE_PATH } from '@/renderer/src/constants'
+import { Badge, BadgeCheck, BadgeInfo, LetterText, SquarePlay } from 'lucide-react'
+import { FC, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 
-
-
-import { CourseViewModel } from '@/types';
-
-
-
-
-
-type Lesson = CourseViewModel['chapters'][0]['lessons'][0]
+import { LessonInCourseViewModel} from '@/types'
+import { ProgressLessonViewModel } from '@/types/view-model/progress-view-model.types'
 
 interface LessonsListProps {
     courseId: string
     chapterId: string
-    lessons: Lesson[]
+    lessons: LessonInCourseViewModel[]
 }
 
 export const LessonsList: FC<LessonsListProps> = ({ courseId, chapterId, lessons }) => {
     const sortedLessons = [...lessons].sort((a, b) => a.position - b.position)
+
     return (
         <ul className={styles.list}>
             {sortedLessons.map((lesson) => (
@@ -30,7 +24,10 @@ export const LessonsList: FC<LessonsListProps> = ({ courseId, chapterId, lessons
                         className={styles.item}
                         to={`${PAGE_PATH.COURSES}/${courseId}/${chapterId}/${lesson.id}`}
                     >
-                        <span>
+                        <span className={styles['item__progress-icon']}>
+                            <LessonProgressIcon progress={lesson.lessonProgress} />
+                        </span>
+                        <span className={styles.item__text}>
                             <span className={styles.item__position}>{`${lesson.position}. `}</span>
                             {lesson.name}
                         </span>
@@ -42,8 +39,24 @@ export const LessonsList: FC<LessonsListProps> = ({ courseId, chapterId, lessons
     )
 }
 
+interface LessonProgressIconProps {
+    progress: ProgressLessonViewModel[]
+}
+
+const LessonProgressIcon: FC<LessonProgressIconProps> = ({ progress }) => {
+    if (progress.length === 0) {
+        return <Badge className={styles['progress-icon__base']} />
+    } else if (progress[0].status === 'IN_PROGRESS') {
+        return <BadgeInfo className={styles['progress-icon__info']} />
+    } else if (progress[0].status === 'COMPLETED') {
+        return <BadgeCheck className={styles['progress-icon__check']} />
+    } else {
+        return <Badge className={styles['progress-icon__base']} />
+    }
+}
+
 interface LessonTypeIconsProps {
-    lesson: Lesson
+    lesson: LessonInCourseViewModel
 }
 
 const LessonTypeIcons: FC<LessonTypeIconsProps> = ({ lesson }) => {

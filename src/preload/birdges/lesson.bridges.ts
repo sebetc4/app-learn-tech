@@ -4,12 +4,12 @@ import { ipcRenderer } from 'electron'
 import type {
     GetCodeSnippetContentIPCHandlerParams,
     GetJSXLessonContentIPCHandlerParams,
-    GetLessonDataIPCHandlerParams,
+    GetLessonStoreDataIPCHandlerParams,
     LessonAPI
 } from '@/types'
 
 export const lessonContextBridge: LessonAPI = {
-    getData: (params: GetLessonDataIPCHandlerParams) =>
+    getLessonStoreData: (params: GetLessonStoreDataIPCHandlerParams) =>
         ipcRenderer.invoke(IPC.LESSON.GET_DATA, params),
     getJSXContent: (params: GetJSXLessonContentIPCHandlerParams) =>
         ipcRenderer.invoke(IPC.LESSON.GET_JSX_CONTENT, params),
