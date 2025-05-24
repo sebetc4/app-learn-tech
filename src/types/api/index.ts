@@ -1,4 +1,5 @@
 export type { AppAPI } from './api.types'
 export type { CourseAPI } from './course-api.types'
 export type { LessonAPI } from './lesson-api.types'
+export type { ProgressAPI } from './progress.types'
 export type { FolderAPI } from './folder-api.types'

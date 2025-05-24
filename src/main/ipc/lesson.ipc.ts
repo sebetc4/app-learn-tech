@@ -44,7 +44,6 @@ export const registerLessonIpcHandlers = (
         async (_event, params: GetJSXLessonContentIPCHandlerParams) => {
             try {
                 const jsxPath = pathService.getJsxPath(params)
-                console.log('jsxPath', jsxPath)
                 const fullJsxPath = folderService.getPathFromFolder(jsxPath)
 
                 try {
@@ -79,7 +78,6 @@ export const registerLessonIpcHandlers = (
             try {
                 const codeSnippetPath = pathService.getCodeSnippetPath(params)
                 const fullPath = folderService.getPathFromFolder(codeSnippetPath)
-                console.log('fullPath', fullPath)
 
                 try {
                     await fs.access(fullPath)

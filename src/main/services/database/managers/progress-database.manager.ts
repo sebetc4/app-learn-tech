@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 
-interface GetLessonsProgressParams {
+interface CreateLessonProgress {
     courseId: string
+    lessonId: string
     userId: string
 }
 
@@ -12,16 +13,17 @@ export class ProgressDatabaseManager {
         this.#prisma = prisma
     }
 
-    getLessonsProgress({ courseId, userId }: GetLessonsProgressParams) {
-        return this.#prisma.lessonProgress.findMany({
-            where: {
+    createLessonProgress = async ({ courseId, lessonId, userId }: CreateLessonProgress) => {
+        
+        const progress = await this.#prisma.lessonProgress.create({
+            data: {
                 courseId,
+                lessonId,
                 userId
-            },
-            select: {
-                lessonId: true,
-                status: true
             }
         })
+        console.log()
+
+        return progress
     }
 }

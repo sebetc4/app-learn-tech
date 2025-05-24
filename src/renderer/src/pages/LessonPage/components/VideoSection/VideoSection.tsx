@@ -28,12 +28,7 @@ export const VideoSection: FC = () => {
                     }}
                 >
                     <source
-                        src={protocolService.course.getFilePath(
-                            courseId,
-                            chapterId,
-                            lessonId,
-                            'video.mp4'
-                        )}
+                        src={protocolService.course.getVideoPath(courseId, chapterId, lessonId)}
                         type="video/mp4"
                     />
                 </video>

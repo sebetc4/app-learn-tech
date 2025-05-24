@@ -6,12 +6,11 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 interface CodeSnippetProps {
-    id: string
+    fileName: string
     language: string
-    extension: string
 }
 
-export const CodeSnippet: FC<CodeSnippetProps> = ({ id, language, extension }) => {
+export const CodeSnippet: FC<CodeSnippetProps> = ({ fileName, language }) => {
     const courseId = useLessonStore((state) => state.course?.id)
     const chapterId = useLessonStore((state) => state.chapter?.id)
     const lessonId = useLessonStore((state) => state.lesson?.id)
@@ -27,16 +26,14 @@ export const CodeSnippet: FC<CodeSnippetProps> = ({ id, language, extension }) =
             courseId,
             chapterId,
             lessonId,
-            codeSnippetId: id,
-            codeSnippetExtension: extension
+            fileName
         })
-        console.log('response', response)
         if (response.success) {
             setContent(response.data.content)
         } else {
             setContent('Error fetching code snippet content')
         }
-    }, [courseId, chapterId, lessonId, id, extension])
+    }, [courseId, chapterId, lessonId, fileName])
 
     useEffect(() => {
         fetchCodeSnippetContent()

@@ -4,8 +4,6 @@ import fs from 'fs'
 import path from 'path'
 import { promisify } from 'util'
 
-import { CourseMetadata } from '@/types'
-
 const execPromise = promisify(exec)
 
 export class ArchiveManager {
@@ -34,15 +32,14 @@ export class ArchiveManager {
                 throw new Error('File metadata.json is missing in the zip file')
             }
 
-            const metadataContent = fs.readFileSync(metadataPath, 'utf8')
-            const courseMetadata: CourseMetadata = JSON.parse(metadataContent)
+            // const metadataContent = fs.readFileSync(metadataPath, 'utf8')
+            // const courseMetadata: CourseMetadata = JSON.parse(metadataContent)
 
             fs.mkdirSync(path.dirname(finalDestPath), { recursive: true })
 
             await this.moveDirectory(extractPath, finalDestPath)
 
             await this.cleanupTempFolder(tempId)
-            console.log(`Course imported successfully:`, courseMetadata.name)
 
             return finalDestPath
         } catch (error) {

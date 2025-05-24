@@ -29,7 +29,6 @@ export const CoursePage: FC = () => {
         handleFetchCourse(courseId, userId)
     }, [courseId, userId, handleFetchCourse])
 
-    console.log('CoursePage', course)
 
     const chapterNumber = course?.chapters?.length || 0
     const lessonNumber =

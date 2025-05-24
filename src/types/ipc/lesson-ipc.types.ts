@@ -51,8 +51,7 @@ export type GetCodeSnippetContentIPCHandlerParams = {
     courseId: string
     chapterId: string
     lessonId: string
-    codeSnippetId: string
-    codeSnippetExtension: string
+    fileName: string
 }
 
 export type GetCodeSnippetContentIPCHandlerReturn = IPCHandlerReturnWithData<{

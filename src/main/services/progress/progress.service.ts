@@ -1,22 +1,18 @@
 import { DatabaseService } from '../database'
 
-export class LessonService {
+interface CreateLessonProgressParams {
+    courseId: string
+    lessonId: string
+    userId: string
+}
+
+export class ProgressService {
     #database: DatabaseService
     constructor(database: DatabaseService) {
         this.#database = database
     }
 
-    getLessonsProgress = async (courseId: string, userId: string) => {
-        try {
-            this.#database.progress.getLessonsProgress({
-                courseId,
-                userId
-            })
-        } catch (error) {
-            console.error(
-                `Error retrieving lessons progress for course ${courseId} and user ${userId}: ${error}`
-            )
-            throw error
-        }
+    createLessonProgress = async (data: CreateLessonProgressParams) => {
+        return await this.#database.progress.createLessonProgress(data)
     }
 }

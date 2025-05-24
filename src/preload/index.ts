@@ -2,6 +2,7 @@ import {
     courseContextBridge,
     folderContextBridge,
     lessonContextBridge,
+    progressContextBridge,
     userContextBridge
 } from './birdges'
 import { electronAPI } from '@electron-toolkit/preload'
@@ -11,7 +12,8 @@ const api = {
     course: courseContextBridge,
     folder: folderContextBridge,
     lesson: lessonContextBridge,
-    user: userContextBridge
+    user: userContextBridge,
+    progress: progressContextBridge
 }
 
 if (process.contextIsolated) {

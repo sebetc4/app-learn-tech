@@ -9,8 +9,7 @@ interface BasePathParams {
 interface GetJsXPathParams extends BasePathParams {}
 
 interface GetCodeSnippetPathParams extends BasePathParams {
-    codeSnippetId: string
-    codeSnippetExtension: string
+    fileName: string
 }
 
 export class PathService {
@@ -22,17 +21,9 @@ export class PathService {
         courseId,
         chapterId,
         lessonId,
-        codeSnippetId,
-        codeSnippetExtension
+        fileName
     }: GetCodeSnippetPathParams): string {
-        return path.join(
-            courseId,
-            'chapters',
-            chapterId,
-            lessonId,
-            'code',
-            `${codeSnippetId}.${codeSnippetExtension}`
-        )
+        return path.join(courseId, 'chapters', chapterId, lessonId, 'code', fileName)
     }
 }
 

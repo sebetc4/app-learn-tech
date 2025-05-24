@@ -2,24 +2,26 @@ import icon from '../../resources/icon.png?asset'
 import {
     registerCourseIpcHandlers,
     registerFolderIpcHandlers,
-    registerLessonIpcHandlers
+    registerLessonIpcHandlers,
+    registerProgressIpcHandlers,
+    registerUserIpcHandlers
 } from './ipc'
-import { registerUserIpcHandlers } from './ipc/user.ipc'
 import { registerCourseProtocol, registerIconProtocol } from './protocol'
 import {
     CourseService,
+    DatabaseService,
     FolderService,
     ImportCourseService,
     LessonService,
+    ProgressService,
     StorageService,
+    ThemeService,
     UserService
 } from './services'
-import { DatabaseService } from './services/database'
 import { PROTOCOL } from '@/constants'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { BrowserWindow, app, ipcMain, protocol, shell } from 'electron'
 import { join } from 'path'
-import { ThemeService } from './services/theme'
 
 const createWindow = (): void => {
     const mainWindow = new BrowserWindow({
@@ -72,12 +74,14 @@ const registerIpcHandlers = (
     courseService: CourseService,
     folderService: FolderService,
     lessonService: LessonService,
-    userService: UserService
+    userService: UserService,
+    progressService: ProgressService
 ) => {
     registerFolderIpcHandlers(courseService, folderService)
     registerCourseIpcHandlers(courseService)
     registerLessonIpcHandlers(lessonService, folderService)
     registerUserIpcHandlers(userService)
+    registerProgressIpcHandlers(progressService)
 }
 
 app.whenReady().then(async () => {
@@ -95,17 +99,14 @@ app.whenReady().then(async () => {
     await folderService.initialize()
 
     const themeService = new ThemeService()
-
     const importCourseService = new ImportCourseService(database, storageService, folderService)
-
     const courseService = new CourseService(database, folderService, importCourseService)
-
     const lessonService = new LessonService(database)
-
     const userService = new UserService(database, themeService)
+    const progressService = new ProgressService(database)
 
     registerProtocols(folderService)
-    registerIpcHandlers(courseService, folderService, lessonService, userService)
+    registerIpcHandlers(courseService, folderService, lessonService, userService, progressService)
 
     ipcMain.on('ping', () => console.log('pong'))
 

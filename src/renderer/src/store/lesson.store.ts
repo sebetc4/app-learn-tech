@@ -30,7 +30,12 @@ interface LessonState {
 }
 
 interface LessonAction {
-    initialize: (courseId: string, chapterId: string, lessonId: string, userId: string) => Promise<void>
+    initialize: (
+        courseId: string,
+        chapterId: string,
+        lessonId: string,
+        userId: string
+    ) => Promise<void>
 }
 
 interface LessonStore extends LessonState, LessonAction {}
@@ -55,6 +60,23 @@ export const useLessonStore = create<LessonStore>()((set) => ({
         })
         if (response.success) {
             const { course, chapter, lesson } = response.data
+            // if (lesson.lessonProgress.length === 0) {
+            //     const progressResponse = await window.api.progress.createLessonProgress({
+            //         courseId,
+            //         lessonId: lesson.id,
+            //         userId
+            //     })
+            //     console.log('Progress Response:', progressResponse)
+            //     if (progressResponse.success) {
+            //         const { id: progressId } = progressResponse.data.progress
+            //         lesson.lessonProgress.push({
+            //             id: progressId,
+            //             status: 'IN_PROGRESS'
+            //         })
+            //     } else {
+            //         console.error(`Error creating lesson progress: ${progressResponse.message}`)
+            //     }
+            // }
             set({
                 course: {
                     id: course.id,

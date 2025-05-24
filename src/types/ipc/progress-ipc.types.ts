@@ -1,8 +1,13 @@
-import { ProgressLessonViewModel } from '../view-model'
 import { IPCHandlerReturnWithData } from './core-ipc.types'
+import { LessonProgress } from '@prisma/client'
 
-// Get Lessons Progress
-export interface GetLessonsProgressIPCHandlerReturn
-    extends IPCHandlerReturnWithData<{
-        lessons: ProgressLessonViewModel[]
-    }> {}
+// Create Status Progress
+export interface CreateLessonProgressIPCHandlerParams {
+    courseId: string
+    lessonId: string
+    userId: string
+}
+
+export type CreateLessonProgressIPCHandlerReturn = IPCHandlerReturnWithData<{
+    progress: LessonProgress
+}>

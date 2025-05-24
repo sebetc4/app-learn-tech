@@ -40,7 +40,6 @@ export const useUserStore = create<UserStore>()((set, get) => ({
                 users: allUsersResponse.data.users
             })
         }
-        console.log('allUsersResponse', allUsersResponse)
     },
 
     updateTheme: async (theme: Theme) => {

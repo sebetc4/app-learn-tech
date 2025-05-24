@@ -30,7 +30,6 @@ export class UserDatabaseManager {
     }
 
     async updateTheme(id: string, theme: Theme) {
-        console.log(id, theme)
         return await this.#prisma.user.update({
             where: { id },
             data: { theme }

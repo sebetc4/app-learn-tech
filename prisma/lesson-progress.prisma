@@ -4,16 +4,17 @@ enum LessonProgressStatus {
 }
 
 model LessonProgress {
-    id String @unique
-    status LessonProgressStatus
+    id     String               @id @default(uuid())
+    status LessonProgressStatus @default(IN_PROGRESS)
 
     courseId String @map("course_id")
-    course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+    course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
     lessonId String @map("lesson_id")
-    lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+    lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
     userId String @map("user_id")
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
     @@map("lesson_progress")
 }
