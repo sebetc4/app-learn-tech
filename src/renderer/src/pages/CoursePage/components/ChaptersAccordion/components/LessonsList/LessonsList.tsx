@@ -1,11 +1,11 @@
 import styles from './LessonsList.module.scss'
+import { LessonProgressIcon } from '@/renderer/src/components'
 import { PAGE_PATH } from '@/renderer/src/constants'
-import { Badge, BadgeCheck, BadgeInfo, LetterText, SquarePlay } from 'lucide-react'
+import { LetterText, SquarePlay } from 'lucide-react'
 import { FC, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 
-import { LessonInCourseViewModel} from '@/types'
-import { ProgressLessonViewModel } from '@/types/view-model/progress-view-model.types'
+import { LessonInCourseViewModel } from '@/types'
 
 interface LessonsListProps {
     courseId: string
@@ -37,22 +37,6 @@ export const LessonsList: FC<LessonsListProps> = ({ courseId, chapterId, lessons
             ))}
         </ul>
     )
-}
-
-interface LessonProgressIconProps {
-    progress: ProgressLessonViewModel[]
-}
-
-const LessonProgressIcon: FC<LessonProgressIconProps> = ({ progress }) => {
-    if (progress.length === 0) {
-        return <Badge className={styles['progress-icon__base']} />
-    } else if (progress[0].status === 'IN_PROGRESS') {
-        return <BadgeInfo className={styles['progress-icon__info']} />
-    } else if (progress[0].status === 'COMPLETED') {
-        return <BadgeCheck className={styles['progress-icon__check']} />
-    } else {
-        return <Badge className={styles['progress-icon__base']} />
-    }
 }
 
 interface LessonTypeIconsProps {

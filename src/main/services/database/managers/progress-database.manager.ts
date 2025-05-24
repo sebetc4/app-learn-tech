@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { LessonProgressStatus, PrismaClient } from '@prisma/client'
 
 interface CreateLessonProgress {
     courseId: string
@@ -14,16 +14,23 @@ export class ProgressDatabaseManager {
     }
 
     createLessonProgress = async ({ courseId, lessonId, userId }: CreateLessonProgress) => {
-        
-        const progress = await this.#prisma.lessonProgress.create({
+        return await this.#prisma.lessonProgress.create({
             data: {
                 courseId,
                 lessonId,
                 userId
             }
         })
-        console.log()
+    }
 
-        return progress
+    updateLessonProgress = async (progressId: string, status: LessonProgressStatus) => {
+        return await this.#prisma.lessonProgress.update({
+            where: {
+                id: progressId
+            },
+            data: {
+                status
+            }
+        })
     }
 }

@@ -25,12 +25,6 @@
     }
 }
 
-.progress-icon{
-    &__base {
-        @include stroke('base-11')
-    }
-}
-
 .text-and-video-icons {
     display: flex;
     align-items: center;

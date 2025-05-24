@@ -36,6 +36,7 @@ interface LessonAction {
         lessonId: string,
         userId: string
     ) => Promise<void>
+    validate: (lessonId: string, userId: string) => Promise<void>
 }
 
 interface LessonStore extends LessonState, LessonAction {}
@@ -47,7 +48,7 @@ const initialState: LessonState = {
     adjacentLessons: null
 }
 
-export const useLessonStore = create<LessonStore>()((set) => ({
+export const useLessonStore = create<LessonStore>()((set, get) => ({
     ...initialState,
 
     initialize: async (courseId, chapterId, lessonId, userId) => {
@@ -60,23 +61,23 @@ export const useLessonStore = create<LessonStore>()((set) => ({
         })
         if (response.success) {
             const { course, chapter, lesson } = response.data
-            // if (lesson.lessonProgress.length === 0) {
-            //     const progressResponse = await window.api.progress.createLessonProgress({
-            //         courseId,
-            //         lessonId: lesson.id,
-            //         userId
-            //     })
-            //     console.log('Progress Response:', progressResponse)
-            //     if (progressResponse.success) {
-            //         const { id: progressId } = progressResponse.data.progress
-            //         lesson.lessonProgress.push({
-            //             id: progressId,
-            //             status: 'IN_PROGRESS'
-            //         })
-            //     } else {
-            //         console.error(`Error creating lesson progress: ${progressResponse.message}`)
-            //     }
-            // }
+            if (lesson.lessonProgress.length === 0) {
+                const progressResponse = await window.api.progress.createLessonProgress({
+                    courseId,
+                    lessonId: lesson.id,
+                    userId
+                })
+                console.log('Progress Response:', progressResponse)
+                if (progressResponse.success) {
+                    const { id: progressId } = progressResponse.data.progress
+                    lesson.lessonProgress.push({
+                        id: progressId,
+                        status: 'IN_PROGRESS'
+                    })
+                } else {
+                    console.error(`Error creating lesson progress: ${progressResponse.message}`)
+                }
+            }
             set({
                 course: {
                     id: course.id,
@@ -109,6 +110,26 @@ export const useLessonStore = create<LessonStore>()((set) => ({
             })
         } else {
             console.error(`Error fetching navigation element: ${response.message}`)
+        }
+    },
+
+    validate: async () => {
+        const currentLesson = get().lesson
+        if (currentLesson?.lessonProgress[0]) {
+            const progressResponse = await window.api.progress.validateLessonProgress({
+                progressId: currentLesson.lessonProgress[0].id
+            })
+            if (progressResponse.success) {
+                currentLesson.lessonProgress[0].status = 'COMPLETED'
+                set({ lesson: currentLesson })
+            } else {
+                console.error(`Error validating lesson progress: ${progressResponse.message}`)
+                throw new Error(`Error validating lesson progress: ${progressResponse.message}`)
+            }
+        } else {
+            console.error(
+                `Error creating lesson progress: No progress found for lesson ${currentLesson?.id}`
+            )
         }
     }
 }))

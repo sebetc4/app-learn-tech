@@ -31,16 +31,6 @@ export const NavigationMenu = () => {
                         <CoursesList />
                     </RadixNavigationMenu.Content>
                 </RadixNavigationMenu.Item>
-                <RadixNavigationMenu.Item>
-                    <RadixNavigationMenu.Link asChild>
-                        <Link
-                            to={PAGE_PATH.COURSE_MANAGER}
-                            className={styles.link}
-                        >
-                            Ajouter un cours
-                        </Link>
-                    </RadixNavigationMenu.Link>
-                </RadixNavigationMenu.Item>
             </RadixNavigationMenu.List>
             <div className={styles['viewport-container']}>
                 <RadixNavigationMenu.Viewport className={styles.viewport} />

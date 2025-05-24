@@ -5,6 +5,10 @@
     gap: 0.5rem;
     color: inherit;
 
+    svg {
+        max-width: 2rem;
+    }
+
     &.variant-outlined,
     &.variant-contained {
         width: min-content;
@@ -21,7 +25,7 @@
 
     // Outlined
     &.variant-outlined {
-        // Styles existants
+        @include border('primary');
     }
 
     // Text

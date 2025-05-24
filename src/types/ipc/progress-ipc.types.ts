@@ -11,3 +11,11 @@ export interface CreateLessonProgressIPCHandlerParams {
 export type CreateLessonProgressIPCHandlerReturn = IPCHandlerReturnWithData<{
     progress: LessonProgress
 }>
+
+export interface ValidateLessonProgressIPCHandlerParams {
+    progressId: string
+}
+
+export type ValidateLessonProgressIPCHandlerReturn = IPCHandlerReturnWithData<{
+    progress: LessonProgress
+}>

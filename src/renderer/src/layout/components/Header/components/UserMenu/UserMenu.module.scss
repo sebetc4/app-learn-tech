@@ -73,7 +73,7 @@
 
 .separator {
     height: 1px;
-    background-color: var(--violet-6);
+    @include bg-color('base-6');
     margin: 5px;
 }
 
@@ -89,6 +89,15 @@
     }
     svg {
         height: 1.25rem;
+    }
+}
+
+.link {
+    display: flex;
+    gap: 0.5rem;
+
+    svg {
+        width: 1rem;
     }
 }
 

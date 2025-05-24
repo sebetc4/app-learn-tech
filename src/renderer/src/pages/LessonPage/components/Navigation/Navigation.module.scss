@@ -28,3 +28,18 @@
         }
     }
 }
+
+.progress-icon {
+    &__base {
+        @include stroke('base-11');
+    }
+
+    &__info {
+        transform: rotate(180deg);
+        stroke: #ffca16;
+    }
+
+    &__check {
+        stroke: #53b365;
+    }
+}

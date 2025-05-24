@@ -1,10 +1,15 @@
 import { IPC } from '@/constants'
 import { ipcRenderer } from 'electron'
 
-import type { GetOneCourseIPCHandlerParams } from '@/types'
-import { ProgressAPI } from '@/types/api/progress.types'
+import {
+    CreateLessonProgressIPCHandlerParams,
+    ProgressAPI,
+    ValidateLessonProgressIPCHandlerParams
+} from '@/types'
 
 export const progressContextBridge: ProgressAPI = {
-    createLessonProgress: (params: GetOneCourseIPCHandlerParams) =>
-        ipcRenderer.invoke(IPC.COURSE.GET_ONE, params)
+    createLessonProgress: (params: CreateLessonProgressIPCHandlerParams) =>
+        ipcRenderer.invoke(IPC.PROGRESS.CREATE_LESSON_PROGRESS, params),
+    validateLessonProgress: (params: ValidateLessonProgressIPCHandlerParams) =>
+        ipcRenderer.invoke(IPC.PROGRESS.VALIDATE_LESSON_PROGRESS, params)
 }

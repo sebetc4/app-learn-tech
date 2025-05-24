@@ -1,10 +1,11 @@
 import styles from './Navigation.module.scss'
 import { PAGE_PATH } from '@/renderer/src/constants'
 import { useLessonStore } from '@/renderer/src/store/lesson.store'
-import { ProgressLessonViewModel } from '@/types'
 import { ArrowBigLeft, ArrowBigRight, Badge, BadgeCheck, BadgeInfo } from 'lucide-react'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
+
+import { ProgressLessonViewModel } from '@/types'
 
 export const Navigation: FC = () => {
     const course = useLessonStore((state) => state.course)
@@ -59,12 +60,13 @@ interface LessonProgressIconProps {
     progress: ProgressLessonViewModel[]
 }
 
-const LessonProgressIcon: FC<LessonProgressIconProps> = ({ progress }) => {
-    if (progress.length === 0) {
+const LessonProgressIcon: FC<LessonProgressIconProps> = () => {
+    const status = useLessonStore((state) => state.lesson?.lessonProgress[0].status)
+    if (!status) {
         return <Badge className={styles['progress-icon__base']} />
-    } else if (progress[0].status === 'IN_PROGRESS') {
+    } else if (status === 'IN_PROGRESS') {
         return <BadgeInfo className={styles['progress-icon__info']} />
-    } else if (progress[0].status === 'COMPLETED') {
+    } else if (status === 'COMPLETED') {
         return <BadgeCheck className={styles['progress-icon__check']} />
     } else {
         return <Badge className={styles['progress-icon__base']} />
