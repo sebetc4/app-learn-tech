@@ -11,9 +11,15 @@
     }
 }
 
-.adjacent-lessons {
-    @include flex(null, null, 1rem);
+.separator {
     margin: 2rem;
+   @include bg-color('base-11');
+    height: 1px;
+}
+
+.adjacent-lessons {
+    margin: 2rem;
+    @include flex(null, null, 1rem);
 
     &__link {
         @include flex(null, null, 0.25rem);

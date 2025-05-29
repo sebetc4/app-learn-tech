@@ -1,7 +1,7 @@
 import styles from './TextSection.module.scss'
-import { CodeSnippet, CourseImage } from '@/renderer/src/components'
-import { useLessonStore } from '@/renderer/src/store/lesson.store'
 import * as babel from '@babel/standalone'
+import { CodeSnippet, CourseImage } from '@renderer/components'
+import { useLessonStore } from '@renderer/store'
 import React, { ComponentType, FC, useCallback, useEffect, useState } from 'react'
 
 interface CompiledComponentProps {

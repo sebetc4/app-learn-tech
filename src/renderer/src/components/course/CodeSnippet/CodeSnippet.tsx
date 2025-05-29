@@ -57,6 +57,7 @@ export const CodeSnippet: FC<CodeSnippetProps> = ({ fileName, language }) => {
             <SyntaxHighlighter
                 language={language}
                 style={tomorrow}
+                className={styles['code-snippet']}
             >
                 {content}
             </SyntaxHighlighter>

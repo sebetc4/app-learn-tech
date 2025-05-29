@@ -19,6 +19,9 @@ export interface ChapterInCourseViewModel {
 
 export interface CourseViewModel extends Course {
     chapters: ChapterInCourseViewModel[]
+    courseProgresses: {
+        percentage: number
+    }[]
 }
 
 export type CoursePreview = Pick<Course, 'id' | 'name' | 'description' | 'folderName' | 'buildAt'>

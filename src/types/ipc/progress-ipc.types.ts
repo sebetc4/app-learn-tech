@@ -13,7 +13,9 @@ export type CreateLessonProgressIPCHandlerReturn = IPCHandlerReturnWithData<{
 }>
 
 export interface ValidateLessonProgressIPCHandlerParams {
-    progressId: string
+    lessonProgressId: string
+    courseId: string
+    userId: string
 }
 
 export type ValidateLessonProgressIPCHandlerReturn = IPCHandlerReturnWithData<{

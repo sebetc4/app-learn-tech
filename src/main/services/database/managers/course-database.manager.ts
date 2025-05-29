@@ -78,6 +78,12 @@ export class CourseDatabaseManager {
                             }
                         }
                     }
+                },
+                courseProgresses: {
+                    where: { userId, courseId },
+                    select: {
+                        percentage: true
+                    }
                 }
             }
         })

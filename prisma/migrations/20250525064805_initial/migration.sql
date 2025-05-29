@@ -18,12 +18,36 @@ CREATE TABLE "code_snippets" (
 );
 
 -- CreateTable
+CREATE TABLE "course_progress" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "status" TEXT NOT NULL DEFAULT 'IN_PROGRESS',
+    "course_id" TEXT NOT NULL,
+    "lesson_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    CONSTRAINT "course_progress_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "courses" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "course_progress_lesson_id_fkey" FOREIGN KEY ("lesson_id") REFERENCES "lessons" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "course_progress_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
 CREATE TABLE "courses" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "folder_name" TEXT NOT NULL,
     "build_at" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "lesson_progress" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "total_course" INTEGER NOT NULL,
+    "completed_course" INTEGER NOT NULL,
+    "percentage" INTEGER NOT NULL,
+    "course_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    CONSTRAINT "lesson_progress_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "courses" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "lesson_progress_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -37,15 +61,6 @@ CREATE TABLE "lessons" (
     "course_id" TEXT NOT NULL,
     CONSTRAINT "lessons_chapter_id_fkey" FOREIGN KEY ("chapter_id") REFERENCES "chapters" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "lessons_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "courses" ("id") ON DELETE CASCADE ON UPDATE CASCADE
-);
-
--- CreateTable
-CREATE TABLE "progress" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "user_id" TEXT NOT NULL,
-    "lesson_id" TEXT NOT NULL,
-    CONSTRAINT "progress_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "progress_lesson_id_fkey" FOREIGN KEY ("lesson_id") REFERENCES "lessons" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable

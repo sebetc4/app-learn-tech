@@ -21,7 +21,7 @@
 
     em {
         font-style: italic;
-        color: #107d98;
+        @include color('secondary')
     }
 
     /* Links */
@@ -36,7 +36,7 @@
     }
 
     code {
-        font-family: 'Consolas', 'Monaco', monospace;
+        font-family: 'jetbrains', monospace;
         @include bg-color('base-3');
         padding: 0.2rem 0.4rem;
         border-radius: 3px;
@@ -113,28 +113,10 @@
         margin-top: 0.8rem;
     }
 
-    /* Buttons */
-    .button-primary {
-        display: inline-block;
-        background-color: var(--primary-color);
-        color: var(--button-color);
-        padding: var(--button-padding);
-        text-decoration: none;
-        border-radius: 4px;
-        font-weight: 600;
-        transition: transform 0.2s;
-    }
-
-    .button-primary:hover {
-        color: var(--button-color);
-        transform: scale(1.03);
-    }
-
     /* Images */
     img {
         max-width: 600px;
         height: auto;
-        border-radius: var(--code-border-radius);
         margin: 4rem auto;
         display: block;
         box-shadow:  0 2px 8px rgba(0, 0, 0, 0.2);

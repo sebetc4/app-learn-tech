@@ -7,7 +7,9 @@ interface CreateLessonProgressParams {
 }
 
 interface ValidateLessonProgressParams {
-    progressId: string
+    lessonProgressId: string
+    courseId: string
+    userId: string
 }
 
 export class ProgressService {
@@ -20,7 +22,18 @@ export class ProgressService {
         return await this.#database.progress.createLessonProgress(data)
     }
 
-    validateLessonProgress = async ({ progressId }: ValidateLessonProgressParams) => {
-        return await this.#database.progress.updateLessonProgress(progressId, 'COMPLETED')
+    validateLessonProgress = async ({
+        lessonProgressId,
+        courseId,
+        userId
+    }: ValidateLessonProgressParams) => {
+        await this.#database.progress.updateLessonProgress({
+            progressId: lessonProgressId,
+            status: 'COMPLETED'
+        })
+        await this.#database.progress.upsertCourseProgress({
+            courseId,
+            userId
+        })
     }
 }

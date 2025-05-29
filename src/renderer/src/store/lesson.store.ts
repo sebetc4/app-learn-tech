@@ -36,7 +36,7 @@ interface LessonAction {
         lessonId: string,
         userId: string
     ) => Promise<void>
-    validate: (lessonId: string, userId: string) => Promise<void>
+    validate: (courseId: string, userId: string) => Promise<void>
 }
 
 interface LessonStore extends LessonState, LessonAction {}
@@ -67,7 +67,6 @@ export const useLessonStore = create<LessonStore>()((set, get) => ({
                     lessonId: lesson.id,
                     userId
                 })
-                console.log('Progress Response:', progressResponse)
                 if (progressResponse.success) {
                     const { id: progressId } = progressResponse.data.progress
                     lesson.lessonProgress.push({
@@ -113,11 +112,13 @@ export const useLessonStore = create<LessonStore>()((set, get) => ({
         }
     },
 
-    validate: async () => {
+    validate: async (courseId, userId) => {
         const currentLesson = get().lesson
         if (currentLesson?.lessonProgress[0]) {
             const progressResponse = await window.api.progress.validateLessonProgress({
-                progressId: currentLesson.lessonProgress[0].id
+                lessonProgressId: currentLesson.lessonProgress[0].id,
+                courseId,
+                userId
             })
             if (progressResponse.success) {
                 currentLesson.lessonProgress[0].status = 'COMPLETED'

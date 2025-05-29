@@ -1,0 +1,53 @@
+.section {
+    margin: 4rem;
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+}
+
+.icon-container {
+    img {
+        max-width: 250px;
+        height: auto;
+    }
+}
+
+.text-container {
+    p {
+        margin-block: 1rem;
+    }
+
+    > div {
+        @include flex(null, center, 1rem);
+    }
+}
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .progress-bar {
+        height: 8px;
+        width: 250px;
+        @include border('base-5');
+
+        > div {
+            height: 100%;
+            width: 100%;
+            background-color: rgb(16, 125, 152);
+            transform-origin: center left;
+        }
+    }
+
+    &--completed {
+        .progress-bar {
+            > div {
+                background-color: rgb(83, 179, 101);
+            }
+        }
+        p {
+            color: #53b365;
+        }
+    }
+}

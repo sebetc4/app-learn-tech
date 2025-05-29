@@ -10,6 +10,7 @@ model Course {
   lessons  Lesson[]
 
   lessonProgresses LessonProgress[]
+  courseProgresses CourseProgress[]
 
   @@map("courses")
 }

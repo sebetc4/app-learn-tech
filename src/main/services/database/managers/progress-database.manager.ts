@@ -6,6 +6,16 @@ interface CreateLessonProgress {
     userId: string
 }
 
+interface UpdateLessonProgress {
+    progressId: string
+    status: LessonProgressStatus
+}
+
+interface UpsertCourseProgress {
+    courseId: string
+    userId: string
+}
+
 export class ProgressDatabaseManager {
     #prisma: PrismaClient
 
@@ -23,7 +33,7 @@ export class ProgressDatabaseManager {
         })
     }
 
-    updateLessonProgress = async (progressId: string, status: LessonProgressStatus) => {
+    updateLessonProgress = async ({ progressId, status }: UpdateLessonProgress) => {
         return await this.#prisma.lessonProgress.update({
             where: {
                 id: progressId
@@ -32,5 +42,59 @@ export class ProgressDatabaseManager {
                 status
             }
         })
+    }
+
+    upsertCourseProgress = async ({ courseId, userId }: UpsertCourseProgress) => {
+        try {
+            const courseProgress = await this.#prisma.courseProgress.findMany({
+                where: { userId, courseId }
+            })
+            if (courseProgress.length > 0) {
+                return await this.#prisma.courseProgress.update({
+                    where: {
+                        id: courseProgress[0].id
+                    },
+                    data: {
+                        totalCourse: courseProgress[0].totalCourse,
+                        completedCourse: courseProgress[0].completedCourse + 1,
+                        percentage: this.#floorPercentage(
+                            courseProgress[0].completedCourse + 1,
+                            courseProgress[0].totalCourse
+                        )
+                    }
+                })
+            } else {
+                const totalCourse = await this.#getCourseTotalLessons(courseId)
+
+                return await this.#prisma.courseProgress.create({
+                    data: {
+                        courseId,
+                        userId,
+                        totalCourse,
+                        completedCourse: 1,
+                        percentage: this.#floorPercentage(1, totalCourse)
+                    }
+                })
+            }
+        } catch (error) {
+            console.error('Error in upsertCourseProgress:', error)
+            throw new Error('Failed to upsert course progress')
+        }
+    }
+
+    #floorPercentage = (completed: number, total: number): number => {
+        if (total === 0) return 0
+        return Math.floor((completed / total) * 100)
+    }
+
+    #getCourseTotalLessons = async (courseId: string): Promise<number> => {
+        const totalLessons = await this.#prisma.lesson.count({
+            where: {
+                chapter: {
+                    courseId: courseId
+                }
+            }
+        })
+        return totalLessons
     }
 }

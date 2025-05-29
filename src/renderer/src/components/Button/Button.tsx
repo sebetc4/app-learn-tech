@@ -53,7 +53,7 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
             <>
                 {isLoading ? (
                     <>
-                        <Loader />
+                        <Loader className={styles.loader} />
                         {children}
                     </>
                 ) : (

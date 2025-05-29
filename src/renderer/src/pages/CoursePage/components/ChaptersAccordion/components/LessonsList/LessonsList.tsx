@@ -1,6 +1,6 @@
 import styles from './LessonsList.module.scss'
 import { LessonProgressIcon } from '@/renderer/src/components'
-import { PAGE_PATH } from '@/renderer/src/constants'
+import { pathService } from '@/renderer/src/services'
 import { LetterText, SquarePlay } from 'lucide-react'
 import { FC, useCallback } from 'react'
 import { Link } from 'react-router-dom'
@@ -22,7 +22,11 @@ export const LessonsList: FC<LessonsListProps> = ({ courseId, chapterId, lessons
                 <li key={lesson.id}>
                     <Link
                         className={styles.item}
-                        to={`${PAGE_PATH.COURSES}/${courseId}/${chapterId}/${lesson.id}`}
+                        to={pathService.getLessonPath({
+                            courseId,
+                            chapterId,
+                            lessonId: lesson.id
+                        })}
                     >
                         <span className={styles['item__progress-icon']}>
                             <LessonProgressIcon progress={lesson.lessonProgress} />

@@ -66,7 +66,7 @@ export class LessonDatabaseManager {
                     }
                 },
                 lessonProgress: {
-                    where: { userId },
+                    where: { lessonId, userId },
                     select: {
                         id: true,
                         status: true
@@ -100,5 +100,26 @@ export class LessonDatabaseManager {
             previousLesson: previousLesson || null,
             nextLesson: nextLesson || null
         }
+    }
+
+    async getLessonCountByCourseId(courseId: string): Promise<number | null> {
+        const result = await this.#prisma.course.findUnique({
+            where: { id: courseId },
+            select: {
+                _count: {
+                    select: {
+                        chapters: {
+                            where: {
+                                lessons: {
+                                    some: {}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+        return result?._count.chapters || null
     }
 }
