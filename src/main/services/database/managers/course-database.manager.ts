@@ -1,6 +1,13 @@
-import { Course, PrismaClient } from '@prisma/client'
+import { courseProgress, courses, lessonProgress } from '@/database/schemas'
+import { and, eq } from 'drizzle-orm'
 
-import { CoursePreview, CourseViewModel } from '@/types'
+import {
+    AutoSaveFunction,
+    Course,
+    CoursePreview,
+    DrizzleDB,
+    QueryWithRelationsFunction
+} from '@/types'
 
 interface CreateCourseParams {
     id: string
@@ -10,67 +17,80 @@ interface CreateCourseParams {
     buildAt: string
 }
 
-interface GetByIdParams {
+interface GetCourseViewModelByIdParams {
     courseId: string
     userId: string
 }
 
 export class CourseDatabaseManager {
-    #prisma: PrismaClient
+    #db: DrizzleDB
+    #autoSave: AutoSaveFunction
+    #queryWithRelations: QueryWithRelationsFunction
 
-    constructor(prisma: PrismaClient) {
-        this.#prisma = prisma
+    constructor(
+        db: DrizzleDB,
+        autoSaveFunction: AutoSaveFunction,
+        queryWithRelations: QueryWithRelationsFunction
+    ) {
+        this.#db = db
+        this.#autoSave = autoSaveFunction
+        this.#queryWithRelations = queryWithRelations
     }
 
     async create(data: CreateCourseParams): Promise<Course> {
-        return await this.#prisma.course.create({ data })
-    }
+        return this.#autoSave(async () => {
+            const result = await this.#db.insert(courses).values(data).returning()
 
-    async getAll(): Promise<CoursePreview[]> {
-        return await this.#prisma.course.findMany({
-            select: {
-                id: true,
-                name: true,
-                description: true,
-                folderName: true,
-                buildAt: true
-            }
+            return result[0]
         })
     }
 
-    getById(id: string): Promise<Course | null> {
-        try {
-            return this.#prisma.course.findUnique({
-                where: { id }
+    async getAll(): Promise<CoursePreview[]> {
+        return await this.#db
+            .select({
+                id: courses.id,
+                name: courses.name,
+                description: courses.description,
+                folderName: courses.folderName,
+                buildAt: courses.buildAt
             })
+            .from(courses)
+    }
+
+    async getById(id: string): Promise<Course | null> {
+        try {
+            const result = await this.#db.select().from(courses).where(eq(courses.id, id)).limit(1)
+
+            return result[0] || null
         } catch (error) {
             console.error(`Error retrieving course by ID: ${error}`)
             throw error
         }
     }
 
-    async getCourseViewModelById({
-        courseId,
-        userId
-    }: GetByIdParams): Promise<CourseViewModel | null> {
-        return await this.#prisma.course.findUnique({
-            where: { id: courseId },
-            include: {
+    async getCourseViewModelById({ courseId, userId }: GetCourseViewModelByIdParams) {
+        const result = await this.#db.query.courses.findFirst({
+            where: eq(courses.id, courseId),
+            with: {
                 chapters: {
-                    select: {
+                    columns: {
                         id: true,
                         position: true,
-                        name: true,
+                        name: true
+                    },
+                    with: {
                         lessons: {
-                            select: {
+                            columns: {
                                 id: true,
                                 position: true,
                                 name: true,
                                 videoDuration: true,
-                                type: true,
-                                lessonProgress: {
-                                    where: { userId },
-                                    select: {
+                                type: true
+                            },
+                            with: {
+                                lessonProgresses: {
+                                    where: eq(lessonProgress.userId, userId),
+                                    columns: {
                                         id: true,
                                         status: true
                                     }
@@ -80,21 +100,28 @@ export class CourseDatabaseManager {
                     }
                 },
                 courseProgresses: {
-                    where: { userId, courseId },
-                    select: {
+                    where: and(
+                        eq(courseProgress.userId, userId),
+                        eq(courseProgress.courseId, courseId)
+                    ),
+                    columns: {
                         percentage: true
                     }
                 }
             }
         })
+        return result
     }
 
     async getOneById(id: string): Promise<Course> {
         try {
-            const course = await this.#prisma.course.findUnique({ where: { id } })
+            const result = await this.#db.select().from(courses).where(eq(courses.id, id)).limit(1)
+
+            const course = result[0]
             if (!course) {
                 throw new Error(`Course with ID ${id} not found`)
             }
+
             return course
         } catch (error) {
             console.error(`Error retrieving course by ID: ${error}`)
@@ -103,14 +130,16 @@ export class CourseDatabaseManager {
     }
 
     async getByName(name: string): Promise<Course | null> {
-        return await this.#prisma.course.findUnique({
-            where: { name }
-        })
+        const result = await this.#db.select().from(courses).where(eq(courses.name, name)).limit(1)
+
+        return result[0] || null
     }
 
     async deleteById(id: string): Promise<Course | null> {
-        return await this.#prisma.course.delete({
-            where: { id }
+        return this.#autoSave(async () => {
+            const result = await this.#db.delete(courses).where(eq(courses.id, id)).returning()
+
+            return result[0] || null
         })
     }
 }

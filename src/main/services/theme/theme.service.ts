@@ -1,4 +1,3 @@
-import { Theme } from '@prisma/client'
 import { nativeTheme } from 'electron'
 
 export class ThemeService {

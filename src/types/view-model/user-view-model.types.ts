@@ -1,4 +1,4 @@
-import { Theme } from '@prisma/client'
+import { Theme } from '@/types'
 
 export interface UserViewModel {
     id: string

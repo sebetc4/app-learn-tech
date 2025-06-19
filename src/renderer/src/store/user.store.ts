@@ -1,4 +1,4 @@
-import { Theme } from '@prisma/client'
+import { Theme } from '@/types'
 import { create } from 'zustand'
 
 import { UserViewModel, UserViewModelWithoutTheme } from '@/types'

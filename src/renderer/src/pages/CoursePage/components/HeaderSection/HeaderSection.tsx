@@ -9,6 +9,7 @@ interface HeaderSectionProps {
 }
 
 export const HeaderSection: FC<HeaderSectionProps> = ({ course }) => {
+    console.log(course)
     const chapterNumber = course?.chapters?.length || 0
     const lessonNumber =
         course?.chapters?.reduce((total, chapter) => total + (chapter.lessons?.length || 0), 0) || 0

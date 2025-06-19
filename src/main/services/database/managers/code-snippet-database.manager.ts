@@ -1,4 +1,6 @@
-import { CodeSnippet, PrismaClient } from '@prisma/client'
+import { codeSnippets } from '@/database/schemas'
+
+import { AutoSaveFunction, CodeSnippet, DrizzleDB } from '@/types'
 
 interface CreateCodeSnippetParams {
     id: string
@@ -10,13 +12,18 @@ interface CreateCodeSnippetParams {
 }
 
 export class CodeSnippetDatabaseManager {
-    #prisma: PrismaClient
+    #db: DrizzleDB
+    #autoSave: AutoSaveFunction
 
-    constructor(prisma: PrismaClient) {
-        this.#prisma = prisma
+    constructor(db: DrizzleDB, autoSaveFunction: AutoSaveFunction) {
+        this.#db = db
+        this.#autoSave = autoSaveFunction
     }
 
     async create(data: CreateCodeSnippetParams): Promise<CodeSnippet> {
-        return await this.#prisma.codeSnippet.create({ data })
+        return this.#autoSave(async () => {
+            const result = await this.#db.insert(codeSnippets).values(data).returning()
+            return result[0]
+        })
     }
 }

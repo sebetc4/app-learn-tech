@@ -1,15 +1,14 @@
-import { Lesson, LessonType, PrismaClient } from '@prisma/client'
+import { lessons } from '@/database/schemas'
+import { and, count, eq } from 'drizzle-orm'
 
-import { LessonViewModel } from '@/types'
+import { AutoSaveFunction, DrizzleDB, Lesson, LessonType, LessonViewModel } from '@/types'
 
 interface CreatLessonParams {
     id: string
     position: number
     name: string
-
     type: LessonType
     videoDuration?: number
-
     chapterId: string
     courseId: string
 }
@@ -20,19 +19,27 @@ interface GetByLessonViewModelByIdParams {
 }
 
 export class LessonDatabaseManager {
-    #prisma: PrismaClient
+    #db: DrizzleDB
+    #autoSave: AutoSaveFunction
 
-    constructor(prisma: PrismaClient) {
-        this.#prisma = prisma
+    constructor(db: DrizzleDB, autoSaveFunction: AutoSaveFunction) {
+        this.#db = db
+        this.#autoSave = autoSaveFunction
     }
 
     async create(data: CreatLessonParams): Promise<Lesson> {
-        return await this.#prisma.lesson.create({ data })
+        return this.#autoSave(async () => {
+            const result = await this.#db.insert(lessons).values(data).returning()
+
+            return result[0]
+        })
     }
 
     async getOneById(id: string): Promise<Lesson> {
         try {
-            const lesson = await this.#prisma.lesson.findUnique({ where: { id } })
+            const result = await this.#db.select().from(lessons).where(eq(lessons.id, id)).limit(1)
+
+            const lesson = result[0]
             if (!lesson) {
                 throw new Error(`Lesson with ID ${id} not found`)
             }
@@ -47,79 +54,85 @@ export class LessonDatabaseManager {
         lessonId,
         userId
     }: GetByLessonViewModelByIdParams): Promise<LessonViewModel | null> {
-        return await this.#prisma.lesson.findUnique({
-            where: { id: lessonId },
-            include: {
+        return (await this.#db.query.lessons.findFirst({
+            where: eq(lessons.id, lessonId),
+            with: {
                 codeSnippets: {
-                    select: {
+                    columns: {
                         id: true,
                         position: true,
                         language: true,
                         extension: true
-                    }
+                    },
+                    orderBy: (codeSnippets, { asc }) => [asc(codeSnippets.position)]
                 },
                 resources: {
-                    select: {
+                    columns: {
                         id: true,
                         type: true,
                         url: true
                     }
                 },
-                lessonProgress: {
-                    where: { lessonId, userId },
-                    select: {
+                lessonProgresses: {
+                    where: (lessonProgress, { and, eq }) =>
+                        and(
+                            eq(lessonProgress.lessonId, lessonId),
+                            eq(lessonProgress.userId, userId)
+                        ),
+                    columns: {
                         id: true,
                         status: true
                     }
                 }
             }
-        })
+        })) as LessonViewModel | null
     }
 
     async getAdjacentLessons(courseId: string, currentLessonPosition: number) {
-        const previousLesson =
+        const previousLessonQuery =
             currentLessonPosition > 1
-                ? await this.#prisma.lesson.findFirst({
-                      where: {
-                          courseId,
-                          position: currentLessonPosition - 1
-                      },
-                      select: { id: true, chapterId: true, name: true }
-                  })
-                : null
+                ? await this.#db
+                      .select({
+                          id: lessons.id,
+                          chapterId: lessons.chapterId,
+                          name: lessons.name
+                      })
+                      .from(lessons)
+                      .where(
+                          and(
+                              eq(lessons.courseId, courseId),
+                              eq(lessons.position, currentLessonPosition - 1)
+                          )
+                      )
+                      .limit(1)
+                : []
 
-        const nextLesson = await this.#prisma.lesson.findFirst({
-            where: {
-                courseId,
-                position: currentLessonPosition + 1
-            },
-            select: { id: true, chapterId: true, name: true }
-        })
+        const nextLessonQuery = await this.#db
+            .select({
+                id: lessons.id,
+                chapterId: lessons.chapterId,
+                name: lessons.name
+            })
+            .from(lessons)
+            .where(
+                and(eq(lessons.courseId, courseId), eq(lessons.position, currentLessonPosition + 1))
+            )
+            .limit(1)
 
         return {
-            previousLesson: previousLesson || null,
-            nextLesson: nextLesson || null
+            previousLesson: previousLessonQuery[0] || null,
+            nextLesson: nextLessonQuery[0] || null
         }
     }
 
     async getLessonCountByCourseId(courseId: string): Promise<number | null> {
-        const result = await this.#prisma.course.findUnique({
-            where: { id: courseId },
-            select: {
-                _count: {
-                    select: {
-                        chapters: {
-                            where: {
-                                lessons: {
-                                    some: {}
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        })
+        const result = await this.#db
+            .select({
+                count: count(lessons.id)
+            })
+            .from(lessons)
+            .where(eq(lessons.courseId, courseId))
 
-        return result?._count.chapters || null
+        return result[0]?.count || null
     }
 }

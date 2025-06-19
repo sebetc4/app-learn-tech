@@ -19,11 +19,7 @@
         "build:unpack": "pnpm run build && electron-builder --dir",
         "build:win": "pnpm run build && electron-builder --win",
         "build:mac": "electron-vite build && electron-builder --mac",
-        "build:linux": "electron-vite build && electron-builder --linux",
-        "db:generate": "prisma generate",
-        "db:migrate": "prisma migrate dev --skip-generate",
-        "db:deploy": "prisma migrate deploy",
-        "db:studio": "prisma studio"
+        "build:linux": "electron-vite build && electron-builder --linux"
     },
     "dependencies": {
         "@babel/plugin-transform-modules-commonjs": "^7.27.1",
@@ -32,12 +28,12 @@
         "@electron-toolkit/utils": "^4.0.0",
         "@mdx-js/loader": "^3.1.0",
         "@mdx-js/react": "^3.1.0",
-        "@prisma/client": "^6.9.0",
         "@radix-ui/react-navigation-menu": "^1.2.13",
         "adm-zip": "^0.5.16",
         "check-disk-space": "^3.4.0",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
+        "drizzle-orm": "^0.44.2",
         "electron-updater": "^6.6.2",
         "lucide-react": "^0.503.0",
         "parse5": "^7.3.0",
@@ -45,12 +41,14 @@
         "react-router-dom": "^7.6.2",
         "react-syntax-highlighter": "^15.6.1",
         "sonner": "^2.0.5",
+        "sql.js": "^1.13.0",
         "zustand": "^5.0.5"
     },
     "devDependencies": {
         "@electron-toolkit/eslint-config-prettier": "^3.0.0",
         "@electron-toolkit/eslint-config-ts": "^3.1.0",
         "@electron-toolkit/tsconfig": "^1.0.1",
+        "@electron/rebuild": "^4.0.1",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/adm-zip": "^0.5.7",
         "@types/babel__standalone": "^7.1.9",
@@ -58,7 +56,9 @@
         "@types/react": "^19.1.8",
         "@types/react-dom": "^19.1.6",
         "@types/react-syntax-highlighter": "^15.5.13",
+        "@types/sql.js": "^1.4.9",
         "@vitejs/plugin-react": "^4.5.2",
+        "drizzle-kit": "^0.31.1",
         "electron": "^35.5.1",
         "electron-builder": "^26.0.12",
         "electron-vite": "^3.1.0",
@@ -67,7 +67,6 @@
         "eslint-plugin-react-hooks": "^5.2.0",
         "eslint-plugin-react-refresh": "^0.4.20",
         "prettier": "^3.5.3",
-        "prisma": "^6.9.0",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
         "sass": "^1.89.2",
@@ -77,14 +76,9 @@
     "pnpm": {
         "onlyBuiltDependencies": [
             "@parcel/watcher",
-            "@prisma/client",
-            "@prisma/engines",
             "electron",
-            "esbuild",
-            "prisma"
+            "electron-winstaller",
+            "esbuild"
         ]
-    },
-    "prisma": {
-        "schema": "./prisma"
     }
 }

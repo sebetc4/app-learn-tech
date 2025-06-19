@@ -1,4 +1,4 @@
-import type { LessonProgressStatus } from '@prisma/client'
+import type { LessonProgressStatus } from '@/types'
 
 export interface ProgressLessonViewModel {
     id: string

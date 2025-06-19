@@ -1,47 +1,97 @@
-import { PrismaClient, Theme } from '@prisma/client'
+import { users } from '@/database/schemas'
+import { count, eq } from 'drizzle-orm'
 
-import { UserViewModelWithoutTheme } from '@/types'
+import { AutoSaveFunction, DrizzleDB, Theme, User, UserViewModelWithoutTheme } from '@/types'
 
 interface CreateUserParams {
     name: string
 }
 
 export class UserDatabaseManager {
-    #prisma: PrismaClient
+    #db: DrizzleDB
+    #autoSave: AutoSaveFunction
 
-    constructor(prisma: PrismaClient) {
-        this.#prisma = prisma
+    constructor(db: DrizzleDB, autoSaveFunction: AutoSaveFunction) {
+        this.#db = db
+        this.#autoSave = autoSaveFunction
     }
 
-    async create(data: CreateUserParams) {
-        return this.#prisma.user.create({ data })
+    async create(data: CreateUserParams): Promise<User> {
+        return this.#autoSave(async () => {
+            const result = await this.#db
+                .insert(users)
+                .values({
+                    id: crypto.randomUUID(),
+                    name: data.name,
+                    theme: 'SYSTEM'
+                })
+                .returning()
+
+            return result[0]
+        })
     }
-    async getById(id: string) {
-        return this.#prisma.user.findUnique({ where: { id } })
+
+    async getById(id: string): Promise<User | null> {
+        const result = await this.#db.select().from(users).where(eq(users.id, id)).limit(1)
+
+        return result[0] || null
     }
 
     async getAll(): Promise<UserViewModelWithoutTheme[]> {
-        return this.#prisma.user.findMany({
-            select: {
-                id: true,
-                name: true
-            }
+        return await this.#db
+            .select({
+                id: users.id,
+                name: users.name
+            })
+            .from(users)
+    }
+
+    async updateTheme(id: string, theme: Theme): Promise<User> {
+        return this.#autoSave(async () => {
+            const result = await this.#db
+                .update(users)
+                .set({ theme })
+                .where(eq(users.id, id))
+                .returning()
+
+            return result[0]
         })
     }
 
-    async updateTheme(id: string, theme: Theme) {
-        return await this.#prisma.user.update({
-            where: { id },
-            data: { theme }
-        })
-    }
-
-    async createDefaultUserIfNoneExist() {
-        const users = await this.getAll()
-        if (users.length === 0) {
-            const user = await this.create({ name: 'Default' })
-            return user
+    async createDefaultUserIfNoneExist(): Promise<User | null> {
+        const userCount = await this.getUserCount()
+        if (userCount === 0) {
+            return this.#autoSave(async () => {
+                const user = await this.create({ name: 'Default' })
+                return user
+            })
         }
         return null
+    }
+
+    async update(id: string, data: Partial<CreateUserParams & { theme: Theme }>): Promise<User> {
+        return this.#autoSave(async () => {
+            const result = await this.#db
+                .update(users)
+                .set(data)
+                .where(eq(users.id, id))
+                .returning()
+
+            return result[0]
+        })
+    }
+
+    async delete(id: string): Promise<User> {
+        return this.#autoSave(async () => {
+            const result = await this.#db.delete(users).where(eq(users.id, id)).returning()
+
+            return result[0]
+        })
+    }
+
+    async getUserCount(): Promise<number> {
+        const result = await this.#db.select({ count: count() }).from(users)
+
+        return result[0].count
     }
 }

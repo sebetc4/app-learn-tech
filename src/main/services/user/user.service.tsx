@@ -1,6 +1,6 @@
 import { DatabaseService } from '../database'
 import { ThemeService } from '../theme/theme.service'
-import { Theme } from '@prisma/client'
+import { Theme } from '@/types'
 
 import type { UserViewModel, UserViewModelWithoutTheme } from '@/types'
 

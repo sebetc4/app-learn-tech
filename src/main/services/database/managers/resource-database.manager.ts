@@ -1,4 +1,6 @@
-import { PrismaClient, Resource, ResourceType } from '@prisma/client'
+import { resources } from '@/database/schemas'
+
+import { AutoSaveFunction, DrizzleDB, Resource, ResourceType } from '@/types'
 
 interface CreatResourceParams {
     id: string
@@ -9,13 +11,18 @@ interface CreatResourceParams {
 }
 
 export class ResourceDatabaseManager {
-    #prisma: PrismaClient
+    #db: DrizzleDB
+    #autoSave: AutoSaveFunction
 
-    constructor(prisma: PrismaClient) {
-        this.#prisma = prisma
+    constructor(db: DrizzleDB, autoSaveFunction: AutoSaveFunction) {
+        this.#db = db
+        this.#autoSave = autoSaveFunction
     }
 
     async create(data: CreatResourceParams): Promise<Resource> {
-        return await this.#prisma.resource.create({ data })
+        return this.#autoSave(async () => {
+            const result = await this.#db.insert(resources).values(data).returning()
+            return result[0]
+        })
     }
 }

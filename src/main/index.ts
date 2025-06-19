@@ -33,7 +33,7 @@ const createWindow = (): void => {
         webPreferences: {
             preload: join(__dirname, '../preload/index.js'),
             sandbox: false
-        },
+        }
     })
 
     mainWindow.on('ready-to-show', () => {

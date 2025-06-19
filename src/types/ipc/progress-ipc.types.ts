@@ -1,5 +1,5 @@
 import { IPCHandlerReturnWithData } from './core-ipc.types'
-import { LessonProgress } from '@prisma/client'
+import { LessonProgress } from '@/types'
 
 // Create Status Progress
 export interface CreateLessonProgressIPCHandlerParams {

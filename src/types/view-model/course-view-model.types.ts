@@ -1,5 +1,6 @@
-import type { ProgressLessonViewModel } from './progress-view-model.types'
-import type { Course, LessonType } from '@prisma/client'
+import { Course } from '../database'
+
+import type { LessonType, ProgressLessonViewModel } from '@/types'
 
 export interface LessonInCourseViewModel {
     id: string
@@ -7,7 +8,7 @@ export interface LessonInCourseViewModel {
     name: string
     type: LessonType
     videoDuration: number | null
-    lessonProgress: ProgressLessonViewModel[]
+    lessonProgresses: ProgressLessonViewModel[]
 }
 
 export interface ChapterInCourseViewModel {

@@ -1,4 +1,7 @@
-import { PrismaClient, Setting, SettingKey } from '@prisma/client'
+import { settings } from '@/database/schemas'
+import { eq } from 'drizzle-orm'
+
+import { AutoSaveFunction, DrizzleDB, Setting, SettingKey } from '@/types'
 
 interface CreateOrUpdateSettingParams {
     key: SettingKey
@@ -6,38 +9,64 @@ interface CreateOrUpdateSettingParams {
 }
 
 export class SettingDatabaseManager {
-    #prisma: PrismaClient
+    #db: DrizzleDB
+    #autoSave: AutoSaveFunction
 
-    constructor(prisma: PrismaClient) {
-        this.#prisma = prisma
+    constructor(db: DrizzleDB, autoSaveFunction: AutoSaveFunction) {
+        this.#db = db
+        this.#autoSave = autoSaveFunction
     }
 
-    async create(data: CreateOrUpdateSettingParams) {
-        return await this.#prisma.setting.create({ data })
-    }
+    async create(data: CreateOrUpdateSettingParams): Promise<Setting> {
+        return this.#autoSave(async () => {
+            const result = await this.#db.insert(settings).values(data).returning()
 
-    async get<T extends string>(key: SettingKey): Promise<T | null> {
-        const result = await this.#prisma.setting.findFirst({ where: { key } })
-        return result ? (result.value as T) : null
-    }
-
-    async update({ key, value }: CreateOrUpdateSettingParams): Promise<Setting> {
-        return await this.#prisma.setting.update({
-            where: { key },
-            data: { value }
+            return result[0]
         })
     }
 
-    async upsert(key: SettingKey, value: string) {
-        const existing = await this.get(key)
-        if (existing === null || existing === undefined) {
-            return this.create({ key, value })
-        } else {
-            return this.update({ key, value })
-        }
+    async get<T extends string>(key: SettingKey): Promise<T | null> {
+        return this.#autoSave(async () => {
+            const result = await this.#db
+                .select()
+                .from(settings)
+                .where(eq(settings.key, key))
+                .limit(1)
+
+            return result[0] ? (result[0].value as T) : null
+        })
+    }
+
+    async update({ key, value }: CreateOrUpdateSettingParams): Promise<Setting> {
+        return this.#autoSave(async () => {
+            const result = await this.#db
+                .update(settings)
+                .set({ value })
+                .where(eq(settings.key, key))
+                .returning()
+
+            return result[0]
+        })
+    }
+
+    async upsert(key: SettingKey, value: string): Promise<Setting> {
+        return this.#autoSave(async () => {
+            const result = await this.#db
+                .insert(settings)
+                .values({ key, value })
+                .onConflictDoUpdate({
+                    target: settings.key,
+                    set: { value }
+                })
+                .returning()
+
+            return result[0]
+        })
     }
 
     async delete(key: SettingKey): Promise<void> {
-        await this.#prisma.setting.delete({ where: { key } })
+        return this.#autoSave(async () => {
+            await this.#db.delete(settings).where(eq(settings.key, key))
+        })
     }
 }

@@ -1,21 +1,22 @@
 import styles from '../../UserMenu.module.scss'
 import { useUserStore } from '@/renderer/src/store/user.store'
-import { Theme } from '@prisma/client'
 import { Check, ChevronRight, Dot } from 'lucide-react'
 import { DropdownMenu } from 'radix-ui'
 
-const themes = [
+import { Theme } from '@/types'
+
+const themes: Array<{ name: string; value: Theme }> = [
     {
         name: 'Light',
-        value: Theme.LIGHT
+        value: 'LIGHT'
     },
     {
         name: 'Dark',
-        value: Theme.DARK
+        value: 'DARK'
     },
     {
         name: 'System',
-        value: Theme.SYSTEM
+        value: 'SYSTEM'
     }
 ]
 
