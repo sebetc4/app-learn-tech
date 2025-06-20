@@ -1,8 +1,7 @@
 import { DatabaseService } from '../database'
 import { ThemeService } from '../theme/theme.service'
-import { Theme } from '@/types'
 
-import type { UserViewModel, UserViewModelWithoutTheme } from '@/types'
+import type { Theme, UserViewModel, UserViewModelWithoutTheme } from '@/types'
 
 export class UserService {
     #database: DatabaseService

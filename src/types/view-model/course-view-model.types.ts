@@ -1,6 +1,6 @@
 import { Course } from '../database'
 
-import type { LessonType, ProgressLessonViewModel } from '@/types'
+import type { LessonProgressViewModel, LessonType } from '@/types'
 
 export interface LessonInCourseViewModel {
     id: string
@@ -8,7 +8,7 @@ export interface LessonInCourseViewModel {
     name: string
     type: LessonType
     videoDuration: number | null
-    lessonProgresses: ProgressLessonViewModel[]
+    progress: LessonProgressViewModel | null
 }
 
 export interface ChapterInCourseViewModel {
@@ -20,9 +20,7 @@ export interface ChapterInCourseViewModel {
 
 export interface CourseViewModel extends Course {
     chapters: ChapterInCourseViewModel[]
-    courseProgresses: {
-        percentage: number
-    }[]
+    progress: number | null
 }
 
 export type CoursePreview = Pick<Course, 'id' | 'name' | 'description' | 'folderName' | 'buildAt'>

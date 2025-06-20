@@ -61,7 +61,7 @@ export const useLessonStore = create<LessonStore>()((set, get) => ({
         })
         if (response.success) {
             const { course, chapter, lesson } = response.data
-            if (lesson.lessonProgress.length === 0) {
+            if (!lesson.progress) {
                 const progressResponse = await window.api.progress.createLessonProgress({
                     courseId,
                     lessonId: lesson.id,
@@ -69,10 +69,10 @@ export const useLessonStore = create<LessonStore>()((set, get) => ({
                 })
                 if (progressResponse.success) {
                     const { id: progressId } = progressResponse.data.progress
-                    lesson.lessonProgress.push({
+                    lesson.progress = {
                         id: progressId,
                         status: 'IN_PROGRESS'
-                    })
+                    }
                 } else {
                     console.error(`Error creating lesson progress: ${progressResponse.message}`)
                 }
@@ -114,14 +114,14 @@ export const useLessonStore = create<LessonStore>()((set, get) => ({
 
     validate: async (courseId, userId) => {
         const currentLesson = get().lesson
-        if (currentLesson?.lessonProgress[0]) {
+        if (currentLesson?.progress) {
             const progressResponse = await window.api.progress.validateLessonProgress({
-                lessonProgressId: currentLesson.lessonProgress[0].id,
+                lessonProgressId: currentLesson.progress.id,
                 courseId,
                 userId
             })
             if (progressResponse.success) {
-                currentLesson.lessonProgress[0].status = 'COMPLETED'
+                currentLesson.progress.status = 'COMPLETED'
                 set({ lesson: currentLesson })
             } else {
                 console.error(`Error validating lesson progress: ${progressResponse.message}`)

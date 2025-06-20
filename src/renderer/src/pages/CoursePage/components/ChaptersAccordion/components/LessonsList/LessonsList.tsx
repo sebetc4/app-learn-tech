@@ -29,7 +29,7 @@ export const LessonsList: FC<LessonsListProps> = ({ courseId, chapterId, lessons
                         })}
                     >
                         <span className={styles['item__progress-icon']}>
-                            <LessonProgressIcon progress={lesson.lessonProgress} />
+                            <LessonProgressIcon progress={lesson.progress} />
                         </span>
                         <span className={styles.item__text}>
                             <span className={styles.item__position}>{`${lesson.position}. `}</span>

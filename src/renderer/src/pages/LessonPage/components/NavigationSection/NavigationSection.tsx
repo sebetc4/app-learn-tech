@@ -5,7 +5,7 @@ import { ArrowBigLeft, ArrowBigRight, Badge, BadgeCheck } from 'lucide-react'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
 
-import { ProgressLessonViewModel } from '@/types'
+import { LessonProgressViewModel } from '@/types'
 
 export const NavigationSection: FC = () => {
     const course = useLessonStore((state) => state.course)
@@ -42,7 +42,7 @@ export const NavigationSection: FC = () => {
                         {`${adjacentLessons.previous.position}. ${adjacentLessons.previous.name}`}
                     </Link>
                 )}
-                <LessonProgressIcon progress={lesson.lessonProgress} />
+                <LessonProgressIcon progress={lesson.progress} />
                 {adjacentLessons?.next && (
                     <Link
                         className={styles['adjacent-lessons__link']}
@@ -59,16 +59,15 @@ export const NavigationSection: FC = () => {
 }
 
 interface LessonProgressIconProps {
-    progress: ProgressLessonViewModel[]
+    progress: LessonProgressViewModel | null
 }
 
-const LessonProgressIcon: FC<LessonProgressIconProps> = () => {
-    const status = useLessonStore((state) => state.lesson?.lessonProgress[0].status)
-    if (!status) {
+const LessonProgressIcon: FC<LessonProgressIconProps> = ({ progress }) => {
+    if (!progress) {
         return <Badge className={styles['progress-icon__base']} />
-    } else if (status === 'IN_PROGRESS') {
+    } else if (progress.status === 'IN_PROGRESS') {
         return <Badge className={styles['progress-icon__info']} />
-    } else if (status === 'COMPLETED') {
+    } else if (progress.status === 'COMPLETED') {
         return <BadgeCheck className={styles['progress-icon__check']} />
     } else {
         return <Badge className={styles['progress-icon__base']} />

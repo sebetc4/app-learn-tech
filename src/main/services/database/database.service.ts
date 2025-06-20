@@ -16,21 +16,21 @@ import fs from 'fs'
 import path from 'path'
 import initSqlJs, { Database } from 'sql.js'
 
-import { DrizzleDB, JsonString } from '@/types'
+import { DrizzleDB } from '@/types'
 
 export class DatabaseService {
-    #db!: DrizzleDB
-    #sqliteInstance: Database | null = null
     #dbPath: string
-    #chapterManager: ChapterDatabaseManager | null = null
-    #codeSnippetManager: CodeSnippetDatabaseManager | null = null
-    #courseManager: CourseDatabaseManager | null = null
-    #lessonManager: LessonDatabaseManager | null = null
-    #progressManager: ProgressDatabaseManager | null = null
-    #resourceManager: ResourceDatabaseManager | null = null
-    #settingManager: SettingDatabaseManager | null = null
-    #userManager: UserDatabaseManager | null = null
-    #saveTimeout: NodeJS.Timeout | null = null
+    #db!: DrizzleDB
+    #sqliteInstance!: Database 
+    #chapterManager!: ChapterDatabaseManager 
+    #codeSnippetManager!: CodeSnippetDatabaseManager 
+    #courseManager!: CourseDatabaseManager 
+    #lessonManager!: LessonDatabaseManager 
+    #progressManager!: ProgressDatabaseManager 
+    #resourceManager!: ResourceDatabaseManager 
+    #settingManager!: SettingDatabaseManager 
+    #userManager!: UserDatabaseManager 
+    #saveTimeout!: NodeJS.Timeout 
 
     get chapter() {
         return this.#chapterManager
@@ -100,8 +100,7 @@ export class DatabaseService {
         )
         this.#courseManager = new CourseDatabaseManager(
             this.#db,
-            this.#executeWithAutoSave.bind(this),
-            this.#queryWithRelations.bind(this)
+            this.#executeWithAutoSave.bind(this)
         )
         this.#lessonManager = new LessonDatabaseManager(
             this.#db,
@@ -180,58 +179,6 @@ export class DatabaseService {
                 console.error('Error saving database:', error)
             }
         }
-    }
-
-    #parseRelations<T extends Record<string, unknown>>(data: T): T {
-        if (!data || typeof data !== 'object') return data
-
-        const parsed = { ...data } as Record<string, unknown>
-
-        Object.keys(parsed).forEach((key) => {
-            const value = parsed[key]
-
-            if (this.#isJsonString(value)) {
-                try {
-                    const parsedValue: unknown = JSON.parse(value)
-
-                    if (this.#isArray(parsedValue)) {
-                        parsed[key] = parsedValue.map((item) => {
-                            return this.#isObject(item) ? this.#parseRelations(item) : item
-                        })
-                    } else if (this.#isObject(parsedValue)) {
-                        parsed[key] = this.#parseRelations(parsedValue)
-                    } else {
-                        parsed[key] = parsedValue
-                    }
-                } catch (e) {
-                    console.warn(`Failed to parse relation ${key}:`, e)
-                }
-            }
-        })
-
-        return parsed as T
-    }
-
-    async #queryWithRelations<T>(queryFn: () => Promise<T>): Promise<T> {
-        const result = await queryFn()
-
-        if (result && typeof result === 'object' && !Array.isArray(result)) {
-            return this.#parseRelations(result as Record<string, unknown>) as T
-        }
-
-        return result
-    }
-
-    #isObject(value: unknown): value is Record<string, unknown> {
-        return value !== null && typeof value === 'object' && !Array.isArray(value)
-    }
-
-    #isJsonString(value: unknown): value is JsonString {
-        return typeof value === 'string' && (value.startsWith('[') || value.startsWith('{'))
-    }
-
-    #isArray(value: unknown): value is unknown[] {
-        return Array.isArray(value)
     }
 
     async initialize() {

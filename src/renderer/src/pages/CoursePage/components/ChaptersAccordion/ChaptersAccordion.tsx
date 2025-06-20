@@ -35,7 +35,7 @@ export const ChaptersAccordion: FC<ChaptersAccordionProps> = ({
         }
         for (const chapter of sortedChapters) {
             for (const lesson of chapter.lessons) {
-                if (lesson.lessonProgress[0]?.status !== 'COMPLETED') {
+                if (lesson.progress?.status !== 'COMPLETED') {
                     return chapter.id
                 }
             }
@@ -94,7 +94,7 @@ interface AccordionTriggerProps extends React.ComponentPropsWithRef<typeof Accor
 const AccordionTrigger = forwardRef<HTMLButtonElement, AccordionTriggerProps>(
     ({ chapter, ...props }, forwardedRef) => {
         const competedChaptersCount = chapter.lessons.filter(
-            (lesson) => lesson.lessonProgress[0]?.status === 'COMPLETED'
+            (lesson) => lesson.progress?.status === 'COMPLETED'
         ).length
         const totalLessonsCount = chapter.lessons.length
         const allLessonsCompleted = competedChaptersCount === totalLessonsCount

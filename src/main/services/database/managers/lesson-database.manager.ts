@@ -1,7 +1,16 @@
-import { lessons } from '@/database/schemas'
+import { codeSnippets, lessonProgress, lessons, resources } from '@/database/schemas'
 import { and, count, eq } from 'drizzle-orm'
 
-import { AutoSaveFunction, DrizzleDB, Lesson, LessonType, LessonViewModel } from '@/types'
+import {
+    AutoSaveFunction,
+    CodeSnippetViewModel,
+    DrizzleDB,
+    Lesson,
+    LessonProgressViewModel,
+    LessonType,
+    LessonViewModel,
+    ResourceViewModel
+} from '@/types'
 
 interface CreatLessonParams {
     id: string
@@ -54,38 +63,63 @@ export class LessonDatabaseManager {
         lessonId,
         userId
     }: GetByLessonViewModelByIdParams): Promise<LessonViewModel | null> {
-        return (await this.#db.query.lessons.findFirst({
-            where: eq(lessons.id, lessonId),
-            with: {
-                codeSnippets: {
-                    columns: {
-                        id: true,
-                        position: true,
-                        language: true,
-                        extension: true
-                    },
-                    orderBy: (codeSnippets, { asc }) => [asc(codeSnippets.position)]
-                },
-                resources: {
-                    columns: {
-                        id: true,
-                        type: true,
-                        url: true
-                    }
-                },
-                lessonProgresses: {
-                    where: (lessonProgress, { and, eq }) =>
-                        and(
-                            eq(lessonProgress.lessonId, lessonId),
-                            eq(lessonProgress.userId, userId)
-                        ),
-                    columns: {
-                        id: true,
-                        status: true
-                    }
-                }
-            }
-        })) as LessonViewModel | null
+        const [lessonInfo] = await this.#db
+            .select()
+            .from(lessons)
+            .where(eq(lessons.id, lessonId))
+            .limit(1)
+
+        if (!lessonInfo) return null
+
+        const codeSnippetsData = await this.#db
+            .select({
+                id: codeSnippets.id,
+                position: codeSnippets.position,
+                language: codeSnippets.language,
+                extension: codeSnippets.extension
+            })
+            .from(codeSnippets)
+            .where(eq(codeSnippets.lessonId, lessonId))
+            .orderBy(codeSnippets.position)
+
+        const resourcesData = await this.#db
+            .select({
+                id: resources.id,
+                type: resources.type,
+                url: resources.url
+            })
+            .from(resources)
+            .where(eq(resources.lessonId, lessonId))
+
+        const [progressData] = await this.#db
+            .select({
+                id: lessonProgress.id,
+                status: lessonProgress.status
+            })
+            .from(lessonProgress)
+            .where(and(eq(lessonProgress.lessonId, lessonId), eq(lessonProgress.userId, userId)))
+            .limit(1)
+
+        return this.#formatLessonViewModel(
+            lessonInfo,
+            codeSnippetsData,
+            resourcesData,
+            progressData
+        )
+    }
+
+    #formatLessonViewModel(
+        lesson: Lesson,
+        codeSnippets: CodeSnippetViewModel[],
+        resources: ResourceViewModel[],
+        progress: LessonProgressViewModel | undefined
+    ): LessonViewModel {
+        return {
+            ...lesson,
+            codeSnippets,
+            resources,
+            progress: progress || null
+        }
     }
 
     async getAdjacentLessons(courseId: string, currentLessonPosition: number) {

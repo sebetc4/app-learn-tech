@@ -1,5 +1,7 @@
 import { nativeTheme } from 'electron'
 
+import { Theme } from '@/types'
+
 export class ThemeService {
     readonly #THEME_VALUE: Record<Theme, 'light' | 'dark' | 'system'> = {
         LIGHT: 'light',

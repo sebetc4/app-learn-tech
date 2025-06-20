@@ -27,7 +27,7 @@ export class ProgressService {
         courseId,
         userId
     }: ValidateLessonProgressParams) => {
-        await this.#database.progress.updateLessonProgress({
+        const lessonProgress = await this.#database.progress.updateLessonProgress({
             progressId: lessonProgressId,
             status: 'COMPLETED'
         })
@@ -35,5 +35,6 @@ export class ProgressService {
             courseId,
             userId
         })
+        return lessonProgress
     }
 }

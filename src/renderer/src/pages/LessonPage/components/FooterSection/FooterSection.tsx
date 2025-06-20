@@ -11,7 +11,7 @@ interface FooterSectionProps {
 }
 
 export const FooterSection: FC<FooterSectionProps> = ({ courseId }) => {
-    const status = useLessonStore((state) => state.lesson?.lessonProgress[0].status)
+    const status = useLessonStore((state) => state.lesson?.progress?.status)
     const userId = useUserStore((state) => state.current.id)
     const validateLesson = useLessonStore((state) => state.validate)
     const adjacentLessons = useLessonStore((state) => state.adjacentLessons)

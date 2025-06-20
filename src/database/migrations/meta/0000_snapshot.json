@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "6231e1ae-3f83-4da9-b1f4-76c61ab5dee7",
+  "id": "1686ce5f-8400-46d1-a829-0c2252042dda",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "chapters": {
@@ -115,6 +115,73 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
+    "courses": {
+      "name": "courses",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "folder_name": {
+          "name": "folder_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "build_at": {
+          "name": "build_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "courses_folder_name_key": {
+          "name": "courses_folder_name_key",
+          "columns": [
+            "folder_name"
+          ],
+          "isUnique": true
+        },
+        "courses_name_key": {
+          "name": "courses_name_key",
+          "columns": [
+            "name"
+          ],
+          "isUnique": true
+        },
+        "courses_id_key": {
+          "name": "courses_id_key",
+          "columns": [
+            "id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
     "course_progress": {
       "name": "course_progress",
       "columns": {
@@ -190,73 +257,6 @@
           "onUpdate": "cascade"
         }
       },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "courses": {
-      "name": "courses",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "folder_name": {
-          "name": "folder_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "build_at": {
-          "name": "build_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {
-        "courses_folder_name_key": {
-          "name": "courses_folder_name_key",
-          "columns": [
-            "folder_name"
-          ],
-          "isUnique": true
-        },
-        "courses_name_key": {
-          "name": "courses_name_key",
-          "columns": [
-            "name"
-          ],
-          "isUnique": true
-        },
-        "courses_id_key": {
-          "name": "courses_id_key",
-          "columns": [
-            "id"
-          ],
-          "isUnique": true
-        }
-      },
-      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
@@ -429,74 +429,6 @@
           "onUpdate": "cascade"
         }
       },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "_prisma_migrations": {
-      "name": "_prisma_migrations",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "checksum": {
-          "name": "checksum",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "finished_at": {
-          "name": "finished_at",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "migration_name": {
-          "name": "migration_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "logs": {
-          "name": "logs",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "rolled_back_at": {
-          "name": "rolled_back_at",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "started_at": {
-          "name": "started_at",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "(current_timestamp)"
-        },
-        "applied_steps_count": {
-          "name": "applied_steps_count",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}

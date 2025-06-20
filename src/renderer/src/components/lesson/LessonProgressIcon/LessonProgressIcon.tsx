@@ -3,19 +3,19 @@ import clsx from 'clsx'
 import { Badge, BadgeCheck } from 'lucide-react'
 import { FC } from 'react'
 
-import { ProgressLessonViewModel } from '@/types'
+import { LessonProgressViewModel } from '@/types'
 
 interface LessonProgressIconProps {
     className?: string
-    progress: ProgressLessonViewModel[]
+    progress: LessonProgressViewModel | null
 }
 
 export const LessonProgressIcon: FC<LessonProgressIconProps> = ({ progress, className }) => {
-    if (progress.length === 0) {
+    if (!progress) {
         return <Badge className={clsx(styles['progress-icon__base'], className)} />
-    } else if (progress[0].status === 'IN_PROGRESS') {
+    } else if (progress.status === 'IN_PROGRESS') {
         return <Badge className={clsx(styles['progress-icon__info'], className)} />
-    } else if (progress[0].status === 'COMPLETED') {
+    } else if (progress.status === 'COMPLETED') {
         return <BadgeCheck className={clsx(styles['progress-icon__check'], className)} />
     } else {
         return <Badge className={clsx(styles['progress-icon__base'], className)} />

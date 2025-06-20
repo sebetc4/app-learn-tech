@@ -1,6 +1,6 @@
 import type { LessonProgressStatus } from '@/types'
 
-export interface ProgressLessonViewModel {
+export interface LessonProgressViewModel {
     id: string
     status: LessonProgressStatus
 }

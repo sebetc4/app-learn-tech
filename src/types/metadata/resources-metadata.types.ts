@@ -1,4 +1,4 @@
-export type ResourceType = 'GITHUB' | 'STACKBLITZ'
+import { ResourceType } from '../database'
 
 export interface ResourceMetadata {
     id: string

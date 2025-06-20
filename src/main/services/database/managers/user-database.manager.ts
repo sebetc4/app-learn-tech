@@ -1,7 +1,7 @@
 import { users } from '@/database/schemas'
 import { count, eq } from 'drizzle-orm'
 
-import { AutoSaveFunction, DrizzleDB, Theme, User, UserViewModelWithoutTheme } from '@/types'
+import { AutoSaveFunction, DrizzleDB, Theme, User, UserViewModel, UserViewModelWithoutTheme } from '@/types'
 
 interface CreateUserParams {
     name: string
@@ -31,7 +31,7 @@ export class UserDatabaseManager {
         })
     }
 
-    async getById(id: string): Promise<User | null> {
+    async getById(id: string): Promise<UserViewModel | null> {
         const result = await this.#db.select().from(users).where(eq(users.id, id)).limit(1)
 
         return result[0] || null
