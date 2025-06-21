@@ -4,6 +4,6 @@ export const themes = ['LIGHT', 'DARK', 'SYSTEM'] as const
 
 export const users = sqliteTable('users', {
     id: text().primaryKey().notNull(),
-    name: text().notNull(),
+    name: text().notNull().unique(),
     theme: text('theme', { enum: themes }).default('SYSTEM').notNull()
 })

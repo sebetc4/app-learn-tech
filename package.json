@@ -1,5 +1,5 @@
 {
-    "name": "courses-app",
+    "name": "learn-tech",
     "version": "1.0.0",
     "description": "An Electron application with React and TypeScript",
     "main": "./out/main/index.js",
@@ -32,6 +32,7 @@
         "@babel/standalone": "^7.27.6",
         "@electron-toolkit/preload": "^3.0.2",
         "@electron-toolkit/utils": "^4.0.0",
+        "@hookform/resolvers": "^5.1.1",
         "@mdx-js/loader": "^3.1.0",
         "@mdx-js/react": "^3.1.0",
         "@radix-ui/react-navigation-menu": "^1.2.13",
@@ -44,10 +45,12 @@
         "lucide-react": "^0.503.0",
         "parse5": "^7.3.0",
         "radix-ui": "^1.4.2",
+        "react-hook-form": "^7.58.1",
         "react-router-dom": "^7.6.2",
         "react-syntax-highlighter": "^15.6.1",
         "sonner": "^2.0.5",
         "sql.js": "^1.13.0",
+        "yup": "^1.6.1",
         "zustand": "^5.0.5"
     },
     "devDependencies": {

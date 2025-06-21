@@ -1,7 +1,7 @@
 .header {
     @include fixed-type('top-full-width', 10);
     @include flex('center', 'center', 0.5rem);
-    height: var(--size-header-height);
     @include bg-color('base-3');
+    height: var(--size-header-height);
     box-shadow: 0 2px 10px rgba(14, 18, 22, 0.15);
 }

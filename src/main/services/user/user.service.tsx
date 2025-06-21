@@ -1,7 +1,7 @@
 import { DatabaseService } from '../database'
 import { ThemeService } from '../theme/theme.service'
 
-import type { Theme, UserViewModel, UserViewModelWithoutTheme } from '@/types'
+import type { CreateUserDto, Theme, UserViewModel, UserViewModelWithoutTheme } from '@/types'
 
 export class UserService {
     #database: DatabaseService
@@ -9,6 +9,17 @@ export class UserService {
     constructor(database: DatabaseService, themeService: ThemeService) {
         this.#database = database
         this.#themeService = themeService
+    }
+
+    async create(dto: CreateUserDto): Promise<UserViewModel> {
+        try {
+            const user = await this.#database.user.create(dto)
+            this.#themeService.setCurrentTheme(user.theme)
+            return user
+        } catch (error) {
+            console.error(`Error creating user: ${error}`)
+            throw new Error('Failed to create user')
+        }
     }
 
     async getCurrent(): Promise<UserViewModel> {
@@ -52,8 +63,40 @@ export class UserService {
         }
     }
 
+    async setCurrentUser(userId: string): Promise<void> {
+        try {
+            const user = await this.getOne(userId)
+            await this.#database.setting.update({ key: 'CURRENT_USER', value: user.id })
+            this.#themeService.setCurrentTheme(user.theme)
+        } catch (error) {
+            console.error(`Error setting current user: ${error}`)
+            throw new Error('Failed to set current user')
+        }
+    }
+
+    async update(userId: string, userData: CreateUserDto) {
+        try {
+            const updatedUser = await this.#database.user.update(userId, userData)
+            if (!updatedUser) {
+                throw new Error(`User with ID ${userId} not found`)
+            }
+        } catch (error) {
+            console.error(`Error updating user with ID ${userId}: ${error}`)
+            throw error
+        }
+    }
+
     async updateTheme(userId: string, theme: Theme) {
         await this.#database.user.updateTheme(userId, theme)
         this.#themeService.setCurrentTheme(theme)
+    }
+
+    async delete(userId: string): Promise<void> {
+        try {
+            await this.#database.user.remove(userId)
+        } catch (error) {
+            console.error(`Error removing user with ID ${userId}: ${error}`)
+            throw error
+        }
     }
 }

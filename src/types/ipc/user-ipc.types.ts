@@ -1,6 +1,14 @@
 import { UserViewModel, UserViewModelWithoutTheme } from '../view-model/user-view-model.types'
 import { IPCHandlerReturnWithData } from './core-ipc.types'
-import { Theme } from '@/types'
+
+import { CreateUserDto, Theme, UpdateUserDto } from '@/types'
+
+export interface CreateUserIPCHandlerParams extends CreateUserDto {}
+
+export interface CreateUserIPCHandlerReturn
+    extends IPCHandlerReturnWithData<{
+        user: UserViewModel
+    }> {}
 
 // Get Current User
 export interface GetCurrentUserIPCHandlerReturn
@@ -12,6 +20,11 @@ export interface GetCurrentUserIPCHandlerReturn
 export interface SetCurrentUserIPCHandlerParams {
     userId: string
 }
+
+export interface SetCurrentUserIPCHandlerReturn
+    extends IPCHandlerReturnWithData<{
+        user: UserViewModel
+    }> {}
 
 // Get One
 export interface GetOneUserIPCHandlerParams {
@@ -27,8 +40,19 @@ export interface GetAllUsersIPCHandlerReturn
         users: UserViewModelWithoutTheme[]
     }> {}
 
+// Update User
+export interface UpdateUserIPCHandlerParams {
+    userId: string
+    dto: UpdateUserDto
+}
+
 // Update Theme
 export interface UpdateUserThemeIPCHandlerParams {
     userId: string
     theme: Theme
+}
+
+// Delete User
+export interface DeleteUserIPCHandlerParams {
+    userId: string
 }

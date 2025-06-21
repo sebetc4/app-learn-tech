@@ -3,11 +3,17 @@ import { ThemeSelector, UserSelector } from './components'
 import { PAGE_PATH } from '@/renderer/src/constants'
 import { FolderPlus, User } from 'lucide-react'
 import { DropdownMenu } from 'radix-ui'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 export const UserMenu = () => {
+    const [open, setOpen] = useState(false)
+
     return (
-        <DropdownMenu.Root>
+        <DropdownMenu.Root
+            open={open}
+            onOpenChange={setOpen}
+        >
             <DropdownMenu.Trigger asChild>
                 <button
                     className={styles.trigger}
@@ -22,7 +28,10 @@ export const UserMenu = () => {
                     className={styles.content}
                     sideOffset={5}
                 >
-                    <DropdownMenu.Item className={styles.item}>
+                    <DropdownMenu.Item
+                        className={styles.item}
+                        onClick={() => setOpen(false)}
+                    >
                         <Link
                             to={PAGE_PATH.COURSE_MANAGER}
                             className={styles.link}

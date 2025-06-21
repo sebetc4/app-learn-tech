@@ -1,11 +1,15 @@
 import { users } from '@/database/schemas'
 import { count, eq } from 'drizzle-orm'
 
-import { AutoSaveFunction, DrizzleDB, Theme, User, UserViewModel, UserViewModelWithoutTheme } from '@/types'
-
-interface CreateUserParams {
-    name: string
-}
+import {
+    AutoSaveFunction,
+    CreateUserDto,
+    DrizzleDB,
+    Theme,
+    User,
+    UserViewModel,
+    UserViewModelWithoutTheme
+} from '@/types'
 
 export class UserDatabaseManager {
     #db: DrizzleDB
@@ -16,7 +20,8 @@ export class UserDatabaseManager {
         this.#autoSave = autoSaveFunction
     }
 
-    async create(data: CreateUserParams): Promise<User> {
+    async create(data: CreateUserDto): Promise<UserViewModel> {
+        console.log('Creating user with data:', data)
         return this.#autoSave(async () => {
             const result = await this.#db
                 .insert(users)
@@ -44,6 +49,7 @@ export class UserDatabaseManager {
                 name: users.name
             })
             .from(users)
+            .orderBy(users.name)
     }
 
     async updateTheme(id: string, theme: Theme): Promise<User> {
@@ -69,7 +75,7 @@ export class UserDatabaseManager {
         return null
     }
 
-    async update(id: string, data: Partial<CreateUserParams & { theme: Theme }>): Promise<User> {
+    async update(id: string, data: Partial<CreateUserDto & { theme: Theme }>): Promise<User> {
         return this.#autoSave(async () => {
             const result = await this.#db
                 .update(users)
@@ -81,7 +87,7 @@ export class UserDatabaseManager {
         })
     }
 
-    async delete(id: string): Promise<User> {
+    async remove(id: string): Promise<User> {
         return this.#autoSave(async () => {
             const result = await this.#db.delete(users).where(eq(users.id, id)).returning()
 

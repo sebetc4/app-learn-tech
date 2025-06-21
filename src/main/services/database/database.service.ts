@@ -21,16 +21,16 @@ import { DrizzleDB } from '@/types'
 export class DatabaseService {
     #dbPath: string
     #db!: DrizzleDB
-    #sqliteInstance!: Database 
-    #chapterManager!: ChapterDatabaseManager 
-    #codeSnippetManager!: CodeSnippetDatabaseManager 
-    #courseManager!: CourseDatabaseManager 
-    #lessonManager!: LessonDatabaseManager 
-    #progressManager!: ProgressDatabaseManager 
-    #resourceManager!: ResourceDatabaseManager 
-    #settingManager!: SettingDatabaseManager 
-    #userManager!: UserDatabaseManager 
-    #saveTimeout!: NodeJS.Timeout 
+    #sqliteInstance!: Database
+    #chapterManager!: ChapterDatabaseManager
+    #codeSnippetManager!: CodeSnippetDatabaseManager
+    #courseManager!: CourseDatabaseManager
+    #lessonManager!: LessonDatabaseManager
+    #progressManager!: ProgressDatabaseManager
+    #resourceManager!: ResourceDatabaseManager
+    #settingManager!: SettingDatabaseManager
+    #userManager!: UserDatabaseManager
+    #saveTimeout!: NodeJS.Timeout
 
     get chapter() {
         return this.#chapterManager

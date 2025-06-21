@@ -49,9 +49,9 @@ export const ThemeSelector = () => {
                             onClick={() => applyTheme(theme.value)}
                         >
                             {currentTheme === theme.value ? (
-                                <Check className={styles.check} />
+                                <Check className={styles['check-icon']} />
                             ) : (
-                                <Dot className={styles.dot} />
+                                <Dot className={styles['dot-icon']} />
                             )}
                             {theme.name}
                         </DropdownMenu.Item>
