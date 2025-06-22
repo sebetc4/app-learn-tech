@@ -68,6 +68,20 @@ export class DatabaseService {
         this.#dbPath = this.#getDatabasePath()
     }
 
+    async initialize() {
+        await this.initializeDatabase()
+        this.#initializeManagers()
+
+        const newUser = await this.#userManager?.createDefaultUserIfNoneExist()
+        if (newUser) {
+            await this.#settingManager?.create({
+                key: 'CURRENT_USER',
+                value: newUser.id
+            })
+        }
+        this.#saveDatabase()
+    }
+
     async initializeDatabase() {
         const SQL = await initSqlJs({
             locateFile: (file: string) => {
@@ -89,7 +103,9 @@ export class DatabaseService {
         this.#db = drizzle(this.#sqliteInstance, {
             schema: { ...schema, ...relations }
         })
+    }
 
+    #initializeManagers() {
         this.#chapterManager = new ChapterDatabaseManager(
             this.#db,
             this.#executeWithAutoSave.bind(this)
@@ -119,13 +135,11 @@ export class DatabaseService {
             this.#executeWithAutoSave.bind(this)
         )
         this.#userManager = new UserDatabaseManager(this.#db, this.#executeWithAutoSave.bind(this))
-
-        return this.#db
     }
 
     #getDatabasePath(): string {
         if (process.env.NODE_ENV === 'development') {
-            return path.join(process.cwd(), 'resources', 'database', 'sqlite.db')
+            return path.join(process.cwd(), 'src', 'database', 'dev.db')
         }
         const userDataPath = app.getPath('userData')
         return path.join(userDataPath, 'database.db')
@@ -133,7 +147,7 @@ export class DatabaseService {
 
     async #copyInitialDatabase() {
         try {
-            const initialDbPath = path.join(process.resourcesPath, 'database', 'sqlite.db')
+            const initialDbPath = path.join(process.resourcesPath, 'database', 'template.db')
             if (fs.existsSync(initialDbPath)) {
                 console.log('Copying initial database from resources...')
                 const initialData = fs.readFileSync(initialDbPath)
@@ -179,19 +193,6 @@ export class DatabaseService {
                 console.error('Error saving database:', error)
             }
         }
-    }
-
-    async initialize() {
-        await this.initializeDatabase()
-
-        const newUser = await this.#userManager?.createDefaultUserIfNoneExist()
-        if (newUser) {
-            await this.#settingManager?.create({
-                key: 'CURRENT_USER',
-                value: newUser.id
-            })
-        }
-        this.#saveDatabase()
     }
 
     async disconnect() {

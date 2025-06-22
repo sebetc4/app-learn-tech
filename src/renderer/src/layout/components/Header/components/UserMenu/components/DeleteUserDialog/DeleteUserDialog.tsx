@@ -1,20 +1,25 @@
 import styles from '../../UserMenu.module.scss'
 import { Button, Dialog } from '@/renderer/src/components'
+import { PAGE_PATH } from '@/renderer/src/constants'
 import { useUserStore } from '@/renderer/src/store'
 import { Trash2 } from 'lucide-react'
 import { FC, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 interface DeleteUserDialogProps {
     userId: string
 }
 
 export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ userId }) => {
-    const [open, setOpen] = useState(false)
-
     const deleteUser = useUserStore((state) => state.delete)
 
-    const handleDeleteUser = () => {
-        deleteUser(userId)
+    const [open, setOpen] = useState(false)
+
+    const navigate = useNavigate()
+
+    const handleDeleteUser = async () => {
+        const isCurrentUserModified = await deleteUser(userId)
+        if (isCurrentUserModified) navigate(PAGE_PATH.HOME)
         setOpen(false)
     }
 

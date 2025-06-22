@@ -41,7 +41,7 @@ export const registerUserIpcHandlers = (userService: UserService) => {
         }
     })
 
-    ipcMain.handle(IPC.USER.GET_ONE, async (_event, userId) => {
+    ipcMain.handle(IPC.USER.GET_ONE, async (_event, { userId }) => {
         try {
             const user = await userService.getOne(userId)
             return {
@@ -99,9 +99,9 @@ export const registerUserIpcHandlers = (userService: UserService) => {
         }
     })
 
-    ipcMain.handle(IPC.USER.UPDATE, async (_event, { userId, userData }) => {
+    ipcMain.handle(IPC.USER.UPDATE, async (_event, { userId, dto }) => {
         try {
-            const updatedUser = await userService.update(userId, userData)
+            const updatedUser = await userService.update(userId, dto)
             return {
                 success: true,
                 data: { user: updatedUser },
@@ -136,7 +136,7 @@ export const registerUserIpcHandlers = (userService: UserService) => {
         }
     })
 
-    ipcMain.handle(IPC.USER.DELETE, async (_event, userId) => {
+    ipcMain.handle(IPC.USER.DELETE, async (_event, { userId }) => {
         try {
             await userService.delete(userId)
             return {

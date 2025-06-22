@@ -6,7 +6,8 @@
         "src/main/**/*",
         "src/preload/**/*",
         "src/types/**/*",
-        "src/constants/**/*"
+        "src/constants/**/*",
+        "scripts/**/*"
     ],
     "compilerOptions": {
         "composite": true,

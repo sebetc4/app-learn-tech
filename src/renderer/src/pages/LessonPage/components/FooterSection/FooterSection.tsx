@@ -20,7 +20,6 @@ export const FooterSection: FC<FooterSectionProps> = ({ courseId }) => {
     const handleClick = async () => {
         await validateLesson(courseId, userId)
         if (adjacentLessons?.next) {
-            console.log('next')
             navigate(
                 pathService.getLessonPath({
                     courseId,

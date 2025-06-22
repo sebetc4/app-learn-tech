@@ -1,18 +1,22 @@
 import styles from '../../UserMenu.module.scss'
 import { Button, Dialog } from '@/renderer/src/components'
+import { PAGE_PATH } from '@/renderer/src/constants'
 import { createUserSchema } from '@/renderer/src/schemas/user.schema'
 import { useUserStore } from '@/renderer/src/store'
-import { CreateUserDto } from '@/types'
 import { yupResolver } from '@hookform/resolvers/yup'
-import clsx from 'clsx'
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+
+import { CreateUserDto } from '@/types'
 
 export const AddUserDialog = () => {
     const users = useUserStore((state) => state.users)
     const addUser = useUserStore((state) => state.addUser)
     const [open, setOpen] = useState(false)
+
+    const navigate = useNavigate()
 
     const initialValues = {
         name: ''
@@ -40,9 +44,10 @@ export const AddUserDialog = () => {
                 return
             }
             await addUser(data)
+            navigate(PAGE_PATH.HOME)
             setOpen(false)
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
     }
 
@@ -55,7 +60,7 @@ export const AddUserDialog = () => {
             trigger={
                 <div
                     onClick={() => setOpen(true)}
-                    className={clsx(styles['item'], styles['item--small'])}
+                    className={styles['add-user-item']}
                 >
                     <Plus className={styles['plus-icon']} />
                     Add User

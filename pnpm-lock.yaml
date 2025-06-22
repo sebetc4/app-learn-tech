@@ -116,7 +116,7 @@ importers:
         version: 1.4.9
       '@vitejs/plugin-react':
         specifier: ^4.5.2
-        version: 4.5.2(vite@6.3.5(@types/node@22.15.32)(sass@1.89.2))
+        version: 4.5.2(vite@6.3.5(@types/node@22.15.32)(sass@1.89.2)(tsx@4.20.3))
       better-sqlite3:
         specifier: ^11.10.0
         version: 11.10.0
@@ -131,7 +131,7 @@ importers:
         version: 26.0.12(electron-builder-squirrel-windows@26.0.12)
       electron-vite:
         specifier: ^3.1.0
-        version: 3.1.0(vite@6.3.5(@types/node@22.15.32)(sass@1.89.2))
+        version: 3.1.0(vite@6.3.5(@types/node@22.15.32)(sass@1.89.2)(tsx@4.20.3))
       eslint:
         specifier: ^9.28.0
         version: 9.29.0
@@ -156,12 +156,15 @@ importers:
       sass:
         specifier: ^1.89.2
         version: 1.89.2
+      tsx:
+        specifier: ^4.20.3
+        version: 4.20.3
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
       vite:
         specifier: ^6.3.5
-        version: 6.3.5(@types/node@22.15.32)(sass@1.89.2)
+        version: 6.3.5(@types/node@22.15.32)(sass@1.89.2)(tsx@4.20.3)
 
 packages:
 
@@ -4311,6 +4314,11 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
+  tsx@4.20.3:
+    resolution: {integrity: sha512-qjbnuR9Tr+FJOMBqJCW5ehvIo/buZq7vH7qD7JziU98h6l3qGy0a/yPFjwO+y0/T7GFpNgNAvEcPPVfyT8rrPQ==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+
   tunnel-agent@0.6.0:
     resolution: {integrity: sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==}
 
@@ -6331,7 +6339,7 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@vitejs/plugin-react@4.5.2(vite@6.3.5(@types/node@22.15.32)(sass@1.89.2))':
+  '@vitejs/plugin-react@4.5.2(vite@6.3.5(@types/node@22.15.32)(sass@1.89.2)(tsx@4.20.3))':
     dependencies:
       '@babel/core': 7.27.4
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.27.4)
@@ -6339,7 +6347,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.11
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 6.3.5(@types/node@22.15.32)(sass@1.89.2)
+      vite: 6.3.5(@types/node@22.15.32)(sass@1.89.2)(tsx@4.20.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -6975,7 +6983,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  electron-vite@3.1.0(vite@6.3.5(@types/node@22.15.32)(sass@1.89.2)):
+  electron-vite@3.1.0(vite@6.3.5(@types/node@22.15.32)(sass@1.89.2)(tsx@4.20.3)):
     dependencies:
       '@babel/core': 7.27.4
       '@babel/plugin-transform-arrow-functions': 7.27.1(@babel/core@7.27.4)
@@ -6983,7 +6991,7 @@ snapshots:
       esbuild: 0.25.5
       magic-string: 0.30.17
       picocolors: 1.1.1
-      vite: 6.3.5(@types/node@22.15.32)(sass@1.89.2)
+      vite: 6.3.5(@types/node@22.15.32)(sass@1.89.2)(tsx@4.20.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -9413,6 +9421,13 @@ snapshots:
 
   tslib@2.8.1: {}
 
+  tsx@4.20.3:
+    dependencies:
+      esbuild: 0.25.5
+      get-tsconfig: 4.10.1
+    optionalDependencies:
+      fsevents: 2.3.3
+
   tunnel-agent@0.6.0:
     dependencies:
       safe-buffer: 5.2.1
@@ -9579,7 +9594,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
 
-  vite@6.3.5(@types/node@22.15.32)(sass@1.89.2):
+  vite@6.3.5(@types/node@22.15.32)(sass@1.89.2)(tsx@4.20.3):
     dependencies:
       esbuild: 0.25.5
       fdir: 6.4.6(picomatch@4.0.2)
@@ -9591,6 +9606,7 @@ snapshots:
       '@types/node': 22.15.32
       fsevents: 2.3.3
       sass: 1.89.2
+      tsx: 4.20.3
 
   wcwidth@1.0.1:
     dependencies:

@@ -5,6 +5,7 @@ import { UserAPI } from '@/types/api/user-api'
 import {
     CreateUserIPCHandlerParams,
     DeleteUserIPCHandlerParams,
+    GetOneUserIPCHandlerParams,
     SetCurrentUserIPCHandlerParams,
     UpdateUserIPCHandlerParams,
     UpdateUserThemeIPCHandlerParams
@@ -15,7 +16,7 @@ export const userContextBridge: UserAPI = {
     getCurrent: () => ipcRenderer.invoke(IPC.USER.GET_CURRENT_USER),
     setCurrentUser: (params: SetCurrentUserIPCHandlerParams) =>
         ipcRenderer.invoke(IPC.USER.SET_CURRENT_USER, params),
-    getOne: () => ipcRenderer.invoke(IPC.USER.GET_ONE),
+    getOne: (params: GetOneUserIPCHandlerParams) => ipcRenderer.invoke(IPC.USER.GET_ONE, params),
     getAll: () => ipcRenderer.invoke(IPC.USER.GET_ALL),
     update: (params: UpdateUserIPCHandlerParams) => ipcRenderer.invoke(IPC.USER.UPDATE, params),
     updateTheme: (params: UpdateUserThemeIPCHandlerParams) =>

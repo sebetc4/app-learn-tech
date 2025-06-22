@@ -22,6 +22,8 @@
         "build:linux": "electron-vite build && electron-builder --linux",
         "db:generate": "drizzle-kit generate",
         "db:migrate": "drizzle-kit migrate",
+        "db:sync": "tsx scripts/sync-databases.ts",
+        "db:workflow": "npm run db:generate && npm run db:sync",
         "db:push": "drizzle-kit push",
         "db:pull": "drizzle-kit pull",
         "db:introspect": "drizzle-kit introspect",
@@ -79,6 +81,7 @@
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
         "sass": "^1.89.2",
+        "tsx": "^4.20.3",
         "typescript": "^5.8.3",
         "vite": "^6.3.5"
     },

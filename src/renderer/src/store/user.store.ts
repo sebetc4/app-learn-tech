@@ -14,7 +14,7 @@ interface UserActions {
     setCurrentUser: (userId: string) => Promise<void>
     update: (userId: string, dto: UpdateUserDto) => Promise<void>
     updateTheme: (theme: Theme) => void
-    delete: (userId: string) => Promise<void>
+    delete: (userId: string) => Promise<boolean>
 }
 
 const initialState: UserState = {
@@ -47,7 +47,6 @@ export const useUserStore = create<UserStore>()((set, get) => ({
     },
 
     addUser: async (dto) => {
-        console.log('store addUser called with:', dto)
         const response = await window.api.user.create(dto)
         if (response.success) {
             const user = response.data.user
@@ -93,10 +92,12 @@ export const useUserStore = create<UserStore>()((set, get) => ({
         const { current, users, setCurrentUser } = get()
 
         const userToDeleteIndex = users.findIndex((user) => user.id === userId)
-        if (userToDeleteIndex === -1) return
+        if (userToDeleteIndex === -1) return false
+
+        const isCurrentUser = current.id === userId
 
         const remainingUsers = users.filter((user) => user.id !== userId)
-        if (current.id === userId) {
+        if (isCurrentUser) {
             await setCurrentUser(remainingUsers[0].id)
         }
 
@@ -104,5 +105,6 @@ export const useUserStore = create<UserStore>()((set, get) => ({
         set({
             users: users.filter((user) => user.id !== userId)
         })
+        return isCurrentUser
     }
 }))

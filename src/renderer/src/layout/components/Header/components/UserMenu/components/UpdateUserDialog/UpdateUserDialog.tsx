@@ -46,7 +46,7 @@ export const UpdateUserDialog: FC<UpdateUserDialogProps> = ({ userId }) => {
             await updateUser(userId, data)
             setOpen(false)
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
     }
 

@@ -26,11 +26,16 @@
     transition:
         bg-color 250ms ease,
         color 250ms ease;
-}
 
-.trigger:hover,
-.link:hover {
-    @include bg-color('primary');
+    &:hover,
+    &:focus-visible {
+        @include color('primary');
+        outline: none;
+
+        &:disabled {
+            @include color('base-8');
+        }
+    }
 }
 
 .trigger {

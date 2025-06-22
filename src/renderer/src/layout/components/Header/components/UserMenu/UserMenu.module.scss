@@ -9,8 +9,14 @@
     svg {
         @include stroke('base-11');
     }
-    &:hover {
+    &:hover,
+    &:focus-visible {
         @include bg-color('primary');
+        outline: none;
+
+        svg {
+            @include stroke('base-2');
+        }
     }
 }
 
@@ -43,7 +49,8 @@
 .item,
 .radio-item,
 .sub-trigger,
-.user-item {
+.user-item,
+.add-user-item {
     border-radius: 3px;
     display: flex;
     align-items: center;
@@ -70,10 +77,6 @@
     .dot-icon,
     .plus-icon {
         margin-right: 0.5rem;
-    }
-
-    &--small {
-        font-size: 0.875rem;
     }
 
     &:focus-visible {
@@ -113,6 +116,15 @@
         .user-item__selector {
             @include color('primary');
         }
+    }
+}
+
+.add-user-item {
+    font-size: 0.875rem;
+    &:hover,
+    &:focus-visible {
+        @include bg-color('base-3');
+        @include color('primary');
     }
 }
 

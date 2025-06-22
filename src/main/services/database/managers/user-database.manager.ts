@@ -6,6 +6,7 @@ import {
     CreateUserDto,
     DrizzleDB,
     Theme,
+    UpdateUserDto,
     User,
     UserViewModel,
     UserViewModelWithoutTheme
@@ -21,7 +22,6 @@ export class UserDatabaseManager {
     }
 
     async create(data: CreateUserDto): Promise<UserViewModel> {
-        console.log('Creating user with data:', data)
         return this.#autoSave(async () => {
             const result = await this.#db
                 .insert(users)
@@ -52,6 +52,18 @@ export class UserDatabaseManager {
             .orderBy(users.name)
     }
 
+    async update(id: string, data: UpdateUserDto): Promise<User> {
+        return this.#autoSave(async () => {
+            const result = await this.#db
+                .update(users)
+                .set(data)
+                .where(eq(users.id, id))
+                .returning()
+
+            return result[0]
+        })
+    }
+
     async updateTheme(id: string, theme: Theme): Promise<User> {
         return this.#autoSave(async () => {
             const result = await this.#db
@@ -75,23 +87,10 @@ export class UserDatabaseManager {
         return null
     }
 
-    async update(id: string, data: Partial<CreateUserDto & { theme: Theme }>): Promise<User> {
+
+    async remove(id: string) {
         return this.#autoSave(async () => {
-            const result = await this.#db
-                .update(users)
-                .set(data)
-                .where(eq(users.id, id))
-                .returning()
-
-            return result[0]
-        })
-    }
-
-    async remove(id: string): Promise<User> {
-        return this.#autoSave(async () => {
-            const result = await this.#db.delete(users).where(eq(users.id, id)).returning()
-
-            return result[0]
+            await this.#db.delete(users).where(eq(users.id, id)).returning()
         })
     }
 
