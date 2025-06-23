@@ -1,14 +1,9 @@
-import {
-    chapters,
-    codeSnippets,
-    courseProgress,
-    courses,
-    lessonProgress,
-    lessons,
-    resources,
-    users
-} from './schemas'
-import { relations } from 'drizzle-orm/relations'
+import { chapters, codeSnippets, courseHistory, courseProgress, courses, lessonProgress, lessons, resources, users } from './schemas';
+import { relations } from 'drizzle-orm/relations';
+
+
+
+
 
 export const chaptersRelations = relations(chapters, ({ one, many }) => ({
     course: one(courses, {
@@ -22,7 +17,19 @@ export const coursesRelations = relations(courses, ({ many }) => ({
     chapters: many(chapters),
     lessons: many(lessons),
     courseProgresses: many(courseProgress),
-    lessonProgresses: many(lessonProgress)
+    lessonProgresses: many(lessonProgress),
+    courseHistory: many(courseHistory)
+}))
+
+export const courseHistoryRelations = relations(courseHistory, ({ one }) => ({
+    user: one(users, {
+        fields: [courseHistory.userId],
+        references: [users.id]
+    }),
+    course: one(courses, {
+        fields: [courseHistory.courseId],
+        references: [courses.id]
+    })
 }))
 
 export const codeSnippetsRelations = relations(codeSnippets, ({ one }) => ({
@@ -66,7 +73,8 @@ export const courseProgressRelations = relations(courseProgress, ({ one }) => ({
 
 export const usersRelations = relations(users, ({ many }) => ({
     courseProgresses: many(courseProgress),
-    lessonProgresses: many(lessonProgress)
+    lessonProgresses: many(lessonProgress),
+    courseHistory: many(courseHistory)
 }))
 
 export const lessonProgressRelations = relations(lessonProgress, ({ one }) => ({

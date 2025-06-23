@@ -4,6 +4,8 @@ import type {
     GetAllAlreadyImportedCourseIPCHandlerReturn,
     GetOneCourseIPCHandlerParams,
     GetOneCourseIPCHandlerReturn,
+    GetRecentCoursesIPCHandlerParams,
+    GetRecentCoursesIPCHandlerReturn,
     RemoveCourseIPCHandlerParams,
     RemoveCourseIPCHandlerReturn,
     UploadOneCourseIPCHandlerParams,
@@ -11,9 +13,10 @@ import type {
 } from '../ipc'
 
 export interface CourseAPI {
-    getOne: (params: GetOneCourseIPCHandlerParams) => GetOneCourseIPCHandlerReturn
-    getAll: () => GetAllAlreadyImportedCourseIPCHandlerReturn
     addOne: (params: AddOneCourseIPCHandlerParams) => AddOneCourseIPCHandlerReturn
+    getOne: (params: GetOneCourseIPCHandlerParams) => GetOneCourseIPCHandlerReturn
+    getRecent: (params: GetRecentCoursesIPCHandlerParams) => GetRecentCoursesIPCHandlerReturn
+    getAll: () => GetAllAlreadyImportedCourseIPCHandlerReturn
     uploadOne: (params: UploadOneCourseIPCHandlerParams) => UploadOneCourseIPCHandlerReturn
     removeOne: (params: RemoveCourseIPCHandlerParams) => RemoveCourseIPCHandlerReturn
 }

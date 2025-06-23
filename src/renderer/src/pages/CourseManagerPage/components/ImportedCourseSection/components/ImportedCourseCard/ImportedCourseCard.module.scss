@@ -1,6 +1,6 @@
 .card {
     position: relative;
-    width: 250px;
+    width: 350px;
     padding: 1rem;
     @include flex-col(null, null, 1rem);
     @include bg-color('base-3');
@@ -16,9 +16,12 @@
     &__content {
         @include flex-col(null, center, 0.5rem);
 
-        h3,
-        p {
+        h3 {
             text-align: center;
+        }
+        
+        p {
+            text-align: justify;
         }
     }
     &__button-container {

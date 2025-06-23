@@ -1,0 +1,33 @@
+.section {
+    margin: 2rem;
+}
+
+.empty {
+    margin: 1rem 0 0 1rem;
+}
+
+.carousel {
+    margin-top: 1rem;
+
+    &__content {
+        @include flex();
+    }
+
+    &__item {
+        min-width: 0;
+        flex: 0 0 100%;
+        margin-left: 2rem;
+    }
+}
+
+@include media('md') {
+    .carousel__item {
+        flex: 0 0 calc((100% - 2rem) / 2);
+    }
+}
+
+@include media('lg') {
+    .carousel__item {
+        flex: 0 0 calc((100% - 4rem) / 3);
+    }
+}

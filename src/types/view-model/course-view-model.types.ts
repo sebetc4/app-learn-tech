@@ -24,3 +24,15 @@ export interface CourseViewModel extends Course {
 }
 
 export type CoursePreview = Pick<Course, 'id' | 'name' | 'description' | 'folderName' | 'buildAt'>
+
+export interface RecentCourseViewModel {
+    id: string
+    name: string
+    folderName: string
+    accessedAt: Date
+    progressPercentage: number
+}
+
+export interface CourseHistoryViewModel {
+    recentCourses: RecentCourseViewModel[]
+}

@@ -36,6 +36,6 @@ export const LessonPage: FC = () => {
             <FooterSection courseId={courseId} />
         </div>
     ) : (
-        <p>Chargement...</p>
+        <p>Loading...</p>
     )
 }

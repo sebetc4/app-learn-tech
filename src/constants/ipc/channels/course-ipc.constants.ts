@@ -1,7 +1,9 @@
 export const IPC_COURSE = {
+    CREATE_ONE: 'course:create-one',
+    RECORD_ACCESS: 'course:record-access',
     GET_ONE: 'course:get-one',
+    GET_RECENT: 'course:get-recent',
     GET_ALL: 'course:get-all',
-    CREATE_ONE: 'course:add-one',
-    UPDATE_ONE: 'course:upload-one',
+    UPDATE_ONE: 'course:update-one',
     REMOVE_ONE: 'course:remove-one'
 } as const

@@ -8,8 +8,8 @@ export const CourseImporterPage: FC = () => {
     const scanRootFolder = useCourseFolderStore((state) => state.scan)
 
     useEffect(() => {
-        scanRootFolder()
-    }, [scanRootFolder])
+        if (rootFolder) scanRootFolder()
+    }, [rootFolder, scanRootFolder])
 
     return (
         <div className={styles.container}>

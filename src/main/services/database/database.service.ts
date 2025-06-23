@@ -8,6 +8,7 @@ import {
     SettingDatabaseManager,
     UserDatabaseManager
 } from './managers'
+import { CourseHistoryDatabaseManager } from './managers/course-history-database.manager'
 import * as relations from '@/database/relations'
 import * as schema from '@/database/schemas'
 import { drizzle } from 'drizzle-orm/sql-js'
@@ -31,6 +32,7 @@ export class DatabaseService {
     #settingManager!: SettingDatabaseManager
     #userManager!: UserDatabaseManager
     #saveTimeout!: NodeJS.Timeout
+    courseHistoryManager!: CourseHistoryDatabaseManager
 
     get chapter() {
         return this.#chapterManager
@@ -62,6 +64,10 @@ export class DatabaseService {
 
     get user() {
         return this.#userManager
+    }
+
+    get courseHistory() {
+        return this.courseHistoryManager
     }
 
     constructor() {
@@ -135,6 +141,10 @@ export class DatabaseService {
             this.#executeWithAutoSave.bind(this)
         )
         this.#userManager = new UserDatabaseManager(this.#db, this.#executeWithAutoSave.bind(this))
+        this.courseHistoryManager = new CourseHistoryDatabaseManager(
+            this.#db,
+            this.#executeWithAutoSave.bind(this)
+        )
     }
 
     #getDatabasePath(): string {

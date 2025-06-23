@@ -8,6 +8,7 @@ import type {
     CourseMetadataAndDirectory,
     CoursePreview,
     CourseViewModel,
+    RecentCourseViewModel,
     ScannedCourse
 } from '@/types'
 
@@ -37,6 +38,15 @@ export class CourseService {
         }
     }
 
+    async recordAccess(userId: string, courseId: string): Promise<void> {
+        try {
+            await this.#database.courseHistory.recordAccess(userId, courseId)
+        } catch (error) {
+            console.error(`Error recording course access: ${error}`)
+            throw error
+        }
+    }
+
     // Read
     async getOne(courseId: string, userId: string): Promise<CourseViewModel> {
         try {
@@ -44,9 +54,19 @@ export class CourseService {
             if (!course) {
                 throw new Error(`Course with ID ${courseId} not found`)
             }
+            await this.recordAccess(userId, courseId)
             return course
         } catch (error) {
             console.error(`Error retrieving course with ID ${courseId}: ${error}`)
+            throw error
+        }
+    }
+
+    async getRecentCourses(userId: string, limit: number = 5): Promise<RecentCourseViewModel[]> {
+        try {
+            return await this.#database.courseHistory.getRecentCourses(userId, limit)
+        } catch (error) {
+            console.error(`Error retrieving recent courses: ${error}`)
             throw error
         }
     }
