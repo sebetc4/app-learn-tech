@@ -1,8 +1,6 @@
-import { Carousel, CarouselContent, CarouselItem } from '../../components'
 import styles from './HomePage.module.scss'
-import { RecentCourseCard, RecentCoursesSection } from './components'
+import { RecentCoursesSection } from './components'
 import { useUserStore } from '@renderer/store'
-import Autoplay from 'embla-carousel-autoplay'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 

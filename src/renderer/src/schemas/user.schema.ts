@@ -1,5 +1,6 @@
-import { CreateUserDto } from '../types'
 import { ObjectSchema, object, string } from 'yup'
+
+import { CreateUserDto } from '@/types'
 
 const nameValidation = string()
     .required('Username is required')
