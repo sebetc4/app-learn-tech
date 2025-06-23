@@ -1,9 +1,15 @@
+.list {
+    display: grid;
+    list-style: none;
+    grid-template-columns: repeat(3, 1fr);
+}
+
 .item {
     width: 200px;
     padding: 1rem 1.5rem;
     cursor: pointer;
     @include flex(null, center, 1rem);
-    
+
     img {
         width: 2rem;
         height: 2rem;
