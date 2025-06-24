@@ -1,35 +1,66 @@
 name: Build
-
 on:
-    push:
-        branches:
-            - main
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-    build:
-        strategy:
-            matrix:
-                os: [ubuntu-latest, windows-latest, macos-latest]
-
-        runs-on: ${{ matrix.os }}
-
-        steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: 22.16
-
-            - name: Install dependencies
-              run: npm install
-
-            - name: Build Linux
-              if: matrix.os == 'ubuntu-latest'
-              run: npm run build:linux
-
-            - name: Build Windows
-              if: matrix.os == 'windows-latest'
-              run: npm run build:win
-
-            - name: Build macOS
-              if: matrix.os == 'macos-latest'
-              run: npm run build:mac
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Build Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: pnpm run build:linux
+        
+      - name: Build Windows
+        if: matrix.os == 'windows-latest'
+        run: pnpm run build:win
+        
+      - name: Build macOS
+        if: matrix.os == 'macos-latest'
+        run: pnpm run build:mac
+        
+      - name: Upload Linux artifacts
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-release
+          path: dist/*.AppImage
+          
+      - name: Upload Windows artifacts
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          path: dist/*.exe
+          
+      - name: Upload macOS artifacts
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-release
+          path: dist/*.dmg
