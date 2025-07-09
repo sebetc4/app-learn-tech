@@ -98,6 +98,7 @@ const AccordionTrigger = forwardRef<HTMLButtonElement, AccordionTriggerProps>(
         ).length
         const totalLessonsCount = chapter.lessons.length
         const allLessonsCompleted = competedChaptersCount === totalLessonsCount
+        const chapterInProgress = !allLessonsCompleted && competedChaptersCount > 0
 
         return (
             <Accordion.Header className={styles.header}>
@@ -113,7 +114,8 @@ const AccordionTrigger = forwardRef<HTMLButtonElement, AccordionTriggerProps>(
                             <span
                                 className={clsx(
                                     styles['title__progress'],
-                                    allLessonsCompleted && styles['title__progress--completed']
+                                    allLessonsCompleted && styles['title__progress--completed'],
+                                    chapterInProgress && styles['title__progress--in-progress']
                                 )}
                             >
                                 {competedChaptersCount}/{totalLessonsCount}

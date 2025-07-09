@@ -5,10 +5,10 @@
 
     &__info {
         transform: rotate(180deg);
-        stroke: #ffca16;
+        @include stroke('warning');
     }
 
     &__check {
-        stroke: #53b365;
+        @include stroke('valid');
     }
 }
