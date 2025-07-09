@@ -46,6 +46,6 @@
     }
 
     &__check {
-        stroke: #53b365;
+        @include stroke('valid');
     }
 }

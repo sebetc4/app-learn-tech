@@ -39,7 +39,9 @@ $colors: (
     'base-12': '',
 
     'secondary': '',
+
     'valid': '',
+    'warning': '',
     'error': ''
 );
 
@@ -84,7 +86,9 @@ $light-colors: (
     'base-12': '29, 33, 28',
 
     'secondary': '16, 125, 152',
+
     'valid': '83, 179, 101',
+    'warning': '255, 202, 22',
     'error': '229, 77, 46'
 );
 
@@ -129,6 +133,8 @@ $dark-colors: (
     'base-12': '236, 238, 236',
 
     'secondary': '16, 125, 152',
+
     'valid': '83, 179, 101',
+    'warning': '255, 202, 22',
     'error': '229, 77, 46'
 );
