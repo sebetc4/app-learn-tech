@@ -1,10 +1,9 @@
 import react from '@vitejs/plugin-react'
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
+import { defineConfig } from 'electron-vite'
 import { resolve } from 'path'
 
 export default defineConfig({
     main: {
-        plugins: [externalizeDepsPlugin()],
         resolve: {
             alias: {
                 '@': resolve('src'),
@@ -14,7 +13,6 @@ export default defineConfig({
         }
     },
     preload: {
-        plugins: [externalizeDepsPlugin()],
         resolve: {
             alias: {
                 '@': resolve('src'),
