@@ -10,6 +10,11 @@ out
 .env.local
 .env.*.local
 
+# Databases - ignore DB files but keep directory structure
+/databases/*.db
+/databases/*.db-shm
+/databases/*.db-wal
 /resources/database/*
+
 /build
 /.vscode

@@ -104,12 +104,14 @@ export class DatabaseService {
             this.#sqliteInstance = new SQL.Database(filebuffer)
         } else {
             this.#sqliteInstance = new SQL.Database()
-            await this.#copyInitialDatabase()
         }
 
         this.#db = drizzle(this.#sqliteInstance, {
             schema: { ...schema, ...relations }
         })
+
+        // Apply migrations
+        await this.#applyMigrations()
     }
 
     #initializeManagers() {
@@ -150,23 +152,84 @@ export class DatabaseService {
 
     #getDatabasePath(): string {
         if (process.env.NODE_ENV === 'development') {
-            return path.join(process.cwd(), 'src', 'database', 'dev.db')
+            return path.join(process.cwd(), 'databases', 'dev.db')
         }
         const userDataPath = app.getPath('userData')
         return path.join(userDataPath, 'database.db')
     }
 
-    async #copyInitialDatabase() {
+    async #applyMigrations() {
         try {
-            const initialDbPath = path.join(process.resourcesPath, 'database', 'template.db')
-            if (fs.existsSync(initialDbPath)) {
-                console.log('Copying initial database from resources...')
-                const initialData = fs.readFileSync(initialDbPath)
-                this.#sqliteInstance = new (await initSqlJs()).Database(initialData)
-                this.#saveDatabase()
+            // Create migrations tracking table if it doesn't exist
+            this.#sqliteInstance.run(`
+                CREATE TABLE IF NOT EXISTS __drizzle_migrations (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    hash TEXT NOT NULL,
+                    created_at INTEGER NOT NULL
+                )
+            `)
+
+            // Get migrations path
+            const migrationsPath =
+                process.env.NODE_ENV === 'development' || !app.isPackaged
+                    ? path.join(process.cwd(), 'src', 'database', 'migrations')
+                    : path.join(process.resourcesPath, 'migrations')
+
+            if (!fs.existsSync(migrationsPath)) {
+                console.log('No migrations folder found, skipping migrations')
+                return
             }
-        } catch {
-            console.log('No initial database found in resources, starting with empty database')
+
+            // Get list of migration files
+            const migrationFiles = fs
+                .readdirSync(migrationsPath)
+                .filter((file) => file.endsWith('.sql'))
+                .sort()
+
+            // Get already applied migrations
+            const appliedMigrations = this.#sqliteInstance.exec(
+                'SELECT hash FROM __drizzle_migrations'
+            )
+            const appliedHashes = new Set(
+                appliedMigrations[0]?.values.map((row) => row[0]) || []
+            )
+
+            // Apply new migrations
+            for (const file of migrationFiles) {
+                if (!appliedHashes.has(file)) {
+                    console.log(`Applying migration: ${file}`)
+                    const migrationPath = path.join(migrationsPath, file)
+                    const sql = fs.readFileSync(migrationPath, 'utf-8')
+
+                    // Split by statement-breakpoint and execute each statement
+                    const statements = sql
+                        .split('--> statement-breakpoint')
+                        .map((s) => s.trim())
+                        .filter((s) => s.length > 0)
+
+                    for (const statement of statements) {
+                        try {
+                            this.#sqliteInstance.run(statement)
+                        } catch (error) {
+                            console.error(`Error executing statement in ${file}:`, error)
+                            throw error
+                        }
+                    }
+
+                    // Record migration as applied
+                    this.#sqliteInstance.run(
+                        'INSERT INTO __drizzle_migrations (hash, created_at) VALUES (?, ?)',
+                        [file, Date.now()]
+                    )
+
+                    console.log(`✅ Migration ${file} applied successfully`)
+                }
+            }
+
+            this.#saveDatabase()
+        } catch (error) {
+            console.error('Migration failed:', error)
+            throw error
         }
     }
 

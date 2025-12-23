@@ -16,6 +16,8 @@ extraResources:
       to: .
       filter:
           - '**/*'
+    - from: src/database/migrations
+      to: migrations
     - from: node_modules/sql.js/dist/sql-wasm.wasm
       to: sql-wasm/sql-wasm.wasm
     - from: node_modules/sql.js/dist/sql-wasm.js
