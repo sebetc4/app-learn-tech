@@ -20,11 +20,13 @@ import {
 } from './services'
 import { PROTOCOL } from '@/constants'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { BrowserWindow, app, ipcMain, protocol, shell } from 'electron'
+import { BrowserWindow, app, dialog, protocol, shell } from 'electron'
 import { join } from 'path'
 
+let mainWindow: BrowserWindow | null = null
+
 const createWindow = (): void => {
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: 1280,
         height: 800,
         show: false,
@@ -32,12 +34,14 @@ const createWindow = (): void => {
         ...(process.platform === 'linux' ? { icon } : {}),
         webPreferences: {
             preload: join(__dirname, '../preload/index.js'),
+            // Sandbox is disabled to allow Node.js integration in preload script
+            // Required for direct file system access and database operations
             sandbox: false
         }
     })
 
     mainWindow.on('ready-to-show', () => {
-        mainWindow.show()
+        mainWindow?.show()
     })
 
     mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -60,12 +64,16 @@ protocol.registerSchemesAsPrivileged([
             secure: true,
             supportFetchAPI: true,
             stream: true,
+            // bypassCSP is required to load course content from custom protocol
             bypassCSP: true
         }
     }
 ])
 
-const registerProtocols = (folderService: FolderService) => {
+// Application state
+let database: DatabaseService | null = null
+
+const registerProtocols = (folderService: FolderService): void => {
     registerCourseProtocol(folderService)
     registerIconProtocol()
 }
@@ -76,49 +84,87 @@ const registerIpcHandlers = (
     lessonService: LessonService,
     userService: UserService,
     progressService: ProgressService
-) => {
-    registerFolderIpcHandlers(courseService, folderService)
+): void => {
+    const getMainWindow = () => mainWindow
+    registerFolderIpcHandlers(courseService, folderService, getMainWindow)
     registerCourseIpcHandlers(courseService)
     registerLessonIpcHandlers(lessonService, folderService)
     registerUserIpcHandlers(userService)
     registerProgressIpcHandlers(progressService)
 }
 
-app.whenReady().then(async () => {
-    electronApp.setAppUserModelId('com.electron')
-    app.on('browser-window-created', (_, window) => {
-        optimizer.watchWindowShortcuts(window)
-    })
+const initializeApp = async (): Promise<void> => {
+    try {
+        electronApp.setAppUserModelId('com.electron')
+        app.on('browser-window-created', (_, window) => {
+            optimizer.watchWindowShortcuts(window)
+        })
 
-    const database = new DatabaseService()
-    await database.initialize()
+        // Initialize database
+        database = new DatabaseService()
+        await database.initialize()
 
-    const storageService = new StorageService()
+        const storageService = new StorageService()
 
-    const folderService = new FolderService(database)
-    await folderService.initialize()
+        // Initialize folder service
+        const folderService = new FolderService(database)
+        await folderService.initialize()
 
-    const themeService = new ThemeService()
-    const importCourseService = new ImportCourseService(database, storageService, folderService)
-    const courseService = new CourseService(database, folderService, importCourseService)
-    const lessonService = new LessonService(database)
-    const userService = new UserService(database, themeService)
-    const progressService = new ProgressService(database)
+        // Initialize other services
+        const themeService = new ThemeService()
+        const importCourseService = new ImportCourseService(database, storageService, folderService)
+        const courseService = new CourseService(database, folderService, importCourseService)
+        const lessonService = new LessonService(database)
+        const userService = new UserService(database, themeService)
+        const progressService = new ProgressService(database)
 
-    registerProtocols(folderService)
-    registerIpcHandlers(courseService, folderService, lessonService, userService, progressService)
+        // Register protocols and IPC handlers
+        registerProtocols(folderService)
+        registerIpcHandlers(
+            courseService,
+            folderService,
+            lessonService,
+            userService,
+            progressService
+        )
 
-    ipcMain.on('ping', () => console.log('pong'))
+        // Create main window
+        createWindow()
 
-    createWindow()
+        app.on('activate', function () {
+            if (BrowserWindow.getAllWindows().length === 0) createWindow()
+        })
+    } catch (error) {
+        console.error('Failed to initialize application:', error)
+        dialog.showErrorBox(
+            'Initialization Error',
+            `Failed to start the application: ${error instanceof Error ? error.message : 'Unknown error'}`
+        )
+        app.quit()
+    }
+}
 
-    app.on('activate', function () {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow()
-    })
-})
+const cleanup = async (): Promise<void> => {
+    try {
+        if (database) {
+            await database.disconnect()
+            database = null
+        }
+    } catch (error) {
+        console.error('Error during cleanup:', error)
+    }
+}
+
+app.whenReady().then(initializeApp)
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        app.quit()
+        cleanup().then(() => app.quit())
     }
+})
+
+app.on('before-quit', async (event) => {
+    event.preventDefault()
+    await cleanup()
+    app.exit()
 })

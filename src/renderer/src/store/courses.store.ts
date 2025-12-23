@@ -12,6 +12,7 @@ interface CoursesState {
 interface CoursesAction {
     initialize: () => Promise<void>
     addCourse: (courseDirName: string) => Promise<void>
+    addCourseFromPreview: (course: CoursePreview) => void
     updateCourse: (courseDirName: string) => Promise<void>
     removeCourse: (courseId: string) => Promise<void>
 }
@@ -56,6 +57,12 @@ export const useCoursesStore = create<CoursesStore>()((set) => ({
             courses: [...state.courses, course].sort((a, b) => a.name.localeCompare(b.name))
         }))
         useCourseFolderStore.getState().delete(course.id)
+    },
+
+    addCourseFromPreview: (course: CoursePreview) => {
+        set((state) => ({
+            courses: [...state.courses, course].sort((a, b) => a.name.localeCompare(b.name))
+        }))
     },
 
     updateCourse: async (courseDirName: string) => {

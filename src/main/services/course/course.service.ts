@@ -1,6 +1,4 @@
-import { DatabaseService } from '../database'
-import { FolderService } from '../folder'
-import { ImportCourseService } from '../import-course'
+import { BrowserWindow } from 'electron'
 import fs from 'fs'
 import path from 'path'
 
@@ -11,6 +9,10 @@ import type {
     RecentCourseViewModel,
     ScannedCourse
 } from '@/types'
+
+import { DatabaseService } from '../database'
+import { FolderService } from '../folder'
+import { ImportCourseService } from '../import-course'
 
 export class CourseService {
     #database: DatabaseService
@@ -27,10 +29,14 @@ export class CourseService {
     }
 
     // Create
-    async create(path: string, type: 'archive' | 'directory'): Promise<CoursePreview> {
+    async create(
+        path: string,
+        type: 'archive' | 'directory',
+        mainWindow?: BrowserWindow | null
+    ): Promise<CoursePreview> {
         try {
             return type === 'archive'
-                ? this.#importCourseService.importArchive(path)
+                ? this.#importCourseService.importArchive(path, mainWindow || null)
                 : this.#importCourseService.importDirectory(path)
         } catch (error) {
             console.error(`Error adding course: ${error}`)

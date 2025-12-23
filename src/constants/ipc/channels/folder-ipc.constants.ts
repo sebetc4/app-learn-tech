@@ -6,5 +6,7 @@ export const IPC_FOLDER = {
     // Scan
     SCAN: 'folder:scan',
     // Archive
-    IMPORT_ARCHIVE: 'course:import-archive'
+    IMPORT_ARCHIVE: 'course:import-archive',
+    IMPORT_ARCHIVE_START: 'course:import-archive-start',
+    IMPORT_ARCHIVE_PROGRESS: 'course:import-archive-progress'
 } as const

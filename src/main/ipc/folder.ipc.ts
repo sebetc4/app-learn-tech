@@ -1,6 +1,6 @@
 import { IPC } from '@/constants'
 import type { CourseService, FolderService } from '@main/services'
-import { dialog, ipcMain } from 'electron'
+import { BrowserWindow, dialog, ipcMain } from 'electron'
 
 import type {
     GetCoursesRootFolderIPCHandlerReturn,
@@ -12,7 +12,8 @@ import type {
 
 export const registerFolderIpcHandlers = (
     courseService: CourseService,
-    folderService: FolderService
+    folderService: FolderService,
+    getMainWindow: () => BrowserWindow | null
 ) => {
     /**
      * --------------------------------
@@ -100,15 +101,27 @@ export const registerFolderIpcHandlers = (
     ipcMain.handle(IPC.FOLDER.IMPORT_ARCHIVE, async (): ImportCourseArchiveIPCHandlerReturn => {
         try {
             const { canceled, filePaths } = await dialog.showOpenDialog({
-                title: 'Select Course File (.zip)',
-                filters: [{ name: 'ZIP Archives', extensions: ['zip'] }],
+                title: 'Select Course Archive',
+                filters: [
+                    { name: 'Course Archives', extensions: ['zip', 'tar.zst', 'tzst'] },
+                    { name: 'ZIP Archives', extensions: ['zip'] },
+                    { name: 'Zstandard TAR Archives', extensions: ['tar.zst', 'tzst'] }
+                ],
                 properties: ['openFile']
             })
 
             if (canceled || filePaths.length === 0) {
                 return { success: false, message: 'Aborted operation' }
             }
-            const course = await courseService.create(filePaths[0], 'archive')
+
+            const mainWindow = getMainWindow()
+
+            // Notify renderer that import is starting (after file selection)
+            if (mainWindow && !mainWindow.isDestroyed()) {
+                mainWindow.webContents.send(IPC.FOLDER.IMPORT_ARCHIVE_START)
+            }
+
+            const course = await courseService.create(filePaths[0], 'archive', mainWindow)
 
             return {
                 success: true,

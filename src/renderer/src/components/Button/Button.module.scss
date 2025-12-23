@@ -42,6 +42,12 @@
     .loader {
         animation: spin 0.5s linear infinite;
     }
+
+    &[disabled] {
+        opacity: 0.5;
+        cursor: none;
+        pointer-events: none;
+    }
 }
 
 @keyframes spin {

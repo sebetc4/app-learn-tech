@@ -1,11 +1,14 @@
-import { DatabaseService } from '../database'
-import { FolderService } from '../folder'
-import { StorageService } from '../storage'
-import { ArchiveManager, ChapterManager, CourseManager, LessonManager } from './managers'
+import { BrowserWindow } from 'electron'
 import fs from 'fs'
 import path from 'path'
 
 import { CourseMetadata, CoursePreview } from '@/types'
+import { IPC } from '@/constants/ipc'
+
+import { DatabaseService } from '../database'
+import { FolderService } from '../folder'
+import { StorageService } from '../storage'
+import { ArchiveManager, ChapterManager, CourseManager, LessonManager } from './managers'
 
 export class ImportCourseService {
     #folderService: FolderService
@@ -28,11 +31,23 @@ export class ImportCourseService {
         this.#courseManager = new CourseManager(database, storageService, this.#chapterManager)
     }
 
-    async importArchive(zipFilePath: string): Promise<CoursePreview> {
+    async importArchive(
+        zipFilePath: string,
+        mainWindow: BrowserWindow | null
+    ): Promise<CoursePreview> {
         try {
             const rootPath = this.#getRootPath()
 
-            const courseDirPath = await this.#archiveManager.extractArchive(zipFilePath, rootPath)
+            const courseDirPath = await this.#archiveManager.extractArchive(
+                zipFilePath,
+                rootPath,
+                (progress: number) => {
+                    // Emit progress to renderer
+                    if (mainWindow && !mainWindow.isDestroyed()) {
+                        mainWindow.webContents.send(IPC.FOLDER.IMPORT_ARCHIVE_PROGRESS, progress)
+                    }
+                }
+            )
 
             const metadataPath = path.join(courseDirPath, 'metadata.json')
             const metadataContent = fs.readFileSync(metadataPath, 'utf8')

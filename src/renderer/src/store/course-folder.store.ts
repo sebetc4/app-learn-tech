@@ -1,3 +1,4 @@
+import { useCoursesStore } from './courses.store'
 import { toast } from 'sonner'
 import { create } from 'zustand'
 
@@ -8,21 +9,25 @@ interface CourseFolderState {
     scannedCourses: ScannedCourse[]
     rootFolderScanLoading: boolean
     isLoading: boolean
+    importProgress: number
 }
 
 interface CourseFolderActions {
     initialize: () => void
     handleSelectRootFolder: () => Promise<void>
     scan: () => Promise<void>
+    importArchive: () => Promise<void>
     delete: (courseId: string) => void
     setIsLoading: (loading: boolean) => void
+    setImportProgress: (progress: number) => void
 }
 
 const initialState: CourseFolderState = {
     rootFolder: null,
     scannedCourses: [],
     rootFolderScanLoading: false,
-    isLoading: false
+    isLoading: false,
+    importProgress: 0
 }
 
 interface CourseFolderStore extends CourseFolderState, CourseFolderActions {}
@@ -83,6 +88,57 @@ export const useCourseFolderStore = create<CourseFolderStore>()((set, get) => ({
         }
     },
 
+    importArchive: async () => {
+        set({ isLoading: true, importProgress: 0 })
+
+        let toastId: string | number | undefined
+
+        // Listen for import start event (after file selection)
+        window.api.folder.onImportArchiveStart(() => {
+            // Show loading toast only when extraction actually starts
+            toastId = toast.loading('Importing archive...', {
+                description: 'Extracting files: 0%'
+            })
+        })
+
+        // Listen for real-time progress updates from main process
+        window.api.folder.onImportArchiveProgress((progress: number) => {
+            set({ importProgress: progress })
+            if (toastId) {
+                toast.loading('Importing archive...', {
+                    id: toastId,
+                    description: `Extracting files: ${progress}%`
+                })
+            }
+        })
+
+        try {
+            const response = await window.api.folder.importArchive()
+
+            if (response.success) {
+                const { course } = response.data
+                useCoursesStore.getState().addCourseFromPreview(course)
+                set({ importProgress: 100 })
+                if (toastId) {
+                    toast.success(response.message, { id: toastId })
+                }
+            } else {
+                if (toastId) {
+                    toast.error(response.message, { id: toastId })
+                }
+            }
+        } catch (error) {
+            console.error(error)
+            if (toastId) {
+                toast.error('Error during archive import', { id: toastId })
+            }
+        } finally {
+            // Clean up listener
+            window.api.folder.removeImportArchiveProgressListener()
+            set({ isLoading: false, importProgress: 0 })
+        }
+    },
+
     delete: (courseId: string) => {
         set((state) => ({
             scannedCourses: state.scannedCourses.filter(({ metadata }) => metadata.id !== courseId)
@@ -91,5 +147,9 @@ export const useCourseFolderStore = create<CourseFolderStore>()((set, get) => ({
 
     setIsLoading: (isLoading: boolean) => {
         set({ isLoading })
+    },
+
+    setImportProgress: (importProgress: number) => {
+        set({ importProgress })
     }
 }))

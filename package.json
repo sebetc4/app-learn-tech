@@ -39,6 +39,7 @@
         "@mdx-js/loader": "^3.1.1",
         "@mdx-js/react": "^3.1.1",
         "@radix-ui/react-navigation-menu": "^1.2.14",
+        "@types/yauzl": "^2.10.3",
         "adm-zip": "^0.5.16",
         "check-disk-space": "^3.4.0",
         "class-variance-authority": "^0.7.1",
@@ -55,6 +56,7 @@
         "react-syntax-highlighter": "^15.6.6",
         "sonner": "^2.0.7",
         "sql.js": "^1.13.0",
+        "yauzl": "^3.2.0",
         "yup": "^1.7.1",
         "zustand": "^5.0.9"
     },
@@ -70,6 +72,7 @@
         "@types/react-dom": "^19.2.3",
         "@types/react-syntax-highlighter": "^15.5.13",
         "@types/sql.js": "^1.4.9",
+        "@types/tar-stream": "^3.1.4",
         "@vitejs/plugin-react": "^5.1.2",
         "better-sqlite3": "^11.10.0",
         "drizzle-kit": "^0.31.8",
@@ -90,6 +93,7 @@
     },
     "pnpm": {
         "onlyBuiltDependencies": [
+            "@mongodb-js/zstd",
             "@parcel/watcher",
             "better-sqlite3",
             "electron",

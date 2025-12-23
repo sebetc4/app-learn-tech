@@ -2,12 +2,13 @@ import styles from './ImportCourseSection.module.scss'
 import { ImportCourseCard } from './components'
 import { Button } from '@renderer/components'
 import { useCourseFolderStore } from '@renderer/store'
-import { CircleArrowDown, RefreshCw } from 'lucide-react'
+import { FileArchive, RefreshCw } from 'lucide-react'
 import { type FC } from 'react'
 
 export const ImportCourseSection: FC = () => {
     const scannedCourses = useCourseFolderStore((state) => state.scannedCourses)
     const scanRootFolder = useCourseFolderStore((state) => state.scan)
+    const importArchive = useCourseFolderStore((state) => state.importArchive)
     const rootFolderScanLoading = useCourseFolderStore((state) => state.rootFolderScanLoading)
     const isLoading = useCourseFolderStore((state) => state.isLoading)
 
@@ -24,13 +25,21 @@ export const ImportCourseSection: FC = () => {
                     Rafraîchir
                 </Button>
                 <Button
+                    onClick={importArchive}
+                    disabled={isLoading}
+                    variant="text"
+                >
+                    <FileArchive />
+                    Importer une archive
+                </Button>
+                {/* <Button
                     // onClick={handleImportAllCourses}
                     disabled={isLoading || scannedCourses.length === 0}
                     variant="text"
                 >
                     <CircleArrowDown />
                     Tout importer
-                </Button>
+                </Button> */}
             </div>
 
             <div className={styles['import__content']}>

@@ -11,5 +11,15 @@ export const folderContextBridge: FolderAPI = {
     // Scan
     scan: () => ipcRenderer.invoke(IPC.FOLDER.SCAN),
     // Archive
-    importArchive: () => ipcRenderer.invoke(IPC.FOLDER.IMPORT_ARCHIVE)
+    importArchive: () => ipcRenderer.invoke(IPC.FOLDER.IMPORT_ARCHIVE),
+    onImportArchiveStart: (callback: () => void) => {
+        ipcRenderer.on(IPC.FOLDER.IMPORT_ARCHIVE_START, () => callback())
+    },
+    onImportArchiveProgress: (callback: (progress: number) => void) => {
+        ipcRenderer.on(IPC.FOLDER.IMPORT_ARCHIVE_PROGRESS, (_, progress) => callback(progress))
+    },
+    removeImportArchiveProgressListener: () => {
+        ipcRenderer.removeAllListeners(IPC.FOLDER.IMPORT_ARCHIVE_START)
+        ipcRenderer.removeAllListeners(IPC.FOLDER.IMPORT_ARCHIVE_PROGRESS)
+    }
 }
