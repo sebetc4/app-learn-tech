@@ -91,7 +91,8 @@ export class DatabaseService {
     async initializeDatabase() {
         const SQL = await initSqlJs({
             locateFile: (file: string) => {
-                if (process.env.NODE_ENV === 'development') {
+                // Use node_modules in dev/preview mode, resources in packaged app
+                if (process.env.NODE_ENV === 'development' || !app.isPackaged) {
                     return path.join(__dirname, '../../node_modules/sql.js/dist/', file)
                 }
                 return path.join(process.resourcesPath, 'sql-wasm', file)

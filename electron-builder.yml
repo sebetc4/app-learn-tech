@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: com.learntech.app
 productName: LearnTech
 directories:
     buildResources: build
@@ -12,41 +12,42 @@ files:
     - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 
 extraResources:
-    - from: resources/database
-      to: database
-      filter:
-          - '**/*'
     - from: resources
       to: .
       filter:
           - '**/*'
-          - '!database/**/*'
     - from: node_modules/sql.js/dist/sql-wasm.wasm
       to: sql-wasm/sql-wasm.wasm
     - from: node_modules/sql.js/dist/sql-wasm.js
       to: sql-wasm/sql-wasm.js
 
 asarUnpack:
-    - resources/**
+    - '**/*.{wasm,node}'
+    - '**/database/**'
 
 win:
     executableName: LearnTech
     icon: build/icon.ico
+    target:
+        - target: nsis
+          arch:
+              - x64
 
 nsis:
     artifactName: ${name}-${version}-setup.${ext}
     shortcutName: ${productName}
     uninstallDisplayName: ${productName}
     createDesktopShortcut: always
+    oneClick: false
+    perMachine: false
+    allowToChangeInstallationDirectory: true
 
 mac:
     icon: build/icon.icns
     entitlementsInherit: build/entitlements.mac.plist
-    extendInfo:
-        - NSCameraUsageDescription: Application requests access to the device's camera.
-        - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
-        - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
-        - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+    category: public.app-category.developer-tools
+    hardenedRuntime: true
+    gatekeeperAssess: false
     notarize: false
 dmg:
     artifactName: ${name}-${version}.${ext}
@@ -54,16 +55,20 @@ dmg:
 linux:
     icon: build/icon.png
     target:
-        - AppImage
-        - snap
-    maintainer: electronjs.org
+        - target: AppImage
+          arch:
+              - x64
+        - target: deb
+          arch:
+              - x64
+    maintainer: LearnTech Team
     category: Development
+    synopsis: Interactive learning platform for developers
+    description: LearnTech is an interactive learning platform for developers
 appImage:
     artifactName: ${name}-${version}.${ext}
 
 npmRebuild: false
-publish:
-    provider: generic
-    url: https://example.com/auto-updates
+compression: normal
 electronDownload:
     mirror: https://npmmirror.com/mirrors/electron/

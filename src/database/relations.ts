@@ -1,9 +1,15 @@
-import { chapters, codeSnippets, courseHistory, courseProgress, courses, lessonProgress, lessons, resources, users } from './schemas';
-import { relations } from 'drizzle-orm/relations';
-
-
-
-
+import {
+    chapters,
+    codeSnippets,
+    courseHistory,
+    courseProgress,
+    courses,
+    lessonProgress,
+    lessons,
+    resources,
+    users
+} from './schemas'
+import { relations } from 'drizzle-orm/relations'
 
 export const chaptersRelations = relations(chapters, ({ one, many }) => ({
     course: one(courses, {
