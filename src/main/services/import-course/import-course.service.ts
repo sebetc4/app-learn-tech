@@ -2,6 +2,7 @@ import { DatabaseService } from '../database'
 import { FolderService } from '../folder'
 import { StorageService } from '../storage'
 import { ArchiveManager, ChapterManager, CourseManager, LessonManager } from './managers'
+import { DuplicateCheckManager } from './managers/duplicate-check.manager'
 import { IPC } from '@/constants/ipc'
 import { BrowserWindow } from 'electron'
 import fs from 'fs'
@@ -16,6 +17,7 @@ export class ImportCourseService {
     #lessonManager: LessonManager
     #chapterManager: ChapterManager
     #courseManager: CourseManager
+    #duplicateCheckManager: DuplicateCheckManager
 
     constructor(
         database: DatabaseService,
@@ -28,6 +30,7 @@ export class ImportCourseService {
         this.#lessonManager = new LessonManager(database)
         this.#chapterManager = new ChapterManager(database, this.#lessonManager)
         this.#courseManager = new CourseManager(database, storageService, this.#chapterManager)
+        this.#duplicateCheckManager = new DuplicateCheckManager(database)
     }
 
     async importArchive(
@@ -37,6 +40,28 @@ export class ImportCourseService {
         try {
             const rootPath = this.#getRootPath()
 
+            // STEP 1: Extract metadata ONLY
+            const metadata = await this.#archiveManager.extractMetadataOnly(zipFilePath)
+
+            // Validate course ID
+            if (!metadata.id) {
+                throw new Error('L\'ID du cours est manquant dans metadata.json')
+            }
+
+            // STEP 2: Check for duplicates
+            const duplicateCheck = await this.#duplicateCheckManager.checkDuplicate(metadata)
+
+            // STEP 3: Handle duplicate cases
+            if (duplicateCheck.action === 'reject') {
+                throw new Error(duplicateCheck.message)
+            }
+
+            // Notify renderer that extraction is starting
+            if (mainWindow && !mainWindow.isDestroyed()) {
+                mainWindow.webContents.send(IPC.FOLDER.IMPORT_ARCHIVE_START)
+            }
+
+            // STEP 4: Extract full archive
             const courseDirPath = await this.#archiveManager.extractArchive(
                 zipFilePath,
                 rootPath,
@@ -48,11 +73,8 @@ export class ImportCourseService {
                 }
             )
 
-            const metadataPath = path.join(courseDirPath, 'metadata.json')
-            const metadataContent = fs.readFileSync(metadataPath, 'utf8')
-            const courseData: CourseMetadata = JSON.parse(metadataContent)
-
-            const coursePreview = await this.#courseManager.process(courseData, courseDirPath)
+            // STEP 5: Process course
+            const coursePreview = await this.#courseManager.process(metadata, courseDirPath)
 
             return coursePreview
         } catch (error) {

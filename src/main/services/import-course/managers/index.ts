@@ -1,4 +1,5 @@
 export { ArchiveManager } from './archive.manager'
 export { ChapterManager } from './chapter.manager'
 export { CourseManager } from './course.manager'
+export { DuplicateCheckManager } from './duplicate-check.manager'
 export { LessonManager } from './lesson.manager'

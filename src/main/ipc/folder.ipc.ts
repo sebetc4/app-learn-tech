@@ -133,11 +133,6 @@ export const registerFolderIpcHandlers = (
 
             const mainWindow = getMainWindow()
 
-            // Notify renderer that import is starting (after file selection)
-            if (mainWindow && !mainWindow.isDestroyed()) {
-                mainWindow.webContents.send(IPC.FOLDER.IMPORT_ARCHIVE_START)
-            }
-
             const course = await courseService.create(filePaths[0], 'archive', mainWindow)
 
             return {

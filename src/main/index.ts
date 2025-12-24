@@ -32,12 +32,18 @@ const createWindow = (): void => {
         height: 800,
         show: false,
         autoHideMenuBar: true,
-        ...(process.platform === 'linux' ? { icon } : {}),
+        icon,
+        backgroundColor: '#ffffff',
         webPreferences: {
             preload: join(__dirname, '../preload/index.js'),
             // Sandbox is disabled to allow Node.js integration in preload script
             // Required for direct file system access and database operations
-            sandbox: false
+            sandbox: false,
+            // Performance optimizations
+            nodeIntegration: false,
+            contextIsolation: true,
+            enableWebSQL: false,
+            webgl: false
         }
     })
 
@@ -66,6 +72,15 @@ protocol.registerSchemesAsPrivileged([
             supportFetchAPI: true,
             stream: true,
             // bypassCSP is required to load course content from custom protocol
+            bypassCSP: true
+        }
+    },
+    {
+        scheme: PROTOCOL.ICON,
+        privileges: {
+            standard: true,
+            secure: true,
+            supportFetchAPI: true,
             bypassCSP: true
         }
     }
@@ -117,7 +132,7 @@ const initializeApp = async (): Promise<void> => {
         // Initialize other services
         const themeService = new ThemeService()
         const importCourseService = new ImportCourseService(database, storageService, folderService)
-        const courseService = new CourseService(database, folderService, importCourseService)
+        const courseService = new CourseService(database, folderService, importCourseService, storageService)
         const lessonService = new LessonService(database)
         const userService = new UserService(database, themeService)
         const progressService = new ProgressService(database)
@@ -141,7 +156,10 @@ const initializeApp = async (): Promise<void> => {
         // Send integrity check result to renderer after window is ready
         if (mainWindow && integrityResult.deactivated > 0) {
             mainWindow.webContents.on('did-finish-load', () => {
-                mainWindow?.webContents.send('course:integrity-check-complete', integrityResult)
+                // Wait a bit to ensure React components are mounted
+                setTimeout(() => {
+                    mainWindow?.webContents.send('course:integrity-check-complete', integrityResult)
+                }, 500)
             })
         }
 

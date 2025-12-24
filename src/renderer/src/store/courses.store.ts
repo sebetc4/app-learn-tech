@@ -59,14 +59,18 @@ export const useCoursesStore = create<CoursesStore>()((set) => ({
         }
         const { course } = response.data
         set((state) => ({
-            courses: [...state.courses, course].sort((a, b) => a.name.localeCompare(b.name))
+            courses: [...state.courses, course].sort((a, b) => a.name.localeCompare(b.name)),
+            // Remove from inactive courses if it was there
+            inactiveCourses: state.inactiveCourses.filter((c) => c.id !== course.id)
         }))
         useCourseFolderStore.getState().delete(course.id)
     },
 
     addCourseFromPreview: (course: CoursePreview) => {
         set((state) => ({
-            courses: [...state.courses, course].sort((a, b) => a.name.localeCompare(b.name))
+            courses: [...state.courses, course].sort((a, b) => a.name.localeCompare(b.name)),
+            // Remove from inactive courses if it was there
+            inactiveCourses: state.inactiveCourses.filter((c) => c.id !== course.id)
         }))
     },
 

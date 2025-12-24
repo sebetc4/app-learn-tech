@@ -16,13 +16,27 @@ export const Layout: FC = () => {
     useEffect(() => {
         const handleIntegrityCheck = (result: IntegrityCheckResult) => {
             if (result.deactivated > 0) {
-                toast.warning(`${result.deactivated} course(s) deactivated - missing folders`, {
-                    duration: 5000,
-                    action: {
-                        label: 'View',
-                        onClick: () => navigate('/course-manager')
-                    }
-                })
+                if (result.rootPathRemoved) {
+                    toast.error(
+                        `Courses root folder no longer exists - all courses deactivated`,
+                        {
+                            duration: 10000,
+                            description: 'Please set a new courses root folder',
+                            action: {
+                                label: 'Configure',
+                                onClick: () => navigate('/course-manager')
+                            }
+                        }
+                    )
+                } else {
+                    toast.warning(`${result.deactivated} course(s) deactivated - missing folders`, {
+                        duration: 5000,
+                        action: {
+                            label: 'View',
+                            onClick: () => navigate('/course-manager')
+                        }
+                    })
+                }
                 handleIntegrityCheckResult(result)
             }
         }

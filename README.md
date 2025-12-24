@@ -24,8 +24,6 @@ A modern learning management desktop application built with Electron, React, and
 
 - **Responsive Design**: Optimized for desktop with mobile-first approach
 - **Theme Support**: Light and dark mode with system preference detection
-- **Brand Colors**: Vibrant green (#67f28a) and blue (#0fb0f0) accent colors
-- **Smooth Animations**: Hover effects, transitions, and loading states
 - **SCSS Architecture**: Token-based design system with comprehensive mixins
 
 ### 📖 Course Content
@@ -227,9 +225,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 📝 License
 
 This project is licensed under a public license - feel free to use, modify, and distribute.
-
-## 🙏 Acknowledgments
-
-- Icons from [Lucide](https://lucide.dev/)
-- Charts powered by [Recharts](https://recharts.org/)
-- Built with [Electron Vite](https://electron-vite.org/)

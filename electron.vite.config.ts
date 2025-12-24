@@ -10,6 +10,13 @@ export default defineConfig({
                 '@main': resolve('src/main'),
                 '@preload': resolve('src/preload')
             }
+        },
+        build: {
+            rollupOptions: {
+                output: {
+                    manualChunks: undefined
+                }
+            }
         }
     },
     preload: {
@@ -37,6 +44,18 @@ export default defineConfig({
                     `
                 }
             }
+        },
+        build: {
+            rollupOptions: {
+                output: {
+                    manualChunks: {
+                        'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+                        'ui-vendor': ['lucide-react', 'sonner'],
+                        'form-vendor': ['react-hook-form', '@hookform/resolvers', 'yup']
+                    }
+                }
+            },
+            chunkSizeWarningLimit: 1000
         },
         plugins: [react()]
     }

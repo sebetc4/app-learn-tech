@@ -10,7 +10,7 @@ interface ImportedCourseCardProps {
 }
 
 export const ImportedCourseCard: FC<ImportedCourseCardProps> = ({ course }) => {
-    const { name, folderName, id } = course
+    const { name, id } = course
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
     const hardDeleteCourse = useCoursesStore((state) => state.hardDeleteCourse)
@@ -53,7 +53,7 @@ export const ImportedCourseCard: FC<ImportedCourseCardProps> = ({ course }) => {
                     </svg>
                 </button>
                 <img
-                    src={protocolService.course.getIconPath(folderName)}
+                    src={protocolService.icon.getIconPath(id)}
                     alt={course.name}
                     className={styles['card__icon']}
                 />

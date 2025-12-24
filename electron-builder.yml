@@ -71,7 +71,8 @@ appImage:
     artifactName: ${name}-${version}.${ext}
 
 npmRebuild: false
-compression: normal
+compression: maximum
+asar: true
 publish:
     provider: github
     releaseType: release

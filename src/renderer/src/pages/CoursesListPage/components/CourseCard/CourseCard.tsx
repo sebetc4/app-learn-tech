@@ -12,7 +12,7 @@ interface CourseCardProps {
 }
 
 export const CourseCard: FC<CourseCardProps> = ({ course }) => {
-    const { id, name, description, folderName, progress, chapters } = course
+    const { id, name, description, progress, chapters } = course
 
     // Calculate total lessons
     const totalLessons = chapters.reduce((acc, chapter) => acc + chapter.lessons.length, 0)
@@ -32,7 +32,7 @@ export const CourseCard: FC<CourseCardProps> = ({ course }) => {
         <article className={styles.card}>
             <div className={styles.imageContainer}>
                 <img
-                    src={protocolService.course.getIconPath(folderName)}
+                    src={protocolService.icon.getIconPath(id)}
                     alt={name}
                     className={styles.image}
                 />

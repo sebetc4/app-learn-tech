@@ -1,6 +1,7 @@
 import { DatabaseService } from '../database'
 import { FolderService } from '../folder'
 import { ImportCourseService } from '../import-course'
+import { StorageService } from '../storage'
 import { BrowserWindow } from 'electron'
 import fs from 'fs'
 import path from 'path'
@@ -17,14 +18,17 @@ export class CourseService {
     #database: DatabaseService
     #folderService: FolderService
     #importCourseService: ImportCourseService
+    #storage: StorageService
     constructor(
         database: DatabaseService,
         folderService: FolderService,
-        importCourseService: ImportCourseService
+        importCourseService: ImportCourseService,
+        storage: StorageService
     ) {
         this.#database = database
         this.#folderService = folderService
         this.#importCourseService = importCourseService
+        this.#storage = storage
     }
 
     // Create
@@ -124,6 +128,9 @@ export class CourseService {
 
             // Delete from database first (cascade handles related records)
             await this.#database.course.deleteById(course.id)
+
+            // Delete icon from storage
+            await this.#storage.icon.delete(courseId)
 
             // Then delete filesystem
             if (fs.existsSync(courseDirPath)) {

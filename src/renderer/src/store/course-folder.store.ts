@@ -121,16 +121,22 @@ export const useCourseFolderStore = create<CourseFolderStore>()((set, get) => ({
                 set({ importProgress: 100 })
                 if (toastId) {
                     toast.success(response.message, { id: toastId })
+                } else {
+                    toast.success(response.message)
                 }
             } else {
                 if (toastId) {
                     toast.error(response.message, { id: toastId })
+                } else {
+                    toast.error(response.message)
                 }
             }
         } catch (error) {
             console.error(error)
             if (toastId) {
                 toast.error('Error during archive import', { id: toastId })
+            } else {
+                toast.error('Error during archive import')
             }
         } finally {
             // Clean up listener

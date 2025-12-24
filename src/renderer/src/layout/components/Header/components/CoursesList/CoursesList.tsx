@@ -9,7 +9,7 @@ export const CoursesList = () => {
     const courses = useCoursesStore((state) => state.courses)
     return (
         <ul className={styles.list}>
-            {courses.map(({ id, name, folderName }) => (
+            {courses.map(({ id, name }) => (
                 <li key={id}>
                     <NavigationMenu.Link asChild>
                         <Link
@@ -17,7 +17,7 @@ export const CoursesList = () => {
                             to={`${PAGE_PATH.COURSES}/${id}`}
                         >
                             <img
-                                src={protocolService.course.getIconPath(folderName)}
+                                src={protocolService.icon.getIconPath(id)}
                                 alt={name}
                             />
                             <span className={styles['item__text']}>{name}</span>

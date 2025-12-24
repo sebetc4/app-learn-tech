@@ -1,6 +1,6 @@
 .card {
     position: relative;
-    width: 350px;
+    width: 200px;
     padding: 1rem;
     @include flex-col(null, null, 1rem);
     @include bg-color('base-3');

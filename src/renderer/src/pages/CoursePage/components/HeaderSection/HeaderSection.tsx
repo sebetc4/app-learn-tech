@@ -18,7 +18,7 @@ export const HeaderSection: FC<HeaderSectionProps> = ({ course }) => {
         <section className={styles.section}>
             <div className={styles['icon-container']}>
                 <img
-                    src={protocolService.course.getIconPath(course.folderName)}
+                    src={protocolService.icon.getIconPath(course.id)}
                     alt={course.name}
                 />
             </div>

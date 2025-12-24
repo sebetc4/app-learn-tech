@@ -16,7 +16,7 @@ export const RecentCourseCard = ({ course }: RecentCourseCardProps) => {
             to={`${PAGE_PATH.COURSES}/${course.id}`}
         >
             <img
-                src={protocolService.course.getIconPath(course.folderName)}
+                src={protocolService.icon.getIconPath(course.id)}
                 alt={course.name}
                 className={styles.icon}
             />

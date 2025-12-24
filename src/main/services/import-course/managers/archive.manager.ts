@@ -2,6 +2,7 @@ import { spawn } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import yauzl from 'yauzl'
+import { CourseMetadata } from '@/types'
 
 export class ArchiveManager {
     public async extractArchive(
@@ -275,5 +276,135 @@ export class ArchiveManager {
             console.error(`Erreur lors de la suppression du dossier ${dirPath}:`, error)
             throw error
         }
+    }
+
+    public async extractMetadataOnly(archiveFilePath: string): Promise<CourseMetadata> {
+        const archiveType = this.detectArchiveType(archiveFilePath)
+
+        if (archiveType === 'zip') {
+            return this.extractMetadataFromZip(archiveFilePath)
+        } else if (archiveType === 'tar.zst') {
+            return this.extractMetadataFromTarZst(archiveFilePath)
+        } else {
+            throw new Error(`Unsupported archive type: ${path.extname(archiveFilePath)}`)
+        }
+    }
+
+    private extractMetadataFromZip(zipFilePath: string): Promise<CourseMetadata> {
+        return new Promise((resolve, reject) => {
+            yauzl.open(zipFilePath, { lazyEntries: true }, (err, zipfile) => {
+                if (err || !zipfile) {
+                    reject(new Error('Failed to open zip archive'))
+                    return
+                }
+
+                zipfile.readEntry()
+
+                zipfile.on('entry', (entry) => {
+                    // Check if this entry is metadata.json (could be nested)
+                    if (entry.fileName.endsWith('metadata.json')) {
+                        zipfile.openReadStream(entry, (err, readStream) => {
+                            if (err || !readStream) {
+                                reject(new Error('Failed to read metadata.json from archive'))
+                                return
+                            }
+
+                            let data = ''
+                            readStream.on('data', (chunk) => {
+                                data += chunk.toString()
+                            })
+                            readStream.on('end', () => {
+                                try {
+                                    const metadata: CourseMetadata = JSON.parse(data)
+                                    zipfile.close()
+                                    resolve(metadata)
+                                } catch (parseErr) {
+                                    reject(new Error('Invalid metadata.json format'))
+                                }
+                            })
+                            readStream.on('error', (readErr) => {
+                                reject(new Error(`Error reading metadata.json: ${readErr.message}`))
+                            })
+                        })
+                    } else {
+                        zipfile.readEntry() // Continue to next entry
+                    }
+                })
+
+                zipfile.on('end', () => {
+                    reject(new Error('Le fichier metadata.json est introuvable dans l\'archive'))
+                })
+
+                zipfile.on('error', (zipErr) => {
+                    reject(new Error(`Error reading zip archive: ${zipErr.message}`))
+                })
+            })
+        })
+    }
+
+    private async extractMetadataFromTarZst(tarZstFilePath: string): Promise<CourseMetadata> {
+        return new Promise((resolve, reject) => {
+            const command = 'tar'
+            let args: string[]
+
+            if (process.platform === 'win32') {
+                args = [
+                    '-xf',
+                    tarZstFilePath,
+                    '--wildcards',
+                    '**/metadata.json',
+                    '--to-stdout'
+                ]
+            } else {
+                args = [
+                    '--use-compress-program=unzstd',
+                    '-xf',
+                    tarZstFilePath,
+                    '--wildcards',
+                    '**/metadata.json',
+                    '--to-stdout'
+                ]
+            }
+
+            const tarProcess = spawn(command, args)
+
+            let output = ''
+            let errorOutput = ''
+
+            tarProcess.stdout.on('data', (data: Buffer) => {
+                output += data.toString()
+            })
+
+            tarProcess.stderr.on('data', (data: Buffer) => {
+                errorOutput += data.toString()
+            })
+
+            tarProcess.on('error', (error) => {
+                if (process.platform === 'win32') {
+                    reject(
+                        new Error(
+                            'Failed to extract tar.zst archive. Please ensure you are using Windows 10 version 1803 or later.'
+                        )
+                    )
+                } else {
+                    reject(error)
+                }
+            })
+
+            tarProcess.on('close', (code) => {
+                if (code === 0 && output) {
+                    try {
+                        const metadata: CourseMetadata = JSON.parse(output)
+                        resolve(metadata)
+                    } catch (parseErr) {
+                        reject(new Error('Invalid metadata.json format'))
+                    }
+                } else {
+                    const errorMsg =
+                        errorOutput || 'Le fichier metadata.json est introuvable dans l\'archive'
+                    reject(new Error(errorMsg))
+                }
+            })
+        })
     }
 }

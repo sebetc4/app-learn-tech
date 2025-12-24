@@ -54,4 +54,5 @@ export interface IntegrityCheckResult {
     totalChecked: number
     deactivated: number
     deactivatedCourseIds: string[]
+    rootPathRemoved: boolean
 }

@@ -10,7 +10,7 @@ interface InactiveCourseCardProps {
 }
 
 export const InactiveCourseCard: FC<InactiveCourseCardProps> = ({ course }) => {
-    const { name, description, folderName, id } = course
+    const { name, id } = course
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
     const hardDeleteCourse = useCoursesStore((state) => state.hardDeleteCourse)
@@ -53,13 +53,12 @@ export const InactiveCourseCard: FC<InactiveCourseCardProps> = ({ course }) => {
                     </svg>
                 </button>
                 <img
-                    src={protocolService.course.getIconPath(folderName)}
+                    src={protocolService.icon.getIconPath(id)}
                     alt={course.name}
                     className={styles['card__icon']}
                 />
                 <div className={styles['card__content']}>
                     <h3>{name}</h3>
-                    <p>{description}</p>
                     <span className={styles['card__status']}>Missing folder</span>
                 </div>
             </li>

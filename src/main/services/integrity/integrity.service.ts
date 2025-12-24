@@ -7,6 +7,7 @@ export interface IntegrityCheckResult {
     totalChecked: number
     deactivated: number
     deactivatedCourseIds: string[]
+    rootPathRemoved: boolean
 }
 
 export class IntegrityService {
@@ -22,7 +23,8 @@ export class IntegrityService {
         const result: IntegrityCheckResult = {
             totalChecked: 0,
             deactivated: 0,
-            deactivatedCourseIds: []
+            deactivatedCourseIds: [],
+            rootPathRemoved: false
         }
 
         try {
@@ -31,6 +33,31 @@ export class IntegrityService {
             // If no root path is set, skip integrity check
             if (!rootPath) {
                 console.log('No root path set, skipping integrity check')
+                return result
+            }
+
+            // Check if root path exists
+            if (!fs.existsSync(rootPath)) {
+                console.log(`Root path does not exist: ${rootPath}`)
+                console.log('Removing root path from database and deactivating all courses')
+
+                // Deactivate all active courses if root path is missing
+                const activeCourses = await this.#database.course.getAll()
+                result.totalChecked = activeCourses.length
+
+                for (const course of activeCourses) {
+                    await this.#database.course.softDelete(course.id)
+                    result.deactivated++
+                    result.deactivatedCourseIds.push(course.id)
+                }
+
+                // Remove root path from database
+                await this.#folderService.removeRootPath()
+                result.rootPathRemoved = true
+
+                console.log(
+                    `Integrity check complete: Root path removed, ${result.deactivated} course(s) deactivated`
+                )
                 return result
             }
 
