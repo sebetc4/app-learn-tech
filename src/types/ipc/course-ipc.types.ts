@@ -48,3 +48,10 @@ export type RemoveCourseIPCHandlerParams = {
     courseDirName: string
 }
 export type RemoveCourseIPCHandlerReturn = IPCHandlerReturnWithoutData
+
+// Integrity check result
+export interface IntegrityCheckResult {
+    totalChecked: number
+    deactivated: number
+    deactivatedCourseIds: string[]
+}

@@ -6,17 +6,12 @@ import type {
     GetOneCourseIPCHandlerReturn,
     GetRecentCoursesIPCHandlerParams,
     GetRecentCoursesIPCHandlerReturn,
+    IntegrityCheckResult,
     RemoveCourseIPCHandlerParams,
     RemoveCourseIPCHandlerReturn,
     UploadOneCourseIPCHandlerParams,
     UploadOneCourseIPCHandlerReturn
 } from '../ipc'
-
-export interface IntegrityCheckResult {
-    totalChecked: number
-    deactivated: number
-    deactivatedCourseIds: string[]
-}
 
 export interface CourseAPI {
     addOne: (params: AddOneCourseIPCHandlerParams) => AddOneCourseIPCHandlerReturn
