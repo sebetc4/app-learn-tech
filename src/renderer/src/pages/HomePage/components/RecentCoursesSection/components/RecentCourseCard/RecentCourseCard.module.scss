@@ -7,22 +7,59 @@
     @include bg-color('base-3');
     border-radius: 1rem;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    transition: transform 0.2s ease;
 
-    &__icon {
-        margin-inline: auto;
-        width: 100px;
-        aspect-ratio: 1;
+    &:hover {
+        transform: translateY(-2px);
     }
+}
 
-    &__content {
-        @include flex-col(null, center, 0.5rem);
+.icon {
+    margin-inline: auto;
+    width: 100px;
+    aspect-ratio: 1;
+}
 
-        h3 {
-            text-align: center;
-        }
+.content {
+    @include flex-col(null, center, 0.5rem);
+    width: 100%;
 
-        p {
-            text-align: justify;
-        }
+    h3 {
+        text-align: center;
     }
+}
+
+.accessDate {
+    @include color('base-11');
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+.progress {
+    @include flex(null, center, 0.75rem);
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.progressBar {
+    flex: 1;
+    height: 8px;
+    @include bg-color('base-4');
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    @include bg-color('brand-green');
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progressText {
+    @include color('base-11');
+    font-size: 0.875rem;
+    font-weight: 600;
+    min-width: 3rem;
+    text-align: right;
 }

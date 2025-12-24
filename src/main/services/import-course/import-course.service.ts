@@ -1,14 +1,13 @@
+import { DatabaseService } from '../database'
+import { FolderService } from '../folder'
+import { StorageService } from '../storage'
+import { ArchiveManager, ChapterManager, CourseManager, LessonManager } from './managers'
+import { IPC } from '@/constants/ipc'
 import { BrowserWindow } from 'electron'
 import fs from 'fs'
 import path from 'path'
 
 import { CourseMetadata, CoursePreview } from '@/types'
-import { IPC } from '@/constants/ipc'
-
-import { DatabaseService } from '../database'
-import { FolderService } from '../folder'
-import { StorageService } from '../storage'
-import { ArchiveManager, ChapterManager, CourseManager, LessonManager } from './managers'
 
 export class ImportCourseService {
     #folderService: FolderService

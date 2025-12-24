@@ -107,4 +107,40 @@ export const registerCourseIpcHandlers = (courseService: CourseService) => {
             }
         }
     )
+
+    ipcMain.handle(
+        IPC.COURSE.GET_INACTIVE,
+        async (): GetAllAlreadyImportedCourseIPCHandlerReturn => {
+            try {
+                const courses = await courseService.getInactiveCourses()
+                return {
+                    success: true,
+                    data: { courses },
+                    message: 'Inactive courses retrieved successfully'
+                }
+            } catch (error) {
+                console.error('Error retrieving inactive courses:', error)
+                return {
+                    success: false,
+                    message: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`
+                }
+            }
+        }
+    )
+
+    ipcMain.handle(
+        IPC.COURSE.HARD_DELETE,
+        async (_event, { courseId }: { courseId: string }): RemoveCourseIPCHandlerReturn => {
+            try {
+                await courseService.hardDelete(courseId)
+                return { success: true, message: 'Course permanently deleted' }
+            } catch (error) {
+                console.error('Error hard deleting course:', error)
+                return {
+                    success: false,
+                    message: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`
+                }
+            }
+        }
+    )
 }

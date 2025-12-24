@@ -1,0 +1,83 @@
+.hero {
+    margin: 2rem;
+    padding: 2rem;
+    @include bg-color('base-2');
+    border-radius: 1.5rem;
+
+    @include media('md') {
+        padding: 3rem;
+    }
+}
+
+.content {
+    @include flex(null, center, 2rem);
+    flex-direction: column;
+
+    @include media('sm') {
+        flex-direction: row;
+    }
+
+    @include media('md') {
+        gap: 3rem;
+    }
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+
+    @include media('md') {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+.text {
+    @include flex-col(null, flex-start, 0.5rem);
+    flex: 1;
+
+    @include media('xs') {
+        align-items: center;
+        text-align: center;
+    }
+
+    @include media('sm') {
+        align-items: flex-start;
+        text-align: left;
+    }
+}
+
+.greeting {
+    @include color('base-12');
+    font-size: 1.75rem;
+    font-weight: 700;
+
+    @include media('md') {
+        font-size: 2.5rem;
+    }
+}
+
+.subtitle {
+    @include color('base-11');
+    font-size: 1rem;
+
+    @include media('md') {
+        font-size: 1.125rem;
+    }
+}
+
+.streak {
+    @include flex(null, center, 0.5rem);
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    @include bg-color('brand-green', 0.15);
+    @include color('brand-green');
+    border-radius: 2rem;
+    font-weight: 600;
+    width: fit-content;
+}
+
+.streakIcon {
+    font-size: 1.25rem;
+}

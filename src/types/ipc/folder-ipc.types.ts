@@ -11,6 +11,9 @@ export type SetCoursesRootFolderIPCHandlerReturn = IPCHandlerReturnWithData<{ pa
 // Remove root folder
 export type RemoveRootFolderIPCHandlerReturn = IPCHandlerReturnWithoutData
 
+// Get disk space
+export type GetDiskSpaceIPCHandlerReturn = IPCHandlerReturnWithData<{ availableSpace: number }>
+
 // Scan root folder
 export type ScanRootFolderIPCHandlerReturn = IPCHandlerReturnWithData<{
     scannedCourses: ScannedCourse[]

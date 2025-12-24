@@ -1,4 +1,5 @@
 import { IPCHandlerReturnWithData } from './core-ipc.types'
+
 import { LessonProgress } from '@/types'
 
 // Create Status Progress

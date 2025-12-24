@@ -15,14 +15,14 @@ export const ImportCourseSection: FC = () => {
     return (
         <section className={styles['import']}>
             <div className={styles['import__header']}>
-                <h2>Nouveaux cours / mises à jour disponibles ({scannedCourses.length})</h2>
+                <h2>New courses / updates available ({scannedCourses.length})</h2>
                 <Button
                     onClick={scanRootFolder}
                     disabled={isLoading}
                     variant="text"
                 >
                     <RefreshCw />
-                    Rafraîchir
+                    Refresh
                 </Button>
                 <Button
                     onClick={importArchive}
@@ -30,7 +30,7 @@ export const ImportCourseSection: FC = () => {
                     variant="text"
                 >
                     <FileArchive />
-                    Importer une archive
+                    Import archive
                 </Button>
                 {/* <Button
                     // onClick={handleImportAllCourses}
@@ -38,15 +38,15 @@ export const ImportCourseSection: FC = () => {
                     variant="text"
                 >
                     <CircleArrowDown />
-                    Tout importer
+                    Import all
                 </Button> */}
             </div>
 
             <div className={styles['import__content']}>
                 {rootFolderScanLoading ? (
-                    <p>Chargement...</p>
+                    <p>Loading...</p>
                 ) : scannedCourses.length === 0 ? (
-                    <p>Pas de nouveaux cours ni de mises à jour disponibles.</p>
+                    <p>No new courses or updates available.</p>
                 ) : (
                     <ul>
                         {scannedCourses.map(({ metadata, directory }) => (

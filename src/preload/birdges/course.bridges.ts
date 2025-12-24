@@ -6,6 +6,7 @@ import type {
     CourseAPI,
     GetOneCourseIPCHandlerParams,
     GetRecentCoursesIPCHandlerParams,
+    IntegrityCheckResult,
     RemoveCourseIPCHandlerParams,
     UploadOneCourseIPCHandlerParams
 } from '@/types'
@@ -21,5 +22,14 @@ export const courseContextBridge: CourseAPI = {
     uploadOne: (params: UploadOneCourseIPCHandlerParams) =>
         ipcRenderer.invoke(IPC.COURSE.UPDATE_ONE, params),
     removeOne: (params: RemoveCourseIPCHandlerParams) =>
-        ipcRenderer.invoke(IPC.COURSE.REMOVE_ONE, params)
+        ipcRenderer.invoke(IPC.COURSE.REMOVE_ONE, params),
+    getInactive: () => ipcRenderer.invoke(IPC.COURSE.GET_INACTIVE),
+    hardDelete: (params: { courseId: string }) =>
+        ipcRenderer.invoke(IPC.COURSE.HARD_DELETE, params),
+    onIntegrityCheckComplete: (callback: (result: IntegrityCheckResult) => void) => {
+        ipcRenderer.on(IPC.COURSE.INTEGRITY_CHECK_COMPLETE, (_, result) => callback(result))
+    },
+    removeIntegrityCheckListener: () => {
+        ipcRenderer.removeAllListeners(IPC.COURSE.INTEGRITY_CHECK_COMPLETE)
+    }
 }

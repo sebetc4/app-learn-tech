@@ -1,1 +1,6 @@
 export { RecentCoursesSection } from './RecentCoursesSection/RecentCoursesSection'
+export { HeroSection } from './HeroSection'
+export { StatsDashboard } from './StatsDashboard'
+export { QuickActions } from './QuickActions'
+export { StatsCard } from './StatsCard'
+export { ProgressRing } from './ProgressRing'

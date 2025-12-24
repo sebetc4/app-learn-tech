@@ -1,6 +1,11 @@
 import { useCourseFolderStore } from '../../store'
 import styles from './CourseManagerPage.module.scss'
-import { ImportCourseSection, ImportedCourseSection, RootFolderSection } from './components'
+import {
+    ImportCourseSection,
+    ImportedCourseSection,
+    InactiveCoursesSection,
+    RootFolderSection
+} from './components'
 import { FC, useEffect } from 'react'
 
 export const CourseImporterPage: FC = () => {
@@ -13,13 +18,14 @@ export const CourseImporterPage: FC = () => {
 
     return (
         <div className={styles.container}>
-            <h1 className={styles.title}>Gestionnaire de cours</h1>
+            <h1 className={styles.title}>Course Manager</h1>
 
             <RootFolderSection />
             {rootFolder && (
                 <>
                     <ImportCourseSection />
                     <ImportedCourseSection />
+                    <InactiveCoursesSection />
                 </>
             )}
         </div>

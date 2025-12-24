@@ -2,8 +2,20 @@
     margin-top: 4rem;
     @include flex-col(null, null, 1rem);
 
-    h2 {
+    &__header {
         padding: 0 1rem;
+        @include flex(space-between, center, 1rem);
+        flex-wrap: wrap;
+
+        h2 {
+            margin: 0;
+        }
+    }
+
+    &__space {
+        @include color('base-11');
+        font-size: 0.875rem;
+        font-weight: 500;
     }
 
     &__content {

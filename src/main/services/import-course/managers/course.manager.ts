@@ -27,6 +27,15 @@ export class CourseManager {
     }
     async process(metadata: CourseMetadata, courseDirPath: string): Promise<CoursePreview> {
         try {
+            // First, check if there's an inactive course with this ID
+            const inactiveCourse = await this.#database.course.getByIdIncludingInactive(metadata.id)
+
+            if (inactiveCourse && !inactiveCourse.isActive) {
+                // Reactivate the inactive course
+                return await this.#reactivateCourse(metadata, inactiveCourse)
+            }
+
+            // Then check for active courses
             const existingCourse =
                 (await this.#database.course.getById(metadata.id)) ||
                 (await this.#database.course.getByName(metadata.name))
@@ -89,6 +98,29 @@ export class CourseManager {
             return coursePreview
         } catch (error) {
             console.error('Error updating course in database:', error)
+            throw error
+        }
+    }
+
+    async #reactivateCourse(
+        metadata: CourseMetadata,
+        existingCourse: CoursePreview
+    ): Promise<CoursePreview> {
+        try {
+            console.log(`Reactivating course: ${metadata.name} (${metadata.id})`)
+
+            // Reactivate the course with new buildAt timestamp
+            await this.#database.course.reactivateCourse(metadata.id, metadata.buildAt)
+
+            return {
+                id: metadata.id,
+                name: metadata.name,
+                description: metadata.description,
+                folderName: existingCourse.folderName,
+                buildAt: metadata.buildAt
+            }
+        } catch (error) {
+            console.error('Error reactivating course:', error)
             throw error
         }
     }

@@ -21,6 +21,7 @@ These commands include `--publish never` and do **not** require a GitHub token.
 ### Automatic Build (Pull Requests & Push to main)
 
 The `.github/workflows/build.yml` workflow triggers automatically on:
+
 - Push to `main` branch
 - Pull requests to `main`
 
@@ -40,6 +41,7 @@ git push origin --tags
 ```
 
 This will:
+
 1. Build for Windows, macOS, and Linux
 2. Create a GitHub release automatically
 3. Publish files to the release
@@ -47,11 +49,13 @@ This will:
 ## Available Scripts
 
 ### Build (local, no publishing)
+
 - `pnpm run build:win` - Build Windows (.exe) without publishing
 - `pnpm run build:mac` - Build macOS (.dmg) without publishing
 - `pnpm run build:linux` - Build Linux (.AppImage, .deb) without publishing
 
 ### Release (with GitHub publishing)
+
 - `pnpm run release:win` - Build Windows and publish to GitHub
 - `pnpm run release:mac` - Build macOS and publish to GitHub
 - `pnpm run release:linux` - Build Linux and publish to GitHub
@@ -61,6 +65,7 @@ This will:
 ## Configuration
 
 Build configuration is in:
+
 - `electron-builder.yml` - electron-builder configuration
 - `package.json` - Build scripts
 - `.github/workflows/build.yml` - CI for builds
@@ -68,11 +73,11 @@ Build configuration is in:
 
 ## Supported Platforms
 
-| Platform | Format | Architecture |
-|----------|--------|--------------|
-| Windows  | NSIS (.exe) | x64 |
-| macOS    | DMG | Universal |
-| Linux    | AppImage, DEB | x64 |
+| Platform | Format        | Architecture |
+| -------- | ------------- | ------------ |
+| Windows  | NSIS (.exe)   | x64          |
+| macOS    | DMG           | Universal    |
+| Linux    | AppImage, DEB | x64          |
 
 ## Important Notes
 

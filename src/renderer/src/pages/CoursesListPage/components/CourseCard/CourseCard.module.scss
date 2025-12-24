@@ -1,0 +1,104 @@
+.card {
+    @include flex-col(null, stretch, 0);
+    @include bg-color('base-3');
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: rgba(99, 99, 99, 0.3) 0px 4px 16px 0px;
+    }
+}
+
+.imageContainer {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 14;
+    overflow: hidden;
+    @include bg-color('base-4');
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    @include bg-color('brand-green');
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px 0px;
+}
+
+.content {
+    @include flex-col(null, stretch, 1rem);
+    padding: 1.5rem;
+}
+
+.title {
+    @include color('base-12');
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.description {
+    @include color('base-11');
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stats {
+    @include flex(null, center, 1rem);
+    flex-wrap: wrap;
+}
+
+.stat {
+    @include flex(null, center, 0.5rem);
+    @include color('base-11');
+    font-size: 0.875rem;
+
+    svg {
+        @include stroke('brand-blue');
+    }
+}
+
+.progressBar {
+    width: 100%;
+    height: 6px;
+    @include bg-color('base-4');
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    @include bg-color('brand-green');
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.button {
+    width: 100%;
+    margin-top: 0.5rem;
+}

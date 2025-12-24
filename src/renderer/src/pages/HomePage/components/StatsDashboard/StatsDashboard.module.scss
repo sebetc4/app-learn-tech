@@ -1,0 +1,38 @@
+.section {
+    margin: 2rem;
+    margin-top: 4rem;
+}
+
+.title {
+    @include color('base-12');
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.grid {
+    display: grid;
+    gap: 2rem;
+
+    @include media('lg') {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.statsCards {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+
+    @include media('sm') {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.progressContainer {
+    @include flex(center, center);
+    @include bg-color('base-3');
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}

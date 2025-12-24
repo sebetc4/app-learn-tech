@@ -1,0 +1,62 @@
+.card {
+    @include flex(null, center, 1rem);
+    @include bg-color('base-3');
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    transition: transform 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+}
+
+.icon {
+    @include flex(center, center);
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    flex-shrink: 0;
+
+    &[data-color='primary'] {
+        @include bg-color('primary', 0.2);
+        @include color('primary');
+    }
+
+    &[data-color='brand-green'] {
+        @include bg-color('brand-green', 0.2);
+        @include color('brand-green');
+    }
+
+    &[data-color='brand-blue'] {
+        @include bg-color('brand-blue', 0.2);
+        @include color('brand-blue');
+    }
+
+    &[data-color='secondary'] {
+        @include bg-color('secondary', 0.2);
+        @include color('secondary');
+    }
+
+    svg {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+}
+
+.content {
+    @include flex-col(null, flex-start, 0.25rem);
+    flex: 1;
+    min-width: 0;
+}
+
+.label {
+    @include color('base-11');
+    font-size: 0.875rem;
+}
+
+.value {
+    @include color('base-12');
+    font-size: 1.875rem;
+    font-weight: 700;
+}

@@ -42,7 +42,11 @@ $colors: (
 
     'valid': '',
     'warning': '',
-    'error': ''
+    'error': '',
+
+    // Brand colors
+    'brand-green': '',
+    'brand-blue': ''
 );
 
 $light-colors: (
@@ -89,7 +93,11 @@ $light-colors: (
 
     'valid': '83, 179, 101',
     'warning': '255, 202, 22',
-    'error': '229, 77, 46'
+    'error': '229, 77, 46',
+
+    // Brand colors
+    'brand-green': '103, 242, 138',
+    'brand-blue': '15, 176, 240'
 );
 
 $dark-colors: (
@@ -136,5 +144,9 @@ $dark-colors: (
 
     'valid': '83, 179, 101',
     'warning': '255, 202, 22',
-    'error': '229, 77, 46'
+    'error': '229, 77, 46',
+
+    // Brand colors
+    'brand-green': '103, 242, 138',
+    'brand-blue': '15, 176, 240'
 );

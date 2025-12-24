@@ -1,0 +1,25 @@
+.inactive {
+    margin-top: 4rem;
+    @include flex-col(null, null, 1rem);
+
+    &__header {
+        padding: 0 1rem;
+        @include flex-col(null, flex-start, 0.5rem);
+    }
+
+    &__description {
+        @include color('base-9');
+        font-size: 0.875rem;
+    }
+
+    &__content {
+        padding: 2rem;
+        @include bg-color('base-4');
+        border: 2px solid rgba(255, 100, 100, 0.2);
+
+        ul {
+            @include flex(center, null, 2rem);
+            flex-wrap: wrap;
+        }
+    }
+}

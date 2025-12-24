@@ -1,5 +1,6 @@
 import type {
     GetCoursesRootFolderIPCHandlerReturn,
+    GetDiskSpaceIPCHandlerReturn,
     ImportCourseArchiveIPCHandlerReturn,
     RemoveRootFolderIPCHandlerReturn,
     ScanRootFolderIPCHandlerReturn,
@@ -10,6 +11,7 @@ export interface FolderAPI {
     getRoot: () => GetCoursesRootFolderIPCHandlerReturn
     setRoot: () => SetCoursesRootFolderIPCHandlerReturn
     removeRoot: () => RemoveRootFolderIPCHandlerReturn
+    getDiskSpace: () => GetDiskSpaceIPCHandlerReturn
     scan: () => ScanRootFolderIPCHandlerReturn
     importArchive: () => ImportCourseArchiveIPCHandlerReturn
     onImportArchiveStart: (callback: () => void) => void

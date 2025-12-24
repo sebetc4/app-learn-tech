@@ -48,7 +48,7 @@
 
     &__progress {
         font-size: 0.85rem;
-        @include color ('secondary');
+        @include color('secondary');
 
         &--completed {
             @include color('valid');

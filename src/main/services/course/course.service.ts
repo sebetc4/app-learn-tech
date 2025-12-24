@@ -1,3 +1,6 @@
+import { DatabaseService } from '../database'
+import { FolderService } from '../folder'
+import { ImportCourseService } from '../import-course'
 import { BrowserWindow } from 'electron'
 import fs from 'fs'
 import path from 'path'
@@ -9,10 +12,6 @@ import type {
     RecentCourseViewModel,
     ScannedCourse
 } from '@/types'
-
-import { DatabaseService } from '../database'
-import { FolderService } from '../folder'
-import { ImportCourseService } from '../import-course'
 
 export class CourseService {
     #database: DatabaseService
@@ -86,25 +85,52 @@ export class CourseService {
         }
     }
 
+    async getInactiveCourses(): Promise<CoursePreview[]> {
+        try {
+            return await this.#database.course.getAllInactive()
+        } catch (error) {
+            console.error(`Error retrieving inactive courses: ${error}`)
+            throw error
+        }
+    }
+
     // Remove
     async removeOne(courseId: string): Promise<void> {
         try {
-            const rootPath = this.#folderService.rootPath
-            if (!rootPath) throw new Error('Root path is not set')
-            const courseDirPath = path.join(rootPath, courseId)
-
             const course = await this.#database.course.getById(courseId)
             if (!course) {
                 throw new Error(`Course ${courseId} not found in the database`)
             }
 
+            // Soft delete instead of hard delete
+            await this.#database.course.softDelete(course.id)
+        } catch (error) {
+            console.error(`Error removing course: ${error}`)
+            throw error
+        }
+    }
+
+    async hardDelete(courseId: string): Promise<void> {
+        try {
+            const rootPath = this.#folderService.rootPath
+            if (!rootPath) throw new Error('Root path is not set')
+
+            const courseDirPath = path.join(rootPath, courseId)
+            const course = await this.#database.course.getByIdIncludingInactive(courseId)
+
+            if (!course) {
+                throw new Error(`Course ${courseId} not found`)
+            }
+
+            // Delete from database first (cascade handles related records)
             await this.#database.course.deleteById(course.id)
 
+            // Then delete filesystem
             if (fs.existsSync(courseDirPath)) {
                 fs.rmSync(courseDirPath, { recursive: true, force: true })
             }
         } catch (error) {
-            console.error(`Error removing course: ${error}`)
+            console.error(`Error hard deleting course: ${error}`)
             throw error
         }
     }

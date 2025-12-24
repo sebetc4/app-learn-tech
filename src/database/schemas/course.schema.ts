@@ -1,4 +1,4 @@
-import { sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
+import { integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
 
 export const courses = sqliteTable(
     'courses',
@@ -7,7 +7,8 @@ export const courses = sqliteTable(
         name: text().notNull(),
         description: text().notNull(),
         folderName: text('folder_name').notNull(),
-        buildAt: text('build_at').notNull()
+        buildAt: text('build_at').notNull(),
+        isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true)
     },
     (table) => [
         uniqueIndex('courses_folder_name_key').on(table.folderName),

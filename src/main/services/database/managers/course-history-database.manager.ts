@@ -49,6 +49,7 @@ export class CourseHistoryDatabaseManager {
                 courseId: courses.id,
                 courseName: courses.name,
                 courseFolderName: courses.folderName,
+                courseIsActive: courses.isActive,
 
                 progressPercentage: courseProgress.percentage
             })
@@ -58,7 +59,7 @@ export class CourseHistoryDatabaseManager {
                 courseProgress,
                 and(eq(courseProgress.courseId, courses.id), eq(courseProgress.userId, userId))
             )
-            .where(eq(courseHistory.userId, userId))
+            .where(and(eq(courseHistory.userId, userId), eq(courses.isActive, true)))
             .orderBy(desc(courseHistory.accessedAt))
             .limit(limit)
 

@@ -1,9 +1,11 @@
 import { DatabaseService } from '../database'
-import checkDiskSpace from 'check-disk-space'
+import checkDiskSpaceModule from 'check-disk-space'
 import * as fs from 'fs'
 import * as path from 'path'
 
 import type { CourseMetadata, CourseMetadataAndDirectory } from '@/types'
+
+const checkDiskSpace = checkDiskSpaceModule.default
 
 export class FolderService {
     #database: DatabaseService

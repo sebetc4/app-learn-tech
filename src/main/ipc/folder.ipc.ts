@@ -72,6 +72,23 @@ export const registerFolderIpcHandlers = (
         }
     })
 
+    ipcMain.handle(IPC.FOLDER.GET_DISK_SPACE, async () => {
+        try {
+            const availableSpace = await folderService.getAvailableDiskSpace()
+            return {
+                success: true,
+                data: { availableSpace },
+                message: 'Disk space retrieved successfully'
+            }
+        } catch (error) {
+            console.error('Error getting disk space:', error)
+            return {
+                success: false,
+                message: `Error getting disk space: ${error instanceof Error ? error.message : 'Unknown error'}`
+            }
+        }
+    })
+
     /**
      * --------------------------------
      * Scan

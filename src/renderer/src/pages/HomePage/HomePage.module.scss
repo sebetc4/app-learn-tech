@@ -1,4 +1,16 @@
-.hero {
-    margin: 2rem;
+.page {
+    width: 100%;
+    min-height: 100vh;
+    @include bg-color('base-1');
+    padding-bottom: 3rem;
 }
 
+.loading {
+    @include flex(center, center);
+    min-height: 50vh;
+
+    p {
+        @include color('base-11');
+        font-size: 1.125rem;
+    }
+}

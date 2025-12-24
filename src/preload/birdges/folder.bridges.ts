@@ -8,6 +8,7 @@ export const folderContextBridge: FolderAPI = {
     getRoot: () => ipcRenderer.invoke(IPC.FOLDER.GET_ROOT),
     setRoot: () => ipcRenderer.invoke(IPC.FOLDER.SET_ROOT),
     removeRoot: () => ipcRenderer.invoke(IPC.FOLDER.REMOVE_ROOT),
+    getDiskSpace: () => ipcRenderer.invoke(IPC.FOLDER.GET_DISK_SPACE),
     // Scan
     scan: () => ipcRenderer.invoke(IPC.FOLDER.SCAN),
     // Archive

@@ -1,0 +1,27 @@
+.container {
+    position: relative;
+    display: inline-block;
+}
+
+.label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    @include flex-col(center, center, 0.25rem);
+    text-align: center;
+    pointer-events: none;
+}
+
+.percentage {
+    @include color('base-12');
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.text {
+    @include color('base-11');
+    font-size: 0.875rem;
+    font-weight: 500;
+}

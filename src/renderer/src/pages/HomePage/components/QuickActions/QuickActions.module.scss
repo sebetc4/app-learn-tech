@@ -1,0 +1,22 @@
+.section {
+    margin: 2rem;
+    margin-top: 3rem;
+}
+
+.grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+
+    @include media('sm') {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include media('lg') {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.button {
+    width: 100%;
+}

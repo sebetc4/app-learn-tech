@@ -190,9 +190,7 @@ export class DatabaseService {
             const appliedMigrations = this.#sqliteInstance.exec(
                 'SELECT hash FROM __drizzle_migrations'
             )
-            const appliedHashes = new Set(
-                appliedMigrations[0]?.values.map((row) => row[0]) || []
-            )
+            const appliedHashes = new Set(appliedMigrations[0]?.values.map((row) => row[0]) || [])
 
             // Apply new migrations
             for (const file of migrationFiles) {

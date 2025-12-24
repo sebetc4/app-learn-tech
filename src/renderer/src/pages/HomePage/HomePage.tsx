@@ -1,5 +1,6 @@
 import styles from './HomePage.module.scss'
-import { RecentCoursesSection } from './components'
+import { HeroSection, QuickActions, RecentCoursesSection, StatsDashboard } from './components'
+import { useHomePageStats } from './hooks/useHomePageStats'
 import { useUserStore } from '@renderer/store'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -9,7 +10,8 @@ import { RecentCourseViewModel } from '@/types'
 export const HomePage: FC = () => {
     const user = useUserStore((state) => state.current)
     const [recentCourses, setRecentCourses] = useState<RecentCourseViewModel[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoadingCourses, setIsLoadingCourses] = useState(true)
+    const { stats, isLoading: isLoadingStats } = useHomePageStats()
 
     const fetchRecentCourses = useCallback(async () => {
         const response = await window.api.course.getRecent({ userId: user.id })
@@ -18,21 +20,39 @@ export const HomePage: FC = () => {
         } else {
             toast.error(response.message)
         }
-        setIsLoading(false)
+        setIsLoadingCourses(false)
     }, [user.id])
 
     useEffect(() => {
         fetchRecentCourses()
     }, [fetchRecentCourses])
 
-    return isLoading ? (
-        <div>Loading...</div>
-    ) : (
-        <>
-            <div className={styles.hero}>
-                <h1>Hello {user.name}</h1>
+    const isLoading = isLoadingCourses || isLoadingStats
+
+    if (isLoading) {
+        return (
+            <div className={styles.loading}>
+                <p>Loading your dashboard...</p>
             </div>
+        )
+    }
+
+    return (
+        <div className={styles.page}>
+            <HeroSection
+                userName={user.name}
+                currentStreak={stats?.currentStreak}
+            />
+
+            <QuickActions
+                lastLessonPath={
+                    recentCourses[0]?.id ? `/courses/${recentCourses[0].id}` : undefined
+                }
+            />
+
+            {stats && <StatsDashboard stats={stats} />}
+
             <RecentCoursesSection recentCourses={recentCourses} />
-        </>
+        </div>
     )
 }

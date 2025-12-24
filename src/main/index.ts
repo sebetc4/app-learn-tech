@@ -12,6 +12,7 @@ import {
     DatabaseService,
     FolderService,
     ImportCourseService,
+    IntegrityService,
     LessonService,
     ProgressService,
     StorageService,
@@ -110,6 +111,9 @@ const initializeApp = async (): Promise<void> => {
         const folderService = new FolderService(database)
         await folderService.initialize()
 
+        // Initialize integrity service
+        const integrityService = new IntegrityService(database, folderService)
+
         // Initialize other services
         const themeService = new ThemeService()
         const importCourseService = new ImportCourseService(database, storageService, folderService)
@@ -117,6 +121,9 @@ const initializeApp = async (): Promise<void> => {
         const lessonService = new LessonService(database)
         const userService = new UserService(database, themeService)
         const progressService = new ProgressService(database)
+
+        // Run integrity check before starting the app
+        const integrityResult = await integrityService.verifyCoursesIntegrity()
 
         // Register protocols and IPC handlers
         registerProtocols(folderService)
@@ -130,6 +137,13 @@ const initializeApp = async (): Promise<void> => {
 
         // Create main window
         createWindow()
+
+        // Send integrity check result to renderer after window is ready
+        if (mainWindow && integrityResult.deactivated > 0) {
+            mainWindow.webContents.on('did-finish-load', () => {
+                mainWindow?.webContents.send('course:integrity-check-complete', integrityResult)
+            })
+        }
 
         app.on('activate', function () {
             if (BrowserWindow.getAllWindows().length === 0) createWindow()

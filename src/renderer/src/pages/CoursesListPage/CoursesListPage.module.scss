@@ -1,0 +1,69 @@
+.page {
+    width: 100%;
+    min-height: 100vh;
+    @include bg-color('base-1');
+    padding: 2rem;
+    padding-bottom: 3rem;
+
+    @include media('md') {
+        padding: 3rem;
+    }
+}
+
+.loading,
+.empty {
+    @include flex(center, center);
+    @include flex-col(center, center, 1rem);
+    min-height: 50vh;
+
+    p {
+        @include color('base-11');
+        font-size: 1.125rem;
+    }
+
+    h2 {
+        @include color('base-12');
+    }
+}
+
+.header {
+    margin-bottom: 2rem;
+
+    h1 {
+        @include color('base-12');
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+
+        @include media('md') {
+            font-size: 2.5rem;
+        }
+    }
+}
+
+.subtitle {
+    @include color('base-11');
+    font-size: 1rem;
+
+    @include media('md') {
+        font-size: 1.125rem;
+    }
+}
+
+.grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+
+    @include media('sm') {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include media('lg') {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @include media('xl') {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

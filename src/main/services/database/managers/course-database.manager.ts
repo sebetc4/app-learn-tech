@@ -56,11 +56,29 @@ export class CourseDatabaseManager {
                 buildAt: courses.buildAt
             })
             .from(courses)
+            .where(eq(courses.isActive, true))
+    }
+
+    async getAllInactive(): Promise<CoursePreview[]> {
+        return await this.#db
+            .select({
+                id: courses.id,
+                name: courses.name,
+                description: courses.description,
+                folderName: courses.folderName,
+                buildAt: courses.buildAt
+            })
+            .from(courses)
+            .where(eq(courses.isActive, false))
     }
 
     async getById(id: string): Promise<Course | null> {
         try {
-            const result = await this.#db.select().from(courses).where(eq(courses.id, id)).limit(1)
+            const result = await this.#db
+                .select()
+                .from(courses)
+                .where(and(eq(courses.id, id), eq(courses.isActive, true)))
+                .limit(1)
 
             return result[0] || null
         } catch (error) {
@@ -73,7 +91,7 @@ export class CourseDatabaseManager {
         const [courseInfo] = await this.#db
             .select()
             .from(courses)
-            .where(eq(courses.id, courseId))
+            .where(and(eq(courses.id, courseId), eq(courses.isActive, true)))
             .limit(1)
 
         if (!courseInfo) return null
@@ -188,6 +206,38 @@ export class CourseDatabaseManager {
             const result = await this.#db.delete(courses).where(eq(courses.id, id)).returning()
 
             return result[0] || null
+        })
+    }
+
+    async getByIdIncludingInactive(id: string): Promise<Course | null> {
+        try {
+            const result = await this.#db.select().from(courses).where(eq(courses.id, id)).limit(1)
+
+            return result[0] || null
+        } catch (error) {
+            console.error(`Error retrieving course by ID (including inactive): ${error}`)
+            throw error
+        }
+    }
+
+    async softDelete(id: string): Promise<void> {
+        return this.#autoSave(async () => {
+            await this.#db.update(courses).set({ isActive: false }).where(eq(courses.id, id))
+        })
+    }
+
+    async reactivateCourse(id: string, newBuildAt: string): Promise<Course> {
+        return this.#autoSave(async () => {
+            const result = await this.#db
+                .update(courses)
+                .set({
+                    isActive: true,
+                    buildAt: newBuildAt
+                })
+                .where(eq(courses.id, id))
+                .returning()
+
+            return result[0]
         })
     }
 }

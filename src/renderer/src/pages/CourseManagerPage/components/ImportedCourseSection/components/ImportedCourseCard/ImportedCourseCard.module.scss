@@ -1,6 +1,6 @@
 .card {
     position: relative;
-    width: 350px;
+    width: 200px;
     padding: 1rem;
     @include flex-col(null, null, 1rem);
     @include bg-color('base-3');
@@ -19,15 +19,41 @@
         h3 {
             text-align: center;
         }
-        
+
         p {
             text-align: justify;
         }
     }
+
     &__button-container {
         @include flex-col(flex-end, center);
         flex: 1;
         margin-bottom: 1rem;
+    }
+
+    &__delete-icon {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 50, 50, 0.9);
+        transition: all 0.2s;
+        z-index: 10;
+
+        &:hover {
+            color: rgba(255, 30, 30, 1);
+            transform: scale(1.1);
+        }
+
+        svg {
+            display: block;
+        }
     }
 
     .new-icon,
@@ -40,6 +66,103 @@
     }
 
     .new-icon {
-        stroke: #FFDC00;
+        stroke: #ffdc00;
+    }
+}
+
+.dialog {
+    &__overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    &__content {
+        @include bg-color('base-2');
+        padding: 2rem;
+        border-radius: 1rem;
+        max-width: 500px;
+        width: 90%;
+        @include flex-col(null, null, 1rem);
+
+        h3 {
+            @include color('error');
+        }
+
+        p {
+            @include color('base-10');
+        }
+    }
+
+    &__actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 1rem;
+    }
+
+    &__cancel {
+        padding: 0.5rem 1rem;
+        @include bg-color('base-4');
+        @include color('base-11');
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background-color 0.2s;
+
+        &:hover {
+            @include bg-color('base-5');
+        }
+    }
+
+    &__confirm {
+        padding: 0.5rem 1rem;
+        background-color: rgba(255, 50, 50, 0.8);
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background-color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &:hover:not(:disabled) {
+            background-color: rgba(255, 30, 30, 1);
+        }
+
+        &:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+    }
+
+    &__loader {
+        animation: spin 1s linear infinite;
+    }
+
+    &__cancel {
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }

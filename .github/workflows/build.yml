@@ -1,72 +1,72 @@
 name: Build
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
 
 jobs:
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    
-    runs-on: ${{ matrix.os }}
-    
-    steps:
-      - uses: actions/checkout@v6
-      
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
+    build:
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest, windows-latest, macos-latest]
 
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: 'pnpm'
-          
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        
-      - name: Build Linux
-        if: matrix.os == 'ubuntu-latest'
-        run: pnpm run build:linux
-        
-      - name: Build Windows
-        if: matrix.os == 'windows-latest'
-        run: pnpm run build:win
-        
-      - name: Build macOS
-        if: matrix.os == 'macos-latest'
-        run: pnpm run build:mac
-        
-      - name: Upload Linux artifacts
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v6
-        with:
-          name: linux-release
-          path: |
-            dist/*.AppImage
-            dist/*.deb
+        runs-on: ${{ matrix.os }}
 
-      - name: Upload Windows artifacts
-        if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v6
-        with:
-          name: windows-release
-          path: |
-            dist/*.exe
-            dist/*.exe.blockmap
+        steps:
+            - uses: actions/checkout@v6
 
-      - name: Upload macOS artifacts
-        if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v6
-        with:
-          name: macos-release
-          path: |
-            dist/*.dmg
-            dist/*.dmg.blockmap
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 10
+
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: 24
+                  cache: 'pnpm'
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Build Linux
+              if: matrix.os == 'ubuntu-latest'
+              run: pnpm run build:linux
+
+            - name: Build Windows
+              if: matrix.os == 'windows-latest'
+              run: pnpm run build:win
+
+            - name: Build macOS
+              if: matrix.os == 'macos-latest'
+              run: pnpm run build:mac
+
+            - name: Upload Linux artifacts
+              if: matrix.os == 'ubuntu-latest'
+              uses: actions/upload-artifact@v6
+              with:
+                  name: linux-release
+                  path: |
+                      dist/*.AppImage
+                      dist/*.deb
+
+            - name: Upload Windows artifacts
+              if: matrix.os == 'windows-latest'
+              uses: actions/upload-artifact@v6
+              with:
+                  name: windows-release
+                  path: |
+                      dist/*.exe
+                      dist/*.exe.blockmap
+
+            - name: Upload macOS artifacts
+              if: matrix.os == 'macos-latest'
+              uses: actions/upload-artifact@v6
+              with:
+                  name: macos-release
+                  path: |
+                      dist/*.dmg
+                      dist/*.dmg.blockmap

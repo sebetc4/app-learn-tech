@@ -45,7 +45,6 @@ export const ImportCourseCard: FC<ImportCourseCardProps> = ({
             />
             <div className={styles['card__content']}>
                 <h3>{metadata.name}</h3>
-                <p>{metadata.description}</p>
             </div>
             <div className={styles['card__button-container']}>
                 {isNew ? (

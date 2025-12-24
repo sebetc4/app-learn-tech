@@ -3,6 +3,7 @@ export const IPC_FOLDER = {
     GET_ROOT: 'folder:get-root',
     SET_ROOT: 'folder:set-root',
     REMOVE_ROOT: 'folder:remove-root',
+    GET_DISK_SPACE: 'folder:get-disk-space',
     // Scan
     SCAN: 'folder:scan',
     // Archive
