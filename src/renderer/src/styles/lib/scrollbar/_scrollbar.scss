@@ -1,0 +1,35 @@
+@use '../core/get-color' as *;
+
+/**
+ * --------------------------------
+ * Custom Scrollbar Mixin
+ * --------------------------------
+ * Provides a thin, elegant scrollbar that adapts to light/dark themes
+ * Automatically uses theme colors via get-color() function
+ */
+
+@mixin scrollbar() {
+    // Width of the scrollbar
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    // Track (background of the scrollbar)
+    &::-webkit-scrollbar-track {
+        background: get-color('base-3');
+        border-radius: 4px;
+    }
+
+    // Thumb (draggable scrollbar handle)
+    &::-webkit-scrollbar-thumb {
+        background: get-color('base-6');
+        border-radius: 4px;
+        min-height: 40px;
+        transition: background-color 200ms ease;
+
+        // Hover state - darker color for better interaction feedback
+        &:hover {
+            background: get-color('base-8');
+        }
+    }
+}

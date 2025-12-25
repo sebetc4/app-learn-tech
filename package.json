@@ -1,10 +1,10 @@
 {
     "name": "learn-tech",
-    "version": "1.1.4",
-    "description": "An Electron application with React and TypeScript",
+    "version": "1.1.5",
+    "description": "LearnTech helps you organize, track, and manage your technical courses with a beautiful, responsive interface and comprehensive progress tracking.",
     "main": "./out/main/index.js",
     "author": "sebetc4",
-    "homepage": "https://electron-vite.org",
+    "homepage": "https://github.com/sebetc4/app-learn-tech",
     "scripts": {
         "format": "prettier --write .",
         "lint": "eslint --cache .",
@@ -93,7 +93,6 @@
     },
     "pnpm": {
         "onlyBuiltDependencies": [
-            "@mongodb-js/zstd",
             "@parcel/watcher",
             "better-sqlite3",
             "electron",

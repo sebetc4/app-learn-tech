@@ -15,6 +15,17 @@
 @use './lib/color/color' as *;
 @use './lib/color/bg-color' as *;
 @use './lib/display/flex' as *;
+@use './lib/scrollbar/scrollbar' as *;
+
+/**
+ * --------------------------------
+ * Custom Scrollbar
+ * --------------------------------
+ * Applied globally to all scrollable elements
+ */
+* {
+    @include scrollbar();
+}
 
 body {
     @include bg-color('base-1');
