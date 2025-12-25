@@ -51,6 +51,7 @@ mac:
     hardenedRuntime: true
     gatekeeperAssess: false
     notarize: false
+    identity: null
 dmg:
     artifactName: ${name}-${version}.${ext}
 

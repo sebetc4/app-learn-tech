@@ -2,6 +2,7 @@ import { spawn } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import yauzl from 'yauzl'
+
 import { CourseMetadata } from '@/types'
 
 export class ArchiveManager {
@@ -318,7 +319,7 @@ export class ArchiveManager {
                                     const metadata: CourseMetadata = JSON.parse(data)
                                     zipfile.close()
                                     resolve(metadata)
-                                } catch (parseErr) {
+                                } catch {
                                     reject(new Error('Invalid metadata.json format'))
                                 }
                             })
@@ -332,7 +333,7 @@ export class ArchiveManager {
                 })
 
                 zipfile.on('end', () => {
-                    reject(new Error('Le fichier metadata.json est introuvable dans l\'archive'))
+                    reject(new Error("Le fichier metadata.json est introuvable dans l'archive"))
                 })
 
                 zipfile.on('error', (zipErr) => {
@@ -343,27 +344,18 @@ export class ArchiveManager {
     }
 
     private async extractMetadataFromTarZst(tarZstFilePath: string): Promise<CourseMetadata> {
+        // First, list files to find metadata.json path
+        const metadataPath = await this.findMetadataInTarZst(tarZstFilePath)
+
+        // Then extract the specific file
         return new Promise((resolve, reject) => {
             const command = 'tar'
             let args: string[]
 
             if (process.platform === 'win32') {
-                args = [
-                    '-xf',
-                    tarZstFilePath,
-                    '--wildcards',
-                    '**/metadata.json',
-                    '--to-stdout'
-                ]
+                args = ['-xf', tarZstFilePath, metadataPath, '-O']
             } else {
-                args = [
-                    '--use-compress-program=unzstd',
-                    '-xf',
-                    tarZstFilePath,
-                    '--wildcards',
-                    '**/metadata.json',
-                    '--to-stdout'
-                ]
+                args = ['--use-compress-program=unzstd', '-xf', tarZstFilePath, metadataPath, '-O']
             }
 
             const tarProcess = spawn(command, args)
@@ -396,12 +388,68 @@ export class ArchiveManager {
                     try {
                         const metadata: CourseMetadata = JSON.parse(output)
                         resolve(metadata)
-                    } catch (parseErr) {
+                    } catch {
                         reject(new Error('Invalid metadata.json format'))
                     }
                 } else {
                     const errorMsg =
-                        errorOutput || 'Le fichier metadata.json est introuvable dans l\'archive'
+                        errorOutput || "Le fichier metadata.json est introuvable dans l'archive"
+                    reject(new Error(errorMsg))
+                }
+            })
+        })
+    }
+
+    private async findMetadataInTarZst(tarZstFilePath: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const command = 'tar'
+            let args: string[]
+
+            // List archive contents
+            if (process.platform === 'win32') {
+                args = ['-tf', tarZstFilePath]
+            } else {
+                args = ['--use-compress-program=unzstd', '-tf', tarZstFilePath]
+            }
+
+            const tarProcess = spawn(command, args)
+
+            let output = ''
+            let errorOutput = ''
+
+            tarProcess.stdout.on('data', (data: Buffer) => {
+                output += data.toString()
+            })
+
+            tarProcess.stderr.on('data', (data: Buffer) => {
+                errorOutput += data.toString()
+            })
+
+            tarProcess.on('error', (error) => {
+                if (process.platform === 'win32') {
+                    reject(
+                        new Error(
+                            'Failed to list tar.zst archive contents. Please ensure you are using Windows 10 version 1803 or later.'
+                        )
+                    )
+                } else {
+                    reject(error)
+                }
+            })
+
+            tarProcess.on('close', (code) => {
+                if (code === 0) {
+                    // Find metadata.json in the file list
+                    const files = output.split('\n')
+                    const metadataFile = files.find((file) => file.endsWith('metadata.json'))
+
+                    if (metadataFile) {
+                        resolve(metadataFile.trim())
+                    } else {
+                        reject(new Error("Le fichier metadata.json est introuvable dans l'archive"))
+                    }
+                } else {
+                    const errorMsg = errorOutput || 'Failed to list archive contents'
                     reject(new Error(errorMsg))
                 }
             })
