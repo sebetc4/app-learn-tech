@@ -39,39 +39,89 @@ export class ImportCourseService {
     ): Promise<CoursePreview> {
         try {
             const rootPath = this.#getRootPath()
+            let metadata: CourseMetadata
+            let courseDirPath: string
 
-            // STEP 1: Extract metadata ONLY
-            const metadata = await this.#archiveManager.extractMetadataOnly(zipFilePath)
+            // Special handling for Windows with tar.zst files
+            const isWindowsTarZst =
+                process.platform === 'win32' &&
+                (zipFilePath.endsWith('.tar.zst') || zipFilePath.endsWith('.tzst'))
 
-            // Validate course ID
-            if (!metadata.id) {
-                throw new Error('L\'ID du cours est manquant dans metadata.json')
-            }
-
-            // STEP 2: Check for duplicates
-            const duplicateCheck = await this.#duplicateCheckManager.checkDuplicate(metadata)
-
-            // STEP 3: Handle duplicate cases
-            if (duplicateCheck.action === 'reject') {
-                throw new Error(duplicateCheck.message)
-            }
-
-            // Notify renderer that extraction is starting
-            if (mainWindow && !mainWindow.isDestroyed()) {
-                mainWindow.webContents.send(IPC.FOLDER.IMPORT_ARCHIVE_START)
-            }
-
-            // STEP 4: Extract full archive
-            const courseDirPath = await this.#archiveManager.extractArchive(
-                zipFilePath,
-                rootPath,
-                (progress: number) => {
-                    // Emit progress to renderer
-                    if (mainWindow && !mainWindow.isDestroyed()) {
-                        mainWindow.webContents.send(IPC.FOLDER.IMPORT_ARCHIVE_PROGRESS, progress)
-                    }
+            if (isWindowsTarZst) {
+                // On Windows with tar.zst: extract first, then check for duplicates
+                // Notify renderer that extraction is starting
+                if (mainWindow && !mainWindow.isDestroyed()) {
+                    mainWindow.webContents.send(IPC.FOLDER.IMPORT_ARCHIVE_START)
                 }
-            )
+
+                // STEP 1: Extract full archive to temp directory
+                courseDirPath = await this.#archiveManager.extractArchive(
+                    zipFilePath,
+                    rootPath,
+                    (progress: number) => {
+                        if (mainWindow && !mainWindow.isDestroyed()) {
+                            mainWindow.webContents.send(IPC.FOLDER.IMPORT_ARCHIVE_PROGRESS, progress)
+                        }
+                    }
+                )
+
+                // STEP 2: Read metadata from extracted directory
+                metadata = this.#getMetadata(courseDirPath)
+
+                // Validate course ID
+                if (!metadata.id) {
+                    // Cleanup extracted directory
+                    if (fs.existsSync(courseDirPath)) {
+                        fs.rmSync(courseDirPath, { recursive: true, force: true })
+                    }
+                    throw new Error("L'ID du cours est manquant dans metadata.json")
+                }
+
+                // STEP 3: Check for duplicates
+                const duplicateCheck = await this.#duplicateCheckManager.checkDuplicate(metadata)
+
+                // STEP 4: Handle duplicate cases
+                if (duplicateCheck.action === 'reject') {
+                    // Cleanup extracted directory before throwing error
+                    if (fs.existsSync(courseDirPath)) {
+                        fs.rmSync(courseDirPath, { recursive: true, force: true })
+                    }
+                    throw new Error(duplicateCheck.message)
+                }
+            } else {
+                // Standard flow for ZIP and tar.zst on non-Windows
+                // STEP 1: Extract metadata ONLY
+                metadata = await this.#archiveManager.extractMetadataOnly(zipFilePath)
+
+                // Validate course ID
+                if (!metadata.id) {
+                    throw new Error("L'ID du cours est manquant dans metadata.json")
+                }
+
+                // STEP 2: Check for duplicates
+                const duplicateCheck = await this.#duplicateCheckManager.checkDuplicate(metadata)
+
+                // STEP 3: Handle duplicate cases
+                if (duplicateCheck.action === 'reject') {
+                    throw new Error(duplicateCheck.message)
+                }
+
+                // Notify renderer that extraction is starting
+                if (mainWindow && !mainWindow.isDestroyed()) {
+                    mainWindow.webContents.send(IPC.FOLDER.IMPORT_ARCHIVE_START)
+                }
+
+                // STEP 4: Extract full archive
+                courseDirPath = await this.#archiveManager.extractArchive(
+                    zipFilePath,
+                    rootPath,
+                    (progress: number) => {
+                        if (mainWindow && !mainWindow.isDestroyed()) {
+                            mainWindow.webContents.send(IPC.FOLDER.IMPORT_ARCHIVE_PROGRESS, progress)
+                        }
+                    }
+                )
+            }
 
             // STEP 5: Process course
             const coursePreview = await this.#courseManager.process(metadata, courseDirPath)

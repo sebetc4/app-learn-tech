@@ -6,100 +6,102 @@ import yauzl from 'yauzl'
 import { CourseMetadata } from '@/types'
 
 export class ArchiveManager {
+    // ============================================================================
+    // PUBLIC METHODS
+    // ============================================================================
+
+    /**
+     * Extract archive (ZIP or TAR.ZST) to destination folder
+     * Used for full extraction after duplicate check (or on Windows with TAR.ZST)
+     */
     public async extractArchive(
         archiveFilePath: string,
         courseRootPath: string,
         onProgress?: (percent: number) => void
     ): Promise<string> {
+        const tempExtractPath = path.join(courseRootPath, '.temp-extract-' + Date.now())
+
         try {
-            // Create a temporary extraction directory
-            const tempExtractPath = path.join(courseRootPath, '.temp-extract-' + Date.now())
             fs.mkdirSync(tempExtractPath, { recursive: true })
 
-            console.log(`Course root path: ${courseRootPath}`)
-            console.log(`Temporary extraction: ${tempExtractPath}`)
-
-            try {
-                // Detect archive type and extract to temp directory
-                const archiveType = this.detectArchiveType(archiveFilePath)
-                if (archiveType === 'zip') {
-                    await this.extractZip(archiveFilePath, tempExtractPath, onProgress)
-                } else if (archiveType === 'tar.zst') {
-                    await this.extractTarZst(archiveFilePath, tempExtractPath, onProgress)
-                } else {
-                    throw new Error(`Unsupported archive type: ${path.extname(archiveFilePath)}`)
-                }
-
-                // Find the root folder containing metadata.json
-                const rootFolder = this.findRootFolder(tempExtractPath)
-                if (!rootFolder) {
-                    throw new Error('File metadata.json is missing in the archive')
-                }
-
-                // Read metadata.json to get the course ID
-                const metadataPath = path.join(rootFolder, 'metadata.json')
-                const metadataContent = fs.readFileSync(metadataPath, 'utf8')
-                const metadata = JSON.parse(metadataContent)
-                const courseId = metadata.id
-
-                if (!courseId) {
-                    throw new Error('Course ID is missing in metadata.json')
-                }
-
-                // Use course ID as the final folder name
-                const finalDestPath = path.join(courseRootPath, courseId)
-
-                // If final destination exists, remove it
-                if (fs.existsSync(finalDestPath)) {
-                    this.removeDirectory(finalDestPath)
-                }
-
-                // Move the extracted folder to final destination
-                fs.renameSync(rootFolder, finalDestPath)
-
-                console.log(`Extraction completed successfully to ${finalDestPath}`)
-
-                return finalDestPath
-            } finally {
-                // Cleanup temp directory
-                if (fs.existsSync(tempExtractPath)) {
-                    this.removeDirectory(tempExtractPath)
-                }
+            // Extract to temp directory
+            const archiveType = this.#detectArchiveType(archiveFilePath)
+            if (archiveType === 'zip') {
+                await this.#extractZip(archiveFilePath, tempExtractPath, onProgress)
+            } else if (archiveType === 'tar.zst') {
+                await this.#extractTarZst(archiveFilePath, tempExtractPath, onProgress)
+            } else {
+                throw new Error(`Unsupported archive type: ${path.extname(archiveFilePath)}`)
             }
+
+            // Find root folder containing metadata.json
+            const rootFolder = this.#findRootFolder(tempExtractPath)
+            if (!rootFolder) {
+                throw new Error('File metadata.json is missing in the archive')
+            }
+
+            // Read metadata to get course ID
+            const metadataPath = path.join(rootFolder, 'metadata.json')
+            const metadataContent = fs.readFileSync(metadataPath, 'utf8')
+            const metadata = JSON.parse(metadataContent)
+            const courseId = metadata.id
+
+            if (!courseId) {
+                throw new Error('Course ID is missing in metadata.json')
+            }
+
+            // Move to final destination with course ID as folder name
+            const finalDestPath = path.join(courseRootPath, courseId)
+
+            if (fs.existsSync(finalDestPath)) {
+                fs.rmSync(finalDestPath, { recursive: true, force: true })
+            }
+
+            fs.renameSync(rootFolder, finalDestPath)
+
+            return finalDestPath
         } catch (error) {
-            console.error("Erreur lors de l'importation du cours:", error)
+            console.error('Error extracting archive:', error)
             throw error
+        } finally {
+            // Cleanup temp directory
+            if (fs.existsSync(tempExtractPath)) {
+                fs.rmSync(tempExtractPath, { recursive: true, force: true })
+            }
         }
     }
 
-    private findRootFolder(extractPath: string): string | null {
-        // Recursive search for metadata.json
-        const findMetadata = (currentPath: string, depth: number = 0): string | null => {
-            // Limit depth to avoid infinite recursion
-            if (depth > 5) return null
+    /**
+     * Extract metadata.json ONLY from archive (optimization)
+     * Used for duplicate checking before full extraction
+     *
+     * Platform-specific behavior:
+     * - ZIP (all platforms): Extract metadata.json only
+     * - TAR.ZST (Linux/macOS): Extract metadata.json only using tar with unzstd
+     * - TAR.ZST (Windows): Throws special error to trigger full extraction in ImportCourseService
+     */
+    public async extractMetadataOnly(archiveFilePath: string): Promise<CourseMetadata> {
+        const archiveType = this.#detectArchiveType(archiveFilePath)
 
-            // Check if metadata.json exists in current path
-            if (fs.existsSync(path.join(currentPath, 'metadata.json'))) {
-                return currentPath
+        if (archiveType === 'zip') {
+            return this.#extractMetadataFromZip(archiveFilePath)
+        } else if (archiveType === 'tar.zst') {
+            // Windows tar.zst: Full extraction handled by ImportCourseService
+            if (process.platform === 'win32') {
+                throw new Error('WINDOWS_TAR_ZST_SKIP_METADATA_CHECK')
             }
-
-            // Search in subdirectories
-            const entries = fs.readdirSync(currentPath, { withFileTypes: true })
-            for (const entry of entries) {
-                if (entry.isDirectory()) {
-                    const subdirPath = path.join(currentPath, entry.name)
-                    const result = findMetadata(subdirPath, depth + 1)
-                    if (result) return result
-                }
-            }
-
-            return null
+            // Linux/macOS: Extract metadata only
+            return this.#extractMetadataFromTarZst(archiveFilePath)
+        } else {
+            throw new Error(`Unsupported archive type: ${path.extname(archiveFilePath)}`)
         }
-
-        return findMetadata(extractPath)
     }
 
-    private detectArchiveType(filePath: string): 'zip' | 'tar.zst' | 'unknown' {
+    // ============================================================================
+    // PRIVATE METHODS - ARCHIVE DETECTION
+    // ============================================================================
+
+    #detectArchiveType(filePath: string): 'zip' | 'tar.zst' | 'unknown' {
         if (filePath.endsWith('.zip')) {
             return 'zip'
         } else if (filePath.endsWith('.tar.zst') || filePath.endsWith('.tzst')) {
@@ -108,7 +110,11 @@ export class ArchiveManager {
         return 'unknown'
     }
 
-    private async extractZip(
+    // ============================================================================
+    // PRIVATE METHODS - FULL EXTRACTION
+    // ============================================================================
+
+    async #extractZip(
         zipFilePath: string,
         extractPath: string,
         onProgress?: (percent: number) => void
@@ -148,7 +154,7 @@ export class ArchiveManager {
                         return
                     }
 
-                    // File entry - process in parallel
+                    // File entry
                     fs.mkdirSync(path.dirname(entryPath), { recursive: true })
 
                     pendingWrites++
@@ -199,20 +205,17 @@ export class ArchiveManager {
         })
     }
 
-    private async extractTarZst(
+    async #extractTarZst(
         tarZstFilePath: string,
         extractPath: string,
         onProgress?: (percent: number) => void
     ): Promise<void> {
         return new Promise((resolve, reject) => {
-            let args: string[]
             const command = 'tar'
-
-            if (process.platform === 'win32') {
-                args = ['-xvf', tarZstFilePath, '-C', extractPath]
-            } else {
-                args = ['--use-compress-program=unzstd', '-xvf', tarZstFilePath, '-C', extractPath]
-            }
+            const args =
+                process.platform === 'win32'
+                    ? ['-xvf', tarZstFilePath, '-C', extractPath]
+                    : ['--use-compress-program=unzstd', '-xvf', tarZstFilePath, '-C', extractPath]
 
             const tarProcess = spawn(command, args)
 
@@ -220,78 +223,53 @@ export class ArchiveManager {
             let lastProgressUpdate = Date.now()
             let errorOutput = ''
 
-            // tar with -v outputs file list to stdout
             tarProcess.stdout.on('data', (data: Buffer) => {
                 const output = data.toString()
                 const lines = output.split('\n').filter((line) => line.trim().length > 0)
                 filesExtracted += lines.length
 
-                // Update progress every 100ms to avoid too many updates
+                // Update progress every 100ms
                 const now = Date.now()
                 if (onProgress && now - lastProgressUpdate > 100) {
-                    // Estimate progress (we don't know total files, so increment gradually)
                     const estimatedProgress = Math.min(95, 10 + filesExtracted / 50)
                     onProgress(Math.round(estimatedProgress))
                     lastProgressUpdate = now
                 }
             })
 
-            // Capture error messages
             tarProcess.stderr.on('data', (data: Buffer) => {
                 errorOutput += data.toString()
             })
 
             tarProcess.on('error', (error) => {
-                console.error(`Error extracting tar.zst file ${tarZstFilePath}:`, error)
-
-                if (process.platform === 'win32') {
-                    reject(
-                        new Error(
-                            'Failed to extract tar.zst archive. Please ensure you are using Windows 10 version 1803 or later, or extract the archive manually.'
-                        )
-                    )
-                } else {
-                    reject(error)
-                }
+                const errorMsg =
+                    process.platform === 'win32'
+                        ? 'Failed to extract tar.zst archive. Please ensure you are using Windows 10 version 1803 or later.'
+                        : error.message
+                reject(new Error(errorMsg))
             })
 
             tarProcess.on('close', (code) => {
                 if (code === 0) {
-                    if (onProgress) {
-                        onProgress(100)
-                    }
+                    if (onProgress) onProgress(100)
                     resolve()
                 } else {
                     const errorMsg = errorOutput || `tar extraction failed with code ${code}`
-                    console.error('tar extraction error:', errorMsg)
                     reject(new Error(errorMsg))
                 }
             })
         })
     }
 
-    private removeDirectory(dirPath: string): void {
-        try {
-            fs.rmSync(dirPath, { recursive: true, force: true })
-        } catch (error) {
-            console.error(`Erreur lors de la suppression du dossier ${dirPath}:`, error)
-            throw error
-        }
-    }
+    // ============================================================================
+    // PRIVATE METHODS - METADATA-ONLY EXTRACTION
+    // ============================================================================
 
-    public async extractMetadataOnly(archiveFilePath: string): Promise<CourseMetadata> {
-        const archiveType = this.detectArchiveType(archiveFilePath)
-
-        if (archiveType === 'zip') {
-            return this.extractMetadataFromZip(archiveFilePath)
-        } else if (archiveType === 'tar.zst') {
-            return this.extractMetadataFromTarZst(archiveFilePath)
-        } else {
-            throw new Error(`Unsupported archive type: ${path.extname(archiveFilePath)}`)
-        }
-    }
-
-    private extractMetadataFromZip(zipFilePath: string): Promise<CourseMetadata> {
+    /**
+     * Extract metadata.json only from ZIP archive
+     * Used for duplicate checking without full extraction
+     */
+    #extractMetadataFromZip(zipFilePath: string): Promise<CourseMetadata> {
         return new Promise((resolve, reject) => {
             yauzl.open(zipFilePath, { lazyEntries: true }, (err, zipfile) => {
                 if (err || !zipfile) {
@@ -302,7 +280,6 @@ export class ArchiveManager {
                 zipfile.readEntry()
 
                 zipfile.on('entry', (entry) => {
-                    // Check if this entry is metadata.json (could be nested)
                     if (entry.fileName.endsWith('metadata.json')) {
                         zipfile.openReadStream(entry, (err, readStream) => {
                             if (err || !readStream) {
@@ -328,7 +305,7 @@ export class ArchiveManager {
                             })
                         })
                     } else {
-                        zipfile.readEntry() // Continue to next entry
+                        zipfile.readEntry()
                     }
                 })
 
@@ -343,20 +320,24 @@ export class ArchiveManager {
         })
     }
 
-    private async extractMetadataFromTarZst(tarZstFilePath: string): Promise<CourseMetadata> {
-        // First, list files to find metadata.json path
-        const metadataPath = await this.findMetadataInTarZst(tarZstFilePath)
+    /**
+     * Extract metadata.json only from TAR.ZST archive (Linux/macOS only)
+     * Uses tar with unzstd to extract specific file
+     */
+    async #extractMetadataFromTarZst(tarZstFilePath: string): Promise<CourseMetadata> {
+        // List archive contents to find metadata.json path
+        const metadataPath = await this.#listTarZstAndFindMetadata(tarZstFilePath)
 
-        // Then extract the specific file
+        // Extract the specific file to stdout
         return new Promise((resolve, reject) => {
             const command = 'tar'
-            let args: string[]
-
-            if (process.platform === 'win32') {
-                args = ['-xf', tarZstFilePath, metadataPath, '-O']
-            } else {
-                args = ['--use-compress-program=unzstd', '-xf', tarZstFilePath, metadataPath, '-O']
-            }
+            const args = [
+                '--use-compress-program=unzstd',
+                '-xf',
+                tarZstFilePath,
+                metadataPath,
+                '-O'
+            ]
 
             const tarProcess = spawn(command, args)
 
@@ -372,15 +353,7 @@ export class ArchiveManager {
             })
 
             tarProcess.on('error', (error) => {
-                if (process.platform === 'win32') {
-                    reject(
-                        new Error(
-                            'Failed to extract tar.zst archive. Please ensure you are using Windows 10 version 1803 or later.'
-                        )
-                    )
-                } else {
-                    reject(error)
-                }
+                reject(new Error(`Failed to extract metadata: ${error.message}`))
             })
 
             tarProcess.on('close', (code) => {
@@ -400,17 +373,14 @@ export class ArchiveManager {
         })
     }
 
-    private async findMetadataInTarZst(tarZstFilePath: string): Promise<string> {
+    /**
+     * List TAR.ZST archive contents and find metadata.json path
+     * Linux/macOS only
+     */
+    async #listTarZstAndFindMetadata(tarZstFilePath: string): Promise<string> {
         return new Promise((resolve, reject) => {
             const command = 'tar'
-            let args: string[]
-
-            // List archive contents
-            if (process.platform === 'win32') {
-                args = ['-tf', tarZstFilePath]
-            } else {
-                args = ['--use-compress-program=unzstd', '-tf', tarZstFilePath]
-            }
+            const args = ['--use-compress-program=unzstd', '-tf', tarZstFilePath]
 
             const tarProcess = spawn(command, args)
 
@@ -426,20 +396,11 @@ export class ArchiveManager {
             })
 
             tarProcess.on('error', (error) => {
-                if (process.platform === 'win32') {
-                    reject(
-                        new Error(
-                            'Failed to list tar.zst archive contents. Please ensure you are using Windows 10 version 1803 or later.'
-                        )
-                    )
-                } else {
-                    reject(error)
-                }
+                reject(new Error(`Failed to list archive contents: ${error.message}`))
             })
 
             tarProcess.on('close', (code) => {
                 if (code === 0) {
-                    // Find metadata.json in the file list
                     const files = output.split('\n')
                     const metadataFile = files.find((file) => file.endsWith('metadata.json'))
 
@@ -454,5 +415,36 @@ export class ArchiveManager {
                 }
             })
         })
+    }
+
+    // ============================================================================
+    // PRIVATE METHODS - UTILITIES
+    // ============================================================================
+
+    /**
+     * Find folder containing metadata.json in extracted directory
+     * Searches up to 5 levels deep
+     */
+    #findRootFolder(extractPath: string): string | null {
+        const findMetadata = (currentPath: string, depth: number = 0): string | null => {
+            if (depth > 5) return null
+
+            if (fs.existsSync(path.join(currentPath, 'metadata.json'))) {
+                return currentPath
+            }
+
+            const entries = fs.readdirSync(currentPath, { withFileTypes: true })
+            for (const entry of entries) {
+                if (entry.isDirectory()) {
+                    const subdirPath = path.join(currentPath, entry.name)
+                    const result = findMetadata(subdirPath, depth + 1)
+                    if (result) return result
+                }
+            }
+
+            return null
+        }
+
+        return findMetadata(extractPath)
     }
 }
