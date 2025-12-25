@@ -16,5 +16,4 @@ out
 /databases/*.db-wal
 /resources/database/*
 
-/build
 /.vscode
