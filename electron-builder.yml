@@ -72,12 +72,8 @@ appImage:
     artifactName: ${name}-${version}.${ext}
 
 npmRebuild: false
-compression: maximum
+compression: normal
 asar: true
-
-# Hook to create no-sandbox wrapper for Linux AppImage
-# Fixes 60-second startup delay on Fedora, Arch, Debian, etc.
-afterPack: ./scripts/afterPack.ts
 publish:
     provider: github
     releaseType: release

@@ -1,6 +1,6 @@
 {
     "name": "learn-tech",
-    "version": "1.1.6",
+    "version": "1.1.7",
     "description": "LearnTech helps you organize, track, and manage your technical courses with a beautiful, responsive interface and comprehensive progress tracking.",
     "main": "./out/main/index.js",
     "author": "sebetc4",
