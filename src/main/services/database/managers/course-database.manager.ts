@@ -203,9 +203,9 @@ export class CourseDatabaseManager {
 
     async deleteById(id: string): Promise<Course | null> {
         return this.#autoSave(async () => {
-            const result = await this.#db.delete(courses).where(eq(courses.id, id)).returning()
-
-            return result[0] || null
+            const course = await this.#db.select().from(courses).where(eq(courses.id, id)).limit(1)
+            await this.#db.delete(courses).where(eq(courses.id, id))
+            return course[0] || null
         })
     }
 

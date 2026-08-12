@@ -10,9 +10,9 @@ import {
     UserDatabaseManager
 } from './managers'
 import { CourseHistoryDatabaseManager } from './managers/course-history-database.manager'
-import { getAppDataPath } from '@main/utils'
 import * as relations from '@/database/relations'
 import * as schema from '@/database/schemas'
+import { getAppDataPath } from '@main/utils'
 import { drizzle } from 'drizzle-orm/sql-js'
 import { app } from 'electron'
 import fs from 'fs'
@@ -113,12 +113,17 @@ export class DatabaseService {
             this.#sqliteInstance = new SQL.Database()
         }
 
+        // Required per-connection to enforce ON DELETE CASCADE and other FK constraints
+        this.#sqliteInstance.run('PRAGMA foreign_keys = ON')
+
         this.#db = drizzle(this.#sqliteInstance, {
             schema: { ...schema, ...relations }
         })
 
         // Apply migrations
         await this.#applyMigrations()
+
+        this.#sqliteInstance.run('PRAGMA foreign_keys = ON')
     }
 
     #initializeManagers() {
@@ -253,6 +258,8 @@ export class DatabaseService {
 
     async #executeWithAutoSave<T>(operation: () => Promise<T>): Promise<T> {
         try {
+            this.#sqliteInstance.run('PRAGMA foreign_keys = ON')
+
             const result = await operation()
             this.#scheduleSave()
             return result

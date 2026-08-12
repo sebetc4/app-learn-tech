@@ -87,9 +87,9 @@ export class UserDatabaseManager {
         return null
     }
 
-    async remove(id: string) {
+    async delete(id: string) {
         return this.#autoSave(async () => {
-            await this.#db.delete(users).where(eq(users.id, id)).returning()
+            await this.#db.delete(users).where(eq(users.id, id))
         })
     }
 

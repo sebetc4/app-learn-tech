@@ -1,6 +1,6 @@
 {
     "name": "learn-tech",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "description": "LearnTech helps you organize, track, and manage your technical courses with a beautiful, responsive interface and comprehensive progress tracking.",
     "main": "./out/main/index.js",
     "author": "sebetc4",
@@ -96,17 +96,5 @@
         "tsx": "^4.21.0",
         "typescript": "^5.9.3",
         "vite": "^7.3.2"
-    },
-    "pnpm": {
-        "onlyBuiltDependencies": [
-            "@parcel/watcher",
-            "better-sqlite3",
-            "electron",
-            "electron-winstaller",
-            "esbuild"
-        ],
-        "overrides": {
-            "canvas": "-"
-        }
     }
 }

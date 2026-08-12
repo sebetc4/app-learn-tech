@@ -93,7 +93,7 @@ export class UserService {
 
     async delete(userId: string): Promise<void> {
         try {
-            await this.#database.user.remove(userId)
+            await this.#database.user.delete(userId)
         } catch (error) {
             console.error(`Error removing user with ID ${userId}: ${error}`)
             throw error
